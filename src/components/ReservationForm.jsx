@@ -98,7 +98,11 @@ const ReservationForm = () => {
   useEffect(() => {
     const savedForm = localStorage.getItem("reservationForm");
     if (savedForm) {
-      setFormData(JSON.parse(savedForm));
+      try {
+        setFormData(JSON.parse(savedForm));
+      } catch (e) {
+        console.error("폼 상태 복구 실패", e);
+      }
     }
   }, []);
 
@@ -109,7 +113,8 @@ const ReservationForm = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (name === "tutor") setFormData((prev) => ({ ...prev, timeSlot: "" }));
+    if (name === "tutor")
+      setFormData((prev) => ({ ...prev, tutor: value, timeSlot: "" }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
@@ -138,22 +143,27 @@ const ReservationForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      try {
-        await createReservation(formData);
-        setSubmitted(true);
-        setFormData({
-          teamName: "",
-          tutor: "",
-          timeSlot: "",
-          figmaLink: "",
-          question: "",
-        });
-        localStorage.removeItem("reservationForm");
-        setTimeout(() => setSubmitted(false), 5000);
-      } catch (error) {
-        alert("예약 중 오류가 발생했습니다.");
-      }
+    if (!validateForm()) return;
+
+    try {
+      await createReservation(formData);
+
+      // 초기화
+      const empty = {
+        teamName: "",
+        tutor: "",
+        timeSlot: "",
+        figmaLink: "",
+        question: "",
+      };
+      setFormData(empty);
+      localStorage.setItem("reservationForm", JSON.stringify(empty));
+
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (error) {
+      alert("예약 중 오류가 발생했습니다.");
+      console.error("예약 실패:", error);
     }
   };
 
