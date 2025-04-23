@@ -10,15 +10,19 @@ import {
   where,
   Timestamp,
 } from "firebase/firestore";
+console.log(
+  "🔥 Firebase ENV 체크:",
+  process.env.TUTORING_SCHEDULE_FIREBASE_API_KEY
+);
 
 const firebaseConfig = {
-  apiKey: process.env.TUTORING_SCHEDULE_FIREBASE_API_KEY,
-  authDomain: process.env.TUTORING_SCHEDULE_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.TUTORING_SCHEDULE_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.TUTORING_SCHEDULE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.TUTORING_SCHEDULE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.TUTORING_SCHEDULE_FIREBASE_APP_ID,
-  measurementId: process.env.TUTORING_SCHEDULE_FIREBASE_MEASUREMENT_ID,
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
 // Firebase 초기화
@@ -31,7 +35,6 @@ export const createReservation = async (reservationData) => {
     const docRef = await addDoc(collection(db, "reservations"), {
       ...reservationData,
       createdAt: Timestamp.now(),
-      date: Timestamp.fromDate(new Date()),
     });
     return { id: docRef.id, ...reservationData };
   } catch (error) {
@@ -61,8 +64,8 @@ export const subscribeToTodayReservations = (callback) => {
 
   const reservationsQuery = query(
     collection(db, "reservations"),
-    where("date", ">=", Timestamp.fromDate(today)),
-    where("date", "<", Timestamp.fromDate(tomorrow))
+    where("createdAt", ">=", Timestamp.fromDate(today)),
+    where("createdAt", "<", Timestamp.fromDate(tomorrow))
   );
 
   return onSnapshot(reservationsQuery, (snapshot) => {

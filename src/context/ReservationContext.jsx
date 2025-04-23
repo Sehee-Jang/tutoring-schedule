@@ -1,4 +1,3 @@
-// src/context/ReservationContext.jsx
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { subscribeToTodayReservations } from "../services/firebase";
 
@@ -11,10 +10,11 @@ export const ReservationProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = subscribeToTodayReservations((newReservations) => {
-      setReservations(newReservations);
-      setLoading(false);
-    });
+      const unsubscribe = subscribeToTodayReservations((newReservations) => {
+        console.log("🔥 예약 현황 업데이트됨", newReservations); // 이거 찍히는지 확인
+        setReservations(newReservations);
+        setLoading(false);
+      });
 
     // 컴포넌트 언마운트 시 구독 해제
     return () => unsubscribe();

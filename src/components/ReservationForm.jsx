@@ -104,11 +104,13 @@ const ReservationForm = () => {
         console.error("폼 상태 복구 실패", e);
       }
     }
-  }, []);
+  }, [submitted]);
 
   useEffect(() => {
-    localStorage.setItem("reservationForm", JSON.stringify(formData));
-  }, [formData]);
+    if (!submitted) {
+      localStorage.setItem("reservationForm", JSON.stringify(formData));
+    }
+  }, [formData, submitted]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -147,6 +149,7 @@ const ReservationForm = () => {
 
     try {
       await createReservation(formData);
+      console.log("✅ 예약 성공");
 
       // 초기화
       const empty = {
@@ -163,7 +166,7 @@ const ReservationForm = () => {
       setTimeout(() => setSubmitted(false), 5000);
     } catch (error) {
       alert("예약 중 오류가 발생했습니다.");
-      console.error("예약 실패:", error);
+      console.error("❌ 예약 실패:", error);
     }
   };
 
