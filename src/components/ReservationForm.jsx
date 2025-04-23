@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useReservations } from "../context/ReservationContext";
 import { createReservation } from "../services/firebase";
 
@@ -93,8 +93,18 @@ const ReservationForm = () => {
     김수진: ["19:00-19:30", "19:30-20:00", "20:00-20:30", "20:30-21:00"],
   };
 
-
   const tutors = Object.keys(tutorSchedules);
+
+  useEffect(() => {
+    const savedForm = localStorage.getItem("reservationForm");
+    if (savedForm) {
+      setFormData(JSON.parse(savedForm));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("reservationForm", JSON.stringify(formData));
+  }, [formData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -139,6 +149,7 @@ const ReservationForm = () => {
           figmaLink: "",
           question: "",
         });
+        localStorage.removeItem("reservationForm");
         setTimeout(() => setSubmitted(false), 5000);
       } catch (error) {
         alert("예약 중 오류가 발생했습니다.");
