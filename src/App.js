@@ -5,9 +5,11 @@ import ReservationStatus from "./components/ReservationStatus";
 import ReservationForm from "./components/ReservationForm";
 import AvailabilityModal from "./components/AvailabilityModal";
 import { AuthProvider } from "./context/AuthContext";
+import { useAuth } from "./context/AuthContext";
+import LoginForm from "./components/LoginForm";
 
 function App() {
-  const [user, setUser] = useState({ name: "관리자", role: "admin" });
+  const { user } = useAuth();
   const [showAvailability, setShowAvailability] = useState(false);
   const isAdmin = user?.role === "admin";
 
@@ -22,16 +24,21 @@ function App() {
     <AvailabilityProvider>
       <AuthProvider>
         <ReservationProvider>
-          <div className='max-w-5xl mx-auto px-4 py-6 font-sans bg-gray-50 min-h-screen'>
-            <header className='text-center mb-10'>
-              <h1 className='text-3xl font-bold text-gray-800'>
-                튜터링 예약 시스템
-              </h1>
-              <p className='text-lg text-gray-500 mt-2'>
-                오늘: {today}
-                {user?.role === "admin" && (
-                  <span className='ml-2 text-sm text-green-600'>(관리자)</span>
-                )}
+          <div className='...'>
+            <header className='...'>
+              <h1>튜터링 예약 시스템</h1>
+              <p>오늘: {today}</p>
+              {user ? (
+                <p className='text-sm text-green-600'>
+                  {user.name}님, 환영합니다 ({user.role})
+                </p>
+              ) : null}
+            </header>
+
+            {!user ? (
+              <LoginForm />
+            ) : (
+              <>
                 {isAdmin && (
                   <button
                     onClick={() => setShowAvailability(true)}
@@ -40,15 +47,15 @@ function App() {
                     튜터 시간 설정
                   </button>
                 )}
-              </p>
-            </header>
 
-            <ReservationStatus isAdmin={user?.role === "admin"} />
-            <AvailabilityModal
-              isOpen={showAvailability}
-              onClose={() => setShowAvailability(false)}
-            />
-            <ReservationForm />
+                <ReservationStatus isAdmin={isAdmin} />
+                <AvailabilityModal
+                  isOpen={showAvailability}
+                  onClose={() => setShowAvailability(false)}
+                />
+                <ReservationForm />
+              </>
+            )}
           </div>
         </ReservationProvider>
       </AuthProvider>
