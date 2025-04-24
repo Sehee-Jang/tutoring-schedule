@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAvailability } from "../context/AvailabilityContext";
 
 const generateTimeSlots = () => {
@@ -30,10 +30,18 @@ const tutors = [
 ];
 
 const AvailabilityModal = ({ isOpen, onClose }) => {
-  const { updateAvailability } = useAvailability();
+  const { availability: globalAvailability, updateAvailability } =
+    useAvailability();
   const [selectedTutor, setSelectedTutor] = useState(tutors[0]);
   const [availability, setAvailability] = useState({}); // { 튜터이름: ["시간대", ...] }
   const slots = generateTimeSlots();
+
+  // 모달 열릴 때 Firestore에서 불러온 시간대 상태로 복사
+  useEffect(() => {
+    if (isOpen) {
+      setAvailability(globalAvailability);
+    }
+  }, [isOpen, globalAvailability]);
 
   const toggleSlot = (slot) => {
     setAvailability((prev) => {
