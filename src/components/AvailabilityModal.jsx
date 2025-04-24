@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useAvailability } from "../context/AvailabilityContext";
 
 const generateTimeSlots = () => {
-  const { updateAvailability } = useAvailability();
-
   const slots = [];
   for (let hour = 9; hour < 21; hour++) {
     slots.push(
@@ -32,9 +30,9 @@ const tutors = [
 ];
 
 const AvailabilityModal = ({ isOpen, onClose }) => {
+  const { updateAvailability } = useAvailability();
   const [selectedTutor, setSelectedTutor] = useState(tutors[0]);
   const [availability, setAvailability] = useState({}); // { 튜터이름: ["시간대", ...] }
-
   const slots = generateTimeSlots();
 
   const toggleSlot = (slot) => {
