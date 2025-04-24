@@ -24,6 +24,12 @@ const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
     }
   }, [reservation]);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setEditMode(false); // 모달 닫힐 때 수정모드 초기화
+    }
+  }, [isOpen]);
+
   if (!isOpen || !reservation) return null;
 
   const bookedTimeSlots = reservations
@@ -52,6 +58,7 @@ const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50'>
+      {/* 모달 내용 */}
       <div className='bg-white rounded-xl shadow-lg max-w-lg w-full p-6 relative'>
         <h2 className='text-xl font-bold text-gray-800 mb-4'>예약 상세 정보</h2>
 
@@ -71,10 +78,12 @@ const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
                 name='question'
                 value={form.question}
                 onChange={handleChange}
-                className='w-full border p-2 rounded mt-1 text-sm'
+                className='w-full border p-2 rounded mt-1 text-sm overflow-y-auto'
               />
             ) : (
-              <p className='mt-1'>{form.question}</p>
+              <div className='mt-1 max-h-32 overflow-y-auto p-2 bg-gray-50 border rounded text-sm whitespace-pre-wrap'>
+                {form.question}
+              </div>
             )}
           </div>
 
@@ -127,7 +136,8 @@ const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
           </div>
         </div>
 
-        <div className='flex justify-end gap-2 mt-6'>
+        {/* 수정 or 저장 버튼 */}
+        <div className='flex justify-center gap-4 mt-6'>
           {editMode ? (
             <>
               <button
@@ -151,13 +161,15 @@ const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
               수정
             </button>
           )}
-          <button
-            onClick={onClose}
-            className='text-sm text-gray-500 hover:underline'
-          >
-            닫기
-          </button>
         </div>
+
+        {/* X 버튼 */}
+        <button
+          onClick={onClose}
+          className='absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl'
+        >
+          &times;
+        </button>
       </div>
     </div>
   );
