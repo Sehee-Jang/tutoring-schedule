@@ -10,10 +10,6 @@ import {
   where,
   Timestamp,
 } from "firebase/firestore";
-console.log(
-  "🔥 Firebase ENV 체크:",
-  process.env.TUTORING_SCHEDULE_FIREBASE_API_KEY
-);
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -72,6 +68,11 @@ export const subscribeToTodayReservations = (callback) => {
     const reservations = [];
     snapshot.forEach((doc) => {
       reservations.push({ id: doc.id, ...doc.data() });
+    });
+
+    // 예약 현황 시간순 정렬
+    reservations.sort((a, b) => {
+      return a.timeSlot.localeCompare(b.timeSlot);
     });
     callback(reservations);
   });
