@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { login } from "../services/auth";
-import { useAuth } from "../context/AuthContext";
+import { login } from "../../services/auth";
+import { useAuth } from "../../context/AuthContext";
 
 const LoginModal = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState("");

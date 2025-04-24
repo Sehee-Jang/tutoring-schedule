@@ -2,7 +2,7 @@ import React from "react";
 import { AvailabilityProvider } from "./context/AvailabilityContext";
 import { ReservationProvider } from "./context/ReservationContext";
 import { AuthProvider } from "./context/AuthContext";
-import AppContent from "./components/AppContent";
+import AppContent from "./components/layout/AppContent";
 function App() {
   return (
     <AuthProvider>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useAvailability } from "../context/AvailabilityContext";
+import { useAvailability } from "../../context/AvailabilityContext";
 
 const generateTimeSlots = () => {
   const slots = [];
