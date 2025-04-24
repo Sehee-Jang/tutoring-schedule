@@ -54,6 +54,18 @@ export const cancelReservation = async (reservationId) => {
   }
 };
 
+// 예약 수정
+export const updateReservation = async (id, updatedData) => {
+  try {
+    const ref = doc(db, "reservations", id);
+    await updateDoc(ref, updatedData);
+  } catch (error) {
+    console.error("예약 수정 오류:", error);
+    throw error;
+  }
+};
+
+
 // 오늘의 예약 실시간 모니터링
 export const subscribeToTodayReservations = (callback) => {
   const today = new Date();
