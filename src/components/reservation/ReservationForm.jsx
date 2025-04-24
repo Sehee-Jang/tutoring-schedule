@@ -6,6 +6,7 @@ import PrimaryButton from "../shared/PrimaryButton";
 import TimeSlotButton from "../shared/TimeSlotButton";
 import TutorButton from "../shared/TutorButton";
 import useReservationForm from "../../hooks/useReservationForm";
+import { sendEmailAlert } from "../../utils/sendEmailAlert";
 
 const ReservationForm = () => {
   const { isTimeSlotBooked } = useReservations();
@@ -29,7 +30,8 @@ const ReservationForm = () => {
 
     try {
       await createReservation(form);
-      console.log("✅ 예약 성공");
+      await sendEmailAlert(form); // 이메일 전송
+      console.log("✅ 예약 및 이메일 전송 성공");
       reset();
       setSubmitted(true);
       setTimeout(() => setSubmitted(false), 5000);
