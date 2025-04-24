@@ -50,7 +50,7 @@ const LoginModal = ({ isOpen, onClose }) => {
           />
           <button
             type='submit'
-            className='bg-blue-600 text-white py-2 rounded hover:bg-blue-500'
+            className='bg-[#262626] text-white py-2 rounded hover:bg-[#404040]'
           >
             로그인
           </button>

@@ -70,6 +70,7 @@ const ReservationStatus = ({ isAdmin }) => {
         })}
       </div>
 
+      {/* 테이블 */}
       {filtered.length ? (
         <table className='w-full text-sm border border-gray-200 rounded overflow-hidden'>
           <thead>
@@ -77,7 +78,7 @@ const ReservationStatus = ({ isAdmin }) => {
               <th className='px-4 py-2 border'>튜터명</th>
               <th className='px-4 py-2 border'>시간</th>
               <th className='px-4 py-2 border'>예약자</th>
-              <th className='px-4 py-2 border'>관리</th>
+              {isAdmin && <th className='px-4 py-2 border'>관리</th>}
             </tr>
           </thead>
           <tbody>
@@ -86,24 +87,24 @@ const ReservationStatus = ({ isAdmin }) => {
                 <td className='px-4 py-2 border'>{res.tutor}</td>
                 <td className='px-4 py-2 border'>{res.timeSlot}</td>
                 <td className='px-4 py-2 border'>{res.teamName}</td>
-                <td className='px-4 py-2 border'>
-                  <div className='flex gap-2'>
-                    {isAdmin && (
+                {isAdmin && (
+                  <td className='px-4 py-2 border'>
+                    <div className='flex gap-2'>
                       <button
                         onClick={() => setSelectedReservation(res)}
                         className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
                       >
                         보기
                       </button>
-                    )}
-                    <button
-                      onClick={() => handleCancel(res.id)}
-                      className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
-                    >
-                      삭제
-                    </button>
-                  </div>
-                </td>
+                      <button
+                        onClick={() => handleCancel(res.id)}
+                        className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
