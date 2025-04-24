@@ -1,6 +1,9 @@
+import ReservationDetailModal from "./ReservationDetailModal";
 import React, { useState } from "react";
 import { useReservations } from "../context/ReservationContext";
 import { cancelReservation } from "../services/firebase";
+
+const [selectedReservation, setSelectedReservation] = useState(null);
 
 const ReservationStatus = ({ isAdmin }) => {
   const { reservations, loading } = useReservations();
@@ -109,6 +112,11 @@ const ReservationStatus = ({ isAdmin }) => {
           예약된 튜터링이 없습니다.
         </p>
       )}
+      <ReservationDetailModal
+        isOpen={!!selectedReservation}
+        reservation={selectedReservation}
+        onClose={() => setSelectedReservation(null)}
+      />
     </div>
   );
 };
