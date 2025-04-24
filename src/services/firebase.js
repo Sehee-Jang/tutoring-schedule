@@ -12,6 +12,7 @@ import {
   where,
   Timestamp,
 } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -26,6 +27,7 @@ const firebaseConfig = {
 // Firebase 초기화
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 // 예약 생성
 export const createReservation = async (reservationData) => {
@@ -97,4 +99,4 @@ export const fetchAllTutorAvailability = async () => {
   return data;
 };
 
-export default db;
+export default { db, auth };
