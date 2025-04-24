@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { ReservationProvider } from "./context/ReservationContext";
 import ReservationStatus from "./components/ReservationStatus";
 import ReservationForm from "./components/ReservationForm";
 
 function App() {
+  const [user, setUser] = useState({ name: "관리자", role: "admin" });
+
   const today = new Date().toLocaleDateString("ko-KR", {
     year: "numeric",
     month: "long",

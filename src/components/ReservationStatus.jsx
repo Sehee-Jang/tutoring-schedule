@@ -3,11 +3,10 @@ import React, { useState } from "react";
 import { useReservations } from "../context/ReservationContext";
 import { cancelReservation } from "../services/firebase";
 
-const [selectedReservation, setSelectedReservation] = useState(null);
-
 const ReservationStatus = ({ isAdmin }) => {
   const { reservations, loading } = useReservations();
   const [activeTab, setActiveTab] = useState("all");
+  const [selectedReservation, setSelectedReservation] = useState(null);
 
   const tutors = [
     "오은화",
@@ -78,7 +77,7 @@ const ReservationStatus = ({ isAdmin }) => {
               <th className='px-4 py-2 border'>튜터명</th>
               <th className='px-4 py-2 border'>시간</th>
               <th className='px-4 py-2 border'>예약자</th>
-              <th className='px-4 py-2 border'>취소</th>
+              <th className='px-4 py-2 border'>관리</th>
             </tr>
           </thead>
           <tbody>
@@ -88,20 +87,22 @@ const ReservationStatus = ({ isAdmin }) => {
                 <td className='px-4 py-2 border'>{res.timeSlot}</td>
                 <td className='px-4 py-2 border'>{res.teamName}</td>
                 <td className='px-4 py-2 border'>
-                  {isAdmin && (
+                  <div className='flex gap-2'>
+                    {isAdmin && (
+                      <button
+                        onClick={() => setSelectedReservation(res)}
+                        className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
+                      >
+                        보기
+                      </button>
+                    )}
                     <button
-                      onClick={() => setSelectedReservation(res)}
-                      className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
+                      onClick={() => handleCancel(res.id)}
+                      className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
                     >
-                      보기
+                      삭제
                     </button>
-                  )}
-                  <button
-                    onClick={() => handleCancel(res.id)}
-                    className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
-                  >
-                    취소
-                  </button>
+                  </div>
                 </td>
               </tr>
             ))}
