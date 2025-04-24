@@ -1,17 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { useAuth } from "../../context/AuthContext";
-import LoginModal from "../auth/LoginModal";
+import { useModal } from "../../context/ModalContext";
 import ReservationStatus from "../reservation/ReservationStatus";
-import AvailabilityModal from "../availability/AvailabilityModal";
 import ReservationForm from "../reservation/ReservationForm";
+import ModalRenderer from "../shared/ModalRenderer";
 import { logout } from "../../services/auth";
 
 const AppContent = () => {
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
-
-  const [showLogin, setShowLogin] = useState(false);
-  const [showAvailability, setShowAvailability] = useState(false);
+  const { showModal } = useModal();
 
   const today = new Date().toLocaleDateString("ko-KR", {
     year: "numeric",
@@ -26,7 +24,7 @@ const AppContent = () => {
       <div className='absolute top-4 right-4'>
         {!user ? (
           <button
-            onClick={() => setShowLogin(true)}
+            onClick={() => showModal("login")}
             className='text-sm bg-[#262626] text-white px-4 py-2 rounded hover:bg-[#404040]'
           >
             로그인
@@ -48,7 +46,7 @@ const AppContent = () => {
 
         {isAdmin && (
           <button
-            onClick={() => setShowAvailability(true)}
+            onClick={() => showModal("availability")}
             className='mt-4 bg-[#262626] text-white px-4 py-2 rounded hover:bg-[#404040]'
           >
             튜터링 시간 설정
@@ -57,12 +55,8 @@ const AppContent = () => {
       </header>
 
       <ReservationStatus isAdmin={isAdmin} />
-      <AvailabilityModal
-        isOpen={showAvailability}
-        onClose={() => setShowAvailability(false)}
-      />
       <ReservationForm />
-      <LoginModal isOpen={showLogin} onClose={() => setShowLogin(false)} />
+      <ModalRenderer />
     </div>
   );
 };
