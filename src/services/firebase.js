@@ -99,4 +99,4 @@ export const fetchAllTutorAvailability = async () => {
   return data;
 };
 
-export default { db, auth };
+export { db, auth };
