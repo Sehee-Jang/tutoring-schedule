@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { ReservationProvider } from "./context/ReservationContext";
 import ReservationStatus from "./components/ReservationStatus";
 import ReservationForm from "./components/ReservationForm";
+import AvailabilityModal from "./components/AvailabilityModal";
 
 function App() {
   const [user, setUser] = useState({ name: "관리자", role: "admin" });
-
+  const [showAvailability, setShowAvailability] = useState(false);
+  const isAdmin = user?.role === "admin";
+  
   const today = new Date().toLocaleDateString("ko-KR", {
     year: "numeric",
     month: "long",
@@ -25,11 +28,22 @@ function App() {
             {user?.role === "admin" && (
               <span className='ml-2 text-sm text-green-600'>(관리자)</span>
             )}
+            {isAdmin && (
+              <button
+                onClick={() => setShowAvailability(true)}
+                className='mb-4 bg-blue-500 text-white px-4 py-2 rounded'
+              >
+                튜터 시간 설정
+              </button>
+            )}
           </p>
         </header>
 
         <ReservationStatus isAdmin={user?.role === "admin"} />
-
+        <AvailabilityModal
+          isOpen={showAvailability}
+          onClose={() => setShowAvailability(false)}
+        />
         <ReservationForm />
       </div>
     </ReservationProvider>
