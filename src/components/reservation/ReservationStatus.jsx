@@ -2,6 +2,7 @@ import ReservationDetailModal from "./ReservationDetailModal";
 import React, { useState } from "react";
 import { useReservations } from "../../context/ReservationContext";
 import { cancelReservation } from "../../services/firebase";
+import TutorButton from "../shared/TutorButton";
 
 const ReservationStatus = ({ isAdmin }) => {
   const { reservations, loading } = useReservations();
@@ -55,17 +56,13 @@ const ReservationStatus = ({ isAdmin }) => {
         {tutors.map((tutor) => {
           const count = reservations.filter((r) => r.tutor === tutor).length;
           return (
-            <button
+            <TutorButton
               key={tutor}
+              selected={activeTab === tutor}
               onClick={() => setActiveTab(tutor)}
-              className={`px-4 py-1 rounded-full text-sm font-medium flex items-center gap-1 ${
-                activeTab === tutor
-                  ? "bg-blue-600 text-white"
-                  : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-              }`}
             >
               {tutor} <span className='text-xs font-bold'>{count}</span>
-            </button>
+            </TutorButton>
           );
         })}
       </div>

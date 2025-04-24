@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAvailability } from "../../context/AvailabilityContext";
 import ModalLayout from "../shared/ModalLayout";
+import TimeSlotButton from "../shared/TimeSlotButton";
 
 const generateTimeSlots = () => {
   const slots = [];
@@ -86,18 +87,25 @@ const AvailabilityModal = ({ isOpen, onClose }) => {
 
       <div className='grid grid-cols-3 sm:grid-cols-4 gap-2 text-sm text-gray-700 mb-4 max-h-64 overflow-y-auto'>
         {slots.map((slot) => (
-          <button
+          // <button
+          //   key={slot}
+          //   type='button'
+          //   onClick={() => toggleSlot(slot)}
+          //   className={`border px-3 py-2 rounded ${
+          //     availability[selectedTutor]?.includes(slot)
+          //       ? "bg-blue-600 text-white"
+          //       : "bg-white hover:bg-gray-100"
+          //   }`}
+          // >
+          //   {slot}
+          // </button>
+          <TimeSlotButton
             key={slot}
-            type='button'
+            active={availability[selectedTutor]?.includes(slot)}
             onClick={() => toggleSlot(slot)}
-            className={`border px-3 py-2 rounded ${
-              availability[selectedTutor]?.includes(slot)
-                ? "bg-blue-600 text-white"
-                : "bg-white hover:bg-gray-100"
-            }`}
           >
             {slot}
-          </button>
+          </TimeSlotButton>
         ))}
       </div>
 

@@ -3,6 +3,8 @@ import { updateReservation } from "../../services/firebase";
 import { useAvailability } from "../../context/AvailabilityContext";
 import { useReservations } from "../../context/ReservationContext";
 import ModalLayout from "../shared/ModalLayout";
+import PrimaryButton from "../shared/PrimaryButton";
+import TimeSlotButton from "../shared/TimeSlotButton";
 
 const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
   const { availability } = useAvailability();
@@ -115,20 +117,15 @@ const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
           {editMode ? (
             <div className='grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2'>
               {availableSlots.map((slot) => (
-                <button
+                <TimeSlotButton
                   key={slot}
-                  type='button'
+                  active={form.timeSlot === slot}
                   onClick={() =>
                     setForm((prev) => ({ ...prev, timeSlot: slot }))
                   }
-                  className={`px-3 py-2 text-sm rounded border ${
-                    form.timeSlot === slot
-                      ? "bg-[#262626] text-white"
-                      : "bg-white hover:bg-gray-100"
-                  }`}
                 >
                   {slot}
-                </button>
+                </TimeSlotButton>
               ))}
             </div>
           ) : (
@@ -141,12 +138,7 @@ const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
       <div className='flex justify-center gap-4 mt-6'>
         {editMode ? (
           <>
-            <button
-              onClick={handleUpdate}
-              className='bg-[#262626] text-white px-4 py-2 rounded text-sm'
-            >
-              저장
-            </button>
+            <PrimaryButton onClick={handleUpdate}>저장</PrimaryButton>
             <button
               onClick={() => setEditMode(false)}
               className='text-sm text-gray-500 hover:underline'

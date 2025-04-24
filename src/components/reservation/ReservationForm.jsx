@@ -3,6 +3,8 @@ import { useReservations } from "../../context/ReservationContext";
 import { createReservation } from "../../services/firebase";
 import { useAvailability } from "../../context/AvailabilityContext";
 import PrimaryButton from "../shared/PrimaryButton";
+import TimeSlotButton from "../shared/TimeSlotButton";
+import TutorButton from "../shared/TutorButton";
 
 const ReservationForm = () => {
   const { isTimeSlotBooked } = useReservations();
@@ -197,20 +199,15 @@ const ReservationForm = () => {
           <h3 className='font-semibold text-gray-700 mb-2'>튜터 선택</h3>
           <div className='grid grid-cols-3 sm:grid-cols-4 gap-2'>
             {tutors.map((tutor) => (
-              <button
+              <TutorButton
                 key={tutor}
-                type='button'
+                selected={formData.tutor === tutor}
                 onClick={() =>
                   handleInputChange({ target: { name: "tutor", value: tutor } })
                 }
-                className={`rounded-lg border px-4 py-2 font-medium text-sm ${
-                  formData.tutor === tutor
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
-                }`}
               >
                 {tutor}
-              </button>
+              </TutorButton>
             ))}
           </div>
           {errors.tutor && (
@@ -225,21 +222,14 @@ const ReservationForm = () => {
               {(availability[formData.tutor] || []).map((slot) => {
                 const isBooked = isTimeSlotBooked(formData.tutor, slot);
                 return (
-                  <button
+                  <TimeSlotButton
                     key={slot}
-                    type='button'
                     disabled={isBooked}
+                    active={formData.timeSlot === slot}
                     onClick={() => !isBooked && handleTimeSlotSelect(slot)}
-                    className={`rounded-lg border px-4 py-2 text-sm ${
-                      formData.timeSlot === slot
-                        ? "bg-blue-600 text-white"
-                        : isBooked
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        : "bg-white hover:bg-gray-50"
-                    }`}
                   >
                     {slot} {isBooked && "(예약됨)"}
-                  </button>
+                  </TimeSlotButton>
                 );
               })}
             </div>
