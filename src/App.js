@@ -18,10 +18,15 @@ function App() {
           <h1 className='text-3xl font-bold text-gray-800'>
             튜터링 예약 시스템
           </h1>
-          <p className='text-lg text-gray-500 mt-2'>오늘: {today}</p>
+          <p className='text-lg text-gray-500 mt-2'>
+            오늘: {today}
+            {user?.role === "admin" && (
+              <span className='ml-2 text-sm text-green-600'>(관리자)</span>
+            )}
+          </p>
         </header>
 
-        <ReservationStatus />
+        <ReservationStatus isAdmin={user?.role === "admin"} />
 
         <ReservationForm />
       </div>
