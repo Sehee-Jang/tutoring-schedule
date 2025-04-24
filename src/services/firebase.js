@@ -80,11 +80,13 @@ export const subscribeToTodayReservations = (callback) => {
   });
 };
 
+// 튜터 가능 시간 저장
 export const saveTutorAvailability = async (tutor, slots) => {
   const ref = doc(db, "availability", tutor);
   await setDoc(ref, { tutor, slots });
 };
 
+// 모든 튜터 가능 시간 가져오기
 export const fetchAllTutorAvailability = async () => {
   const q = query(collection(db, "availability"));
   const snapshot = await getDocs(q);

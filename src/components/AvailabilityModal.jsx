@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { useAvailability } from "../context/AvailabilityContext";
 
 const generateTimeSlots = () => {
+  const { updateAvailability } = useAvailability();
+
   const slots = [];
   for (let hour = 9; hour < 21; hour++) {
     slots.push(
@@ -44,9 +47,8 @@ const AvailabilityModal = ({ isOpen, onClose }) => {
     });
   };
 
-  const handleSave = () => {
-    // TODO: Firestore 저장 로직
-    console.log("✅ 저장됨", availability);
+  const handleSave = async () => {
+    await updateAvailability(selectedTutor, availability[selectedTutor] || []);
     onClose();
   };
 
