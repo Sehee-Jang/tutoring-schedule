@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useReservations } from "../context/ReservationContext";
 import { cancelReservation } from "../services/firebase";
 
-const ReservationStatus = () => {
+const ReservationStatus = ({ isAdmin }) => {
   const { reservations, loading } = useReservations();
   const [activeTab, setActiveTab] = useState("all");
 
@@ -85,6 +85,14 @@ const ReservationStatus = () => {
                 <td className='px-4 py-2 border'>{res.timeSlot}</td>
                 <td className='px-4 py-2 border'>{res.teamName}</td>
                 <td className='px-4 py-2 border'>
+                  {isAdmin && (
+                    <button
+                      onClick={() => setSelectedReservation(res)}
+                      className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
+                    >
+                      보기
+                    </button>
+                  )}
                   <button
                     onClick={() => handleCancel(res.id)}
                     className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
