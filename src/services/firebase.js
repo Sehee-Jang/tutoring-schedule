@@ -8,6 +8,7 @@ import {
   setDoc,
   getDocs,
   onSnapshot,
+  updateDoc,
   query,
   where,
   Timestamp,

@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { updateReservation } from "../services/firebase";
+import { useAvailability } from "../context/AvailabilityContext";
+import { useReservations } from "../context/ReservationContext";
 
 const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
-  if (!isOpen || !reservation) return null;
+  const { availability } = useAvailability();
+  const { reservations } = useReservations();
 
-  const { teamName, tutor, timeSlot, question, figmaLink } = reservation;
   const [editMode, setEditMode] = useState(false);
   const [form, setForm] = useState({
-    question: reservation?.question || "",
-    figmaLink: reservation?.figmaLink || "",
+    question: "",
+    figmaLink: "",
+    timeSlot: "",
   });
 
   useEffect(() => {
@@ -15,9 +19,20 @@ const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
       setForm({
         question: reservation.question || "",
         figmaLink: reservation.figmaLink || "",
+        timeSlot: reservation.timeSlot || "",
       });
     }
   }, [reservation]);
+
+  if (!isOpen || !reservation) return null;
+
+  const bookedTimeSlots = reservations
+    .filter((r) => r.tutor === reservation.tutor && r.id !== reservation.id)
+    .map((r) => r.timeSlot);
+
+  const availableSlots = (availability[reservation.tutor] || []).filter(
+    (slot) => !bookedTimeSlots.includes(slot)
+  );
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,68 +46,93 @@ const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
       setEditMode(false);
       onClose();
     } catch {
-      alert("수정 실패");
+      alert("수정 실패 😢");
     }
   };
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50'>
-      <div className='bg-white rounded-xl shadow-lg max-w-md w-full p-6 relative'>
+      <div className='bg-white rounded-xl shadow-lg max-w-lg w-full p-6 relative'>
         <h2 className='text-xl font-bold text-gray-800 mb-4'>예약 상세 정보</h2>
 
-        <div className='space-y-3 text-sm text-gray-700'>
+        <div className='space-y-4 text-sm text-gray-700'>
           <p>
-            <strong>조 이름:</strong> {teamName}
+            <strong>조 이름:</strong> {reservation.teamName}
           </p>
+
           <p>
-            <strong>튜터:</strong> {tutor}
+            <strong>튜터:</strong> {reservation.tutor}
           </p>
-          <p>
-            <strong>시간:</strong> {timeSlot}
-          </p>
-          <p>
+
+          <div>
             <strong>질문:</strong>
-            <br />
             {editMode ? (
               <textarea
                 name='question'
                 value={form.question}
                 onChange={handleChange}
-                className='border p-2 w-full text-sm'
+                className='w-full border p-2 rounded mt-1 text-sm'
               />
             ) : (
-              form.question
+              <p className='mt-1'>{form.question}</p>
             )}
-          </p>
-          <p>
+          </div>
+
+          <div>
             <strong>피그마 링크:</strong>
-            <br />
             {editMode ? (
               <input
                 type='text'
                 name='figmaLink'
                 value={form.figmaLink}
                 onChange={handleChange}
-                className='border p-2 w-full text-sm'
+                className='w-full border px-3 py-2 rounded mt-1 text-sm'
               />
             ) : (
               <a
                 href={form.figmaLink}
-                className='text-blue-600 underline'
                 target='_blank'
+                rel='noopener noreferrer'
+                className='text-blue-600 underline break-all mt-1 inline-block'
               >
                 {form.figmaLink}
               </a>
             )}
-          </p>
+          </div>
+
+          <div>
+            <strong>예약 시간:</strong>
+            {editMode ? (
+              <div className='grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2'>
+                {availableSlots.map((slot) => (
+                  <button
+                    key={slot}
+                    type='button'
+                    onClick={() =>
+                      setForm((prev) => ({ ...prev, timeSlot: slot }))
+                    }
+                    className={`px-3 py-2 text-sm rounded border ${
+                      form.timeSlot === slot
+                        ? "bg-[#262626] text-white"
+                        : "bg-white hover:bg-gray-100"
+                    }`}
+                  >
+                    {slot}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p className='mt-1'>{form.timeSlot}</p>
+            )}
+          </div>
         </div>
 
-        <div className='flex justify-end gap-2 mt-4'>
+        <div className='flex justify-end gap-2 mt-6'>
           {editMode ? (
             <>
               <button
                 onClick={handleUpdate}
-                className='bg-[#262626] text-white px-3 py-1 rounded text-sm'
+                className='bg-[#262626] text-white px-4 py-2 rounded text-sm'
               >
                 저장
               </button>
@@ -106,7 +146,7 @@ const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
           ) : (
             <button
               onClick={() => setEditMode(true)}
-              className='bg-[#262626] text-white px-3 py-1 rounded text-sm'
+              className='bg-[#262626] text-white px-4 py-2 rounded text-sm'
             >
               수정
             </button>
