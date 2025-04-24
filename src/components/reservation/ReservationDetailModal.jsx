@@ -1,37 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { updateReservation } from "../../services/firebase";
+import React from "react";
 import { useAvailability } from "../../context/AvailabilityContext";
 import { useReservations } from "../../context/ReservationContext";
 import ModalLayout from "../shared/ModalLayout";
 import PrimaryButton from "../shared/PrimaryButton";
 import TimeSlotButton from "../shared/TimeSlotButton";
+import useReservationEditor from "../../hooks/useReservationEditor";
 
 const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
   const { availability } = useAvailability();
   const { reservations } = useReservations();
 
-  const [editMode, setEditMode] = useState(false);
-  const [form, setForm] = useState({
-    question: "",
-    figmaLink: "",
-    timeSlot: "",
-  });
-
-  useEffect(() => {
-    if (reservation) {
-      setForm({
-        question: reservation.question || "",
-        figmaLink: reservation.figmaLink || "",
-        timeSlot: reservation.timeSlot || "",
-      });
-    }
-  }, [reservation]);
-
-  useEffect(() => {
-    if (!isOpen) {
-      setEditMode(false); // 모달 닫힐 때 수정모드 초기화
-    }
-  }, [isOpen]);
+  const { form, setForm, editMode, setEditMode, handleChange, update } =
+    useReservationEditor(reservation, onClose);
 
   if (!isOpen || !reservation) return null;
 
@@ -43,26 +23,8 @@ const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
     (slot) => !bookedTimeSlots.includes(slot)
   );
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleUpdate = async () => {
-    try {
-      await updateReservation(reservation.id, form);
-      alert("수정 완료!");
-      setEditMode(false);
-      onClose();
-    } catch {
-      alert("수정 실패 😢");
-    }
-  };
-
   return (
     <ModalLayout onClose={onClose}>
-      {/* 모달 내용 */}
-
       <h2 className='text-xl font-bold text-gray-800 mb-4'>예약 상세 정보</h2>
 
       <div className='space-y-4 text-sm text-gray-700'>
@@ -134,11 +96,10 @@ const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
         </div>
       </div>
 
-      {/* 수정 or 저장 버튼 */}
       <div className='flex justify-center gap-4 mt-6'>
         {editMode ? (
           <>
-            <PrimaryButton onClick={handleUpdate}>저장</PrimaryButton>
+            <PrimaryButton onClick={update}>저장</PrimaryButton>
             <button
               onClick={() => setEditMode(false)}
               className='text-sm text-gray-500 hover:underline'
@@ -147,12 +108,7 @@ const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
             </button>
           </>
         ) : (
-          <button
-            onClick={() => setEditMode(true)}
-            className='bg-[#262626] text-white px-4 py-2 rounded text-sm'
-          >
-            수정
-          </button>
+          <PrimaryButton onClick={() => setEditMode(true)}>수정</PrimaryButton>
         )}
       </div>
     </ModalLayout>
