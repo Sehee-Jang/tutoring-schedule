@@ -1,93 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useReservations } from "../../context/ReservationContext";
 import { createReservation } from "../../services/firebase";
 import { useAvailability } from "../../context/AvailabilityContext";
 import PrimaryButton from "../shared/PrimaryButton";
 import TimeSlotButton from "../shared/TimeSlotButton";
 import TutorButton from "../shared/TutorButton";
+import useReservationForm from "../../hooks/useReservationForm";
 
 const ReservationForm = () => {
   const { isTimeSlotBooked } = useReservations();
-  const [formData, setFormData] = useState({
-    teamName: "",
-    tutor: "",
-    timeSlot: "",
-    figmaLink: "",
-    question: "",
-  });
-  const [errors, setErrors] = useState({});
-  const [submitted, setSubmitted] = useState(false);
   const { availability } = useAvailability();
-
   const tutors = Object.keys(availability);
 
-  useEffect(() => {
-    const savedForm = localStorage.getItem("reservationForm");
-    if (savedForm) {
-      try {
-        setFormData(JSON.parse(savedForm));
-      } catch (e) {
-        console.error("폼 상태 복구 실패", e);
-      }
-    }
-  }, [submitted]);
-
-  useEffect(() => {
-    if (!submitted) {
-      localStorage.setItem("reservationForm", JSON.stringify(formData));
-    }
-  }, [formData, submitted]);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (name === "tutor")
-      setFormData((prev) => ({ ...prev, tutor: value, timeSlot: "" }));
-    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
-  };
-
-  const handleTimeSlotSelect = (timeSlot) => {
-    setFormData((prev) => ({ ...prev, timeSlot }));
-    if (errors.timeSlot) setErrors((prev) => ({ ...prev, timeSlot: "" }));
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.teamName.trim()) newErrors.teamName = "팀명을 입력해주세요";
-    if (!formData.tutor) newErrors.tutor = "튜터를 선택해주세요";
-    if (!formData.timeSlot) newErrors.timeSlot = "시간대를 선택해주세요";
-    if (
-      !formData.figmaLink.trim() ||
-      !formData.figmaLink.includes("figma.com")
-    ) {
-      newErrors.figmaLink = "유효한 피그마 링크를 입력해주세요";
-    }
-    if (!formData.question.trim())
-      newErrors.question = "질문 내용을 입력해주세요";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const {
+    form,
+    errors,
+    submitted,
+    setSubmitted,
+    handleChange,
+    selectTimeSlot,
+    validate,
+    reset,
+  } = useReservationForm();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (!validate()) return;
 
     try {
-      await createReservation(formData);
+      await createReservation(form);
       console.log("✅ 예약 성공");
-
-      // 초기화
-      const empty = {
-        teamName: "",
-        tutor: "",
-        timeSlot: "",
-        figmaLink: "",
-        question: "",
-      };
-      setFormData(empty);
-      localStorage.setItem("reservationForm", JSON.stringify(empty));
-
+      reset();
       setSubmitted(true);
       setTimeout(() => setSubmitted(false), 5000);
     } catch (error) {
@@ -119,9 +62,9 @@ const ReservationForm = () => {
             {tutors.map((tutor) => (
               <TutorButton
                 key={tutor}
-                selected={formData.tutor === tutor}
+                selected={form.tutor === tutor}
                 onClick={() =>
-                  handleInputChange({ target: { name: "tutor", value: tutor } })
+                  handleChange({ target: { name: "tutor", value: tutor } })
                 }
               >
                 {tutor}
@@ -133,18 +76,18 @@ const ReservationForm = () => {
           )}
         </div>
 
-        {formData.tutor && (
+        {form.tutor && (
           <div>
             <h3 className='font-semibold text-gray-700 mb-2'>시간 선택</h3>
             <div className='grid grid-cols-2 sm:grid-cols-3 gap-3'>
-              {(availability[formData.tutor] || []).map((slot) => {
-                const isBooked = isTimeSlotBooked(formData.tutor, slot);
+              {(availability[form.tutor] || []).map((slot) => {
+                const isBooked = isTimeSlotBooked(form.tutor, slot);
                 return (
                   <TimeSlotButton
                     key={slot}
                     disabled={isBooked}
-                    active={formData.timeSlot === slot}
-                    onClick={() => !isBooked && handleTimeSlotSelect(slot)}
+                    active={form.timeSlot === slot}
+                    onClick={() => !isBooked && selectTimeSlot(slot)}
                   >
                     {slot} {isBooked && "(예약됨)"}
                   </TimeSlotButton>
@@ -160,8 +103,8 @@ const ReservationForm = () => {
           </label>
           <input
             name='teamName'
-            value={formData.teamName}
-            onChange={handleInputChange}
+            value={form.teamName}
+            onChange={handleChange}
             placeholder='예: A1조'
             className='w-full border rounded px-4 py-2 text-sm focus:ring-2 focus:ring-blue-300'
           />
@@ -177,8 +120,8 @@ const ReservationForm = () => {
           <input
             name='figmaLink'
             type='url'
-            value={formData.figmaLink}
-            onChange={handleInputChange}
+            value={form.figmaLink}
+            onChange={handleChange}
             placeholder='https://www.figma.com/...'
             className='w-full border rounded px-4 py-2 text-sm focus:ring-2 focus:ring-blue-300'
           />
@@ -193,8 +136,8 @@ const ReservationForm = () => {
           </label>
           <textarea
             name='question'
-            value={formData.question}
-            onChange={handleInputChange}
+            value={form.question}
+            onChange={handleChange}
             rows={4}
             placeholder='튜터님에게 궁금한 내용을 입력해주세요.'
             className='w-full border rounded px-4 py-2 text-sm resize-y focus:ring-2 focus:ring-blue-300'
