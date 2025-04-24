@@ -1,7 +1,7 @@
 import ReservationDetailModal from "./ReservationDetailModal";
 import React, { useState } from "react";
-import { useReservations } from "../context/ReservationContext";
-import { cancelReservation } from "../services/firebase";
+import { useReservations } from "../../context/ReservationContext";
+import { cancelReservation } from "../../services/firebase";
 
 const ReservationStatus = ({ isAdmin }) => {
   const { reservations, loading } = useReservations();

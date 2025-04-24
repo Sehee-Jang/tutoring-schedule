@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useReservations } from "../context/ReservationContext";
-import { createReservation } from "../services/firebase";
-import { useAvailability } from "../context/AvailabilityContext";
+import { useReservations } from "../../context/ReservationContext";
+import { createReservation } from "../../services/firebase";
+import { useAvailability } from "../../context/AvailabilityContext";
 
 const ReservationForm = () => {
   const { isTimeSlotBooked } = useReservations();

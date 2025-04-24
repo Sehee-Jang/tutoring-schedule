@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import LoginModal from "../auth/LoginModal";
-import ReservationStatus from "../ReservationStatus";
+import ReservationStatus from "../reservation/ReservationStatus";
 import AvailabilityModal from "../availability/AvailabilityModal";
-import ReservationForm from "../ReservationForm";
+import ReservationForm from "../reservation/ReservationForm";
 import { logout } from "../../services/auth";
 
 const AppContent = () => {
