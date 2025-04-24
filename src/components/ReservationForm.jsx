@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useReservations } from "../context/ReservationContext";
 import { createReservation } from "../services/firebase";
+import { useAvailability } from "../context/AvailabilityContext";
 
 const ReservationForm = () => {
   const { isTimeSlotBooked } = useReservations();
@@ -13,6 +14,7 @@ const ReservationForm = () => {
   });
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const { availability } = useAvailability();
 
   const tutorSchedules = {
     남궁찬양: [
@@ -92,6 +94,8 @@ const ReservationForm = () => {
     송조해: ["19:00-19:30", "19:30-20:00", "20:00-20:30", "20:30-21:00"],
     김수진: ["19:00-19:30", "19:30-20:00", "20:00-20:30", "20:30-21:00"],
   };
+
+  const tutorSlots = availability[formData.tutor] || [];
 
   const tutors = Object.keys(tutorSchedules);
 
