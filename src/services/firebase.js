@@ -5,6 +5,8 @@ import {
   addDoc,
   deleteDoc,
   doc,
+  setDoc,
+  getDocs,
   onSnapshot,
   query,
   where,
@@ -76,6 +78,21 @@ export const subscribeToTodayReservations = (callback) => {
     });
     callback(reservations);
   });
+};
+
+export const saveTutorAvailability = async (tutor, slots) => {
+  const ref = doc(db, "availability", tutor);
+  await setDoc(ref, { tutor, slots });
+};
+
+export const fetchAllTutorAvailability = async () => {
+  const q = query(collection(db, "availability"));
+  const snapshot = await getDocs(q);
+  const data = {};
+  snapshot.forEach((doc) => {
+    data[doc.id] = doc.data().slots;
+  });
+  return data;
 };
 
 export default db;
