@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { login } from "../../services/auth";
+import PrimaryButton from "../shared/PrimaryButton";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -37,12 +38,7 @@ const LoginForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button
-          type='submit'
-          className='bg-blue-600 text-white py-2 rounded hover:bg-blue-500'
-        >
-          로그인
-        </button>
+        <PrimaryButton type='submit'>로그인</PrimaryButton>
       </form>
     </div>
   );

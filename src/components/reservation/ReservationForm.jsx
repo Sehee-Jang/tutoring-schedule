@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useReservations } from "../../context/ReservationContext";
 import { createReservation } from "../../services/firebase";
 import { useAvailability } from "../../context/AvailabilityContext";
+import PrimaryButton from "../shared/PrimaryButton";
 
 const ReservationForm = () => {
   const { isTimeSlotBooked } = useReservations();
@@ -295,12 +296,7 @@ const ReservationForm = () => {
           )}
         </div>
 
-        <button
-          type='submit'
-          className='bg-blue-600 hover:bg-blue-500 text-white text-sm py-2 px-4 rounded'
-        >
-          예약하기
-        </button>
+        <PrimaryButton type='submit'>예약하기</PrimaryButton>
       </form>
     </div>
   );
