@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { useReservations } from "../../context/ReservationContext";
 import { createReservation } from "../../services/firebase";
 import { useAvailability } from "../../context/AvailabilityContext";
+import { sendEmailAlert } from "../../utils/sendEmailAlert";
+import useReservationForm from "../../hooks/useReservationForm";
+
 import PrimaryButton from "../shared/PrimaryButton";
 import TimeSlotButton from "../shared/TimeSlotButton";
 import TutorButton from "../shared/TutorButton";
-import useReservationForm from "../../hooks/useReservationForm";
-import { sendEmailAlert } from "../../utils/sendEmailAlert";
+import ReservationGuideModal from "./ReservationGuideModal";
 
 const ReservationForm = () => {
   const { isTimeSlotBooked } = useReservations();
@@ -23,6 +25,8 @@ const ReservationForm = () => {
     validate,
     reset,
   } = useReservationForm();
+
+  const [showGuide, setShowGuide] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,9 +47,18 @@ const ReservationForm = () => {
 
   return (
     <div className='bg-white rounded-xl shadow px-6 py-8'>
-      <h2 className='text-xl font-semibold text-blue-700 mb-2'>
-        튜터링 예약하기
-      </h2>
+      <div className='flex items-center mb-4'>
+        <h2 className='text-xl font-semibold text-blue-700 mr-2'>
+          튜터링 예약하기
+        </h2>
+        <button
+          onClick={() => setShowGuide(true)}
+          className='text-sm text-blue-500 underline hover:text-blue-700'
+        >
+          가이드
+        </button>
+      </div>
+
       <p className='text-sm text-gray-500 mb-6'>
         ※ 당일에만 예약 가능합니다. (오늘:{" "}
         {new Date().toISOString().split("T")[0]})
@@ -151,6 +164,11 @@ const ReservationForm = () => {
 
         <PrimaryButton type='submit'>예약하기</PrimaryButton>
       </form>
+
+      {/* 예약 가이드 모달 */}
+      {showGuide && (
+        <ReservationGuideModal onClose={() => setShowGuide(false)} />
+      )}
     </div>
   );
 };

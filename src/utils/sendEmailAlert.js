@@ -5,10 +5,6 @@ export const sendEmailAlert = async (formData) => {
   const TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
   const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 
-  console.log("✅ SERVICE_ID:", SERVICE_ID);
-  console.log("✅ TEMPLATE_ID:", TEMPLATE_ID);
-  console.log("✅ PUBLIC_KEY:", PUBLIC_KEY);
-
   try {
     const response = await emailjs.send(
       SERVICE_ID,
