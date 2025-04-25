@@ -5,6 +5,7 @@ import ModalLayout from "../shared/ModalLayout";
 import PrimaryButton from "../shared/PrimaryButton";
 import TimeSlotButton from "../shared/TimeSlotButton";
 import useReservationEditor from "../../hooks/useReservationEditor";
+import sortTimeSlots from "../../utils/sortTimeSlots";
 
 const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
   const { availability } = useAvailability();
@@ -19,8 +20,10 @@ const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
     .filter((r) => r.tutor === reservation.tutor && r.id !== reservation.id)
     .map((r) => r.timeSlot);
 
-  const availableSlots = (availability[reservation.tutor] || []).filter(
-    (slot) => !bookedTimeSlots.includes(slot)
+  const availableSlots = sortTimeSlots(
+    (availability[reservation.tutor] || []).filter(
+      (slot) => !bookedTimeSlots.includes(slot)
+    )
   );
 
   return (
@@ -78,17 +81,29 @@ const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
           <strong>예약 시간:</strong>
           {editMode ? (
             <div className='grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2'>
-              {availableSlots.map((slot) => (
-                <TimeSlotButton
-                  key={slot}
-                  active={form.timeSlot === slot}
-                  onClick={() =>
-                    setForm((prev) => ({ ...prev, timeSlot: slot }))
-                  }
-                >
-                  {slot}
-                </TimeSlotButton>
-              ))}
+              {availableSlots.map((slot) => {
+                const [hour, min] = slot.split("-")[0].split(":").map(Number);
+                const slotStart = hour * 60 + min;
+
+                const now = new Date();
+                const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+                const isPast = slotStart < nowMinutes; // 현재 시각 이전만 비활성화
+
+                return (
+                  <TimeSlotButton
+                    key={slot}
+                    active={form.timeSlot === slot}
+                    disabled={isPast} // 관리자도 과거시간은 비활성화
+                    onClick={() =>
+                      !isPast &&
+                      setForm((prev) => ({ ...prev, timeSlot: slot }))
+                    }
+                  >
+                    {slot}
+                  </TimeSlotButton>
+                );
+              })}
             </div>
           ) : (
             <p className='mt-1'>{form.timeSlot}</p>

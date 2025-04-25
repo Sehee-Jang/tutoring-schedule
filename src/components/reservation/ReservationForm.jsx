@@ -9,6 +9,7 @@ import PrimaryButton from "../shared/PrimaryButton";
 import TimeSlotButton from "../shared/TimeSlotButton";
 import TutorButton from "../shared/TutorButton";
 import ReservationGuideModal from "./ReservationGuideModal";
+import sortTimeSlots from "../../utils/sortTimeSlots";
 
 const ReservationForm = () => {
   const { isTimeSlotBooked } = useReservations();
@@ -95,19 +96,30 @@ const ReservationForm = () => {
           <div>
             <h3 className='font-semibold text-gray-700 mb-2'>시간 선택</h3>
             <div className='grid grid-cols-2 sm:grid-cols-3 gap-3'>
-              {(availability[form.tutor] || []).map((slot) => {
-                const isBooked = isTimeSlotBooked(form.tutor, slot);
-                return (
-                  <TimeSlotButton
-                    key={slot}
-                    disabled={isBooked}
-                    active={form.timeSlot === slot}
-                    onClick={() => !isBooked && selectTimeSlot(slot)}
-                  >
-                    {slot} {isBooked && "(예약됨)"}
-                  </TimeSlotButton>
-                );
-              })}
+              {sortTimeSlots(availability[form.tutor] || [])
+                .filter((slot) => {
+                  const [hour, min] = slot.split("-")[0].split(":").map(Number);
+                  const slotStart = hour * 60 + min;
+
+                  const now = new Date();
+                  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+                  return slotStart > nowMinutes + 30; // 현재로부터 30분 이후만 표시
+                })
+                .map((slot) => {
+                  const isBooked = isTimeSlotBooked(form.tutor, slot);
+
+                  return (
+                    <TimeSlotButton
+                      key={slot}
+                      disabled={isBooked}
+                      active={form.timeSlot === slot}
+                      onClick={() => !isBooked && selectTimeSlot(slot)}
+                    >
+                      {slot} {isBooked && "(예약됨)"}
+                    </TimeSlotButton>
+                  );
+                })}
             </div>
           </div>
         )}
@@ -137,7 +149,7 @@ const ReservationForm = () => {
             type='url'
             value={form.resourceLink}
             onChange={handleChange}
-            placeholder="https://"
+            placeholder='https://'
             className='w-full border rounded px-4 py-2 text-sm focus:ring-2 focus:ring-blue-300'
           />
           {errors.resourceLink && (
