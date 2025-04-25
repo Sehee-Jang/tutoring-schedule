@@ -6,8 +6,15 @@ export const sendEmailAlert = async (formData) => {
   const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 
   const tutorEmails = {
-    남궁찬양: process.env.REACT_APP_TUTOR_EMAIL_YUNSEO,
-    예나연: process.env.REACT_APP_TUTOR_EMAIL_NAYEON,
+    김다희: process.env.REACT_APP_TUTOR_EMAIL_KIMDAHEE,
+    김수진: process.env.REACT_APP_TUTOR_EMAIL_KIMSUJIN,
+    김훈: process.env.REACT_APP_TUTOR_EMAIL_KIMHOON,
+    남궁찬양: process.env.REACT_APP_TUTOR_EMAIL_NAMGOONGCHANYANG,
+    박소연: process.env.REACT_APP_TUTOR_EMAIL_PARKSOYEON,
+    송조해: process.env.REACT_APP_TUTOR_EMAIL_SONGJOHAE,
+    오은화: process.env.REACT_APP_TUTOR_EMAIL_OEUNHWA,
+    정기식: process.env.REACT_APP_TUTOR_EMAIL_JEONGGISIK,
+    홍윤정: process.env.REACT_APP_TUTOR_EMAIL_HONGYUNJEONG,
   };
 
   const tutorEmail = tutorEmails[formData.tutor];
