@@ -35,7 +35,7 @@ export const sendEmailAlert = async (formData) => {
         team_name: formData.teamName,
         tutor: formData.tutor,
         time: formData.timeSlot,
-        figma: formData.figmaLink,
+        link: formData.resourceLink,
         question: formData.question,
       };
 

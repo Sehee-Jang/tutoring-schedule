@@ -53,23 +53,23 @@ const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
         </div>
 
         <div>
-          <strong>피그마 링크:</strong>
+          <strong>관련 링크 (피그마, 노션 등): </strong>
           {editMode ? (
             <input
               type='text'
-              name='figmaLink'
-              value={form.figmaLink}
+              name='resourceLink'
+              value={form.resourceLink}
               onChange={handleChange}
               className='w-full border px-3 py-2 rounded mt-1 text-sm'
             />
           ) : (
             <a
-              href={form.figmaLink}
+              href={form.resourceLink}
               target='_blank'
               rel='noopener noreferrer'
               className='text-blue-600 underline break-all mt-1 inline-block'
             >
-              {form.figmaLink}
+              {form.resourceLink}
             </a>
           )}
         </div>

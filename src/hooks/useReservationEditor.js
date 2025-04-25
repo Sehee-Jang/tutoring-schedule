@@ -4,7 +4,7 @@ import { updateReservation } from "../services/firebase";
 const useReservationEditor = (reservation, onClose) => {
   const [form, setForm] = useState({
     question: "",
-    figmaLink: "",
+    resourceLink: "",
     timeSlot: "",
   });
   const [editMode, setEditMode] = useState(false);
@@ -13,7 +13,7 @@ const useReservationEditor = (reservation, onClose) => {
     if (reservation) {
       setForm({
         question: reservation.question || "",
-        figmaLink: reservation.figmaLink || "",
+        resourceLink: reservation.resourceLink || "",
         timeSlot: reservation.timeSlot || "",
       });
     }

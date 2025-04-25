@@ -130,18 +130,18 @@ const ReservationForm = () => {
 
         <div>
           <label className='block font-medium text-gray-700 mb-1'>
-            피그마 파일 링크
+            관련 링크 (피그마, 노션 등)
           </label>
           <input
-            name='figmaLink'
+            name='resourceLink'
             type='url'
-            value={form.figmaLink}
+            value={form.resourceLink}
             onChange={handleChange}
-            placeholder='https://www.figma.com/...'
+            placeholder="https://"
             className='w-full border rounded px-4 py-2 text-sm focus:ring-2 focus:ring-blue-300'
           />
-          {errors.figmaLink && (
-            <p className='text-red-500 text-sm mt-1'>{errors.figmaLink}</p>
+          {errors.resourceLink && (
+            <p className='text-red-500 text-sm mt-1'>{errors.resourceLink}</p>
           )}
         </div>
 

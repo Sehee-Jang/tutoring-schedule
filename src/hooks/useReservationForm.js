@@ -4,7 +4,7 @@ const emptyForm = {
   teamName: "",
   tutor: "",
   timeSlot: "",
-  figmaLink: "",
+  resourceLink: "",
   question: "",
 };
 
@@ -46,11 +46,14 @@ const useReservationForm = () => {
 
   const validate = () => {
     const newErrors = {};
+    const urlPattern = /^https?:\/\/[^\s$.?#].[^\s]*$/;
+
     if (!form.teamName.trim()) newErrors.teamName = "팀명을 입력해주세요";
     if (!form.tutor) newErrors.tutor = "튜터를 선택해주세요";
     if (!form.timeSlot) newErrors.timeSlot = "시간대를 선택해주세요";
-    if (!form.figmaLink.trim() || !form.figmaLink.includes("figma.com"))
-      newErrors.figmaLink = "유효한 피그마 링크를 입력해주세요";
+    if (!form.resourceLink.trim() || !urlPattern.test(form.resourceLink))
+      newErrors.resourceLink =
+        "유효한 링크를 입력해주세요 (http 또는 https로 시작)";
     if (!form.question.trim()) newErrors.question = "질문 내용을 입력해주세요";
 
     setErrors(newErrors);
