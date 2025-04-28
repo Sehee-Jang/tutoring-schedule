@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import type { ReservationFormData } from "@/types/reservation";
+import type { ReservationFormData } from "../../types/reservation";
 import { useReservations } from "../../context/ReservationContext";
 import { createReservation } from "../../services/firebase";
 import { useAvailability } from "../../context/AvailabilityContext";

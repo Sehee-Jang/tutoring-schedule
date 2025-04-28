@@ -7,7 +7,7 @@ import React, {
   useContext,
   ReactNode,
 } from "react";
-import type { Reservation } from "@/types/reservation";
+import type { Reservation } from "../types/reservation";
 import { subscribeToTodayReservations } from "../services/firebase";
 
 // Context 타입 정의

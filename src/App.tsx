@@ -6,6 +6,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { ModalProvider } from "./context/ModalContext";
 import AppContent from "./components/layout/AppContent";
 import TutorsPage from "./pages/admin/TutorsPage";
+import AdminRoute from "./components/common/AdminRoute";
 
 const App: React.FC = () => {
   return (
@@ -16,7 +17,14 @@ const App: React.FC = () => {
             <Router>
               <Routes>
                 <Route path='/' element={<AppContent />} />
-                <Route path='/admin/tutors' element={<TutorsPage />} />
+                <Route
+                  path='/admin/tutors'
+                  element={
+                    <AdminRoute>
+                      <TutorsPage />
+                    </AdminRoute>
+                  }
+                />
               </Routes>
             </Router>
           </ReservationProvider>

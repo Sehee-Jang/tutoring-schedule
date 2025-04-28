@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { db } from "@/services/firebase";
+import { db } from "../../services/firebase";
 import {
   collection,
   getDocs,
@@ -8,8 +8,8 @@ import {
   deleteDoc,
   doc,
 } from "firebase/firestore";
-import { Tutor } from "@/types/tutor";
-import TutorFormModal from "@/components/tutor/TutorFormModal";
+import { Tutor } from "../../types/tutor";
+import TutorFormModal from "../../components/tutor/TutorFormModal";
 
 const TutorsPage = () => {
   const [tutors, setTutors] = useState<Tutor[]>([]);

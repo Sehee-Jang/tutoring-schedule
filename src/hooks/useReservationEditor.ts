@@ -5,7 +5,7 @@ import { updateReservation } from "../services/firebase";
 import type {
   Reservation,
   ReservationEditorFormData,
-} from "@/types/reservation";
+} from "../types/reservation";
 
 const useReservationEditor = (
   reservation: Reservation | null,
