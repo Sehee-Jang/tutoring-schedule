@@ -9,7 +9,6 @@ import {
 import { db } from "../services/firebase";
 import { watchAuthState } from "../services/auth";
 import { doc, getDoc } from "firebase/firestore";
-import type { User as FirebaseUser } from "firebase/auth";
 
 interface User {
   uid: string;
