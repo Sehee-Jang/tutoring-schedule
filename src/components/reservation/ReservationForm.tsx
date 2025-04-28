@@ -1,4 +1,7 @@
+"use client";
+
 import React, { useState } from "react";
+import type { ReservationFormData } from "@/types/reservation";
 import { useReservations } from "../../context/ReservationContext";
 import { createReservation } from "../../services/firebase";
 import { useAvailability } from "../../context/AvailabilityContext";
@@ -25,17 +28,18 @@ const ReservationForm = () => {
     selectTimeSlot,
     validate,
     reset,
+    setForm,
   } = useReservationForm();
 
   const [showGuide, setShowGuide] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validate()) return;
 
     try {
-      await createReservation(form);
-      await sendEmailAlert(form); // 이메일 전송
+      await createReservation(form as ReservationFormData); // 확실하게 타입 명시
+      await sendEmailAlert(form as ReservationFormData); // 이메일 전송
       console.log("✅ 예약 및 이메일 전송 성공");
       reset();
       setSubmitted(true);
@@ -44,6 +48,10 @@ const ReservationForm = () => {
       alert("예약 중 오류가 발생했습니다.");
       console.error("❌ 예약 실패:", error);
     }
+  };
+
+  const handleTutorSelect = (tutorName: string) => {
+    setForm((prev) => ({ ...prev, tutor: tutorName, timeSlot: "" }));
   };
 
   return (
@@ -79,9 +87,7 @@ const ReservationForm = () => {
               <TutorButton
                 key={tutor}
                 selected={form.tutor === tutor}
-                onClick={() =>
-                  handleChange({ target: { name: "tutor", value: tutor } })
-                }
+                onClick={() => handleTutorSelect(tutor)}
               >
                 {tutor}
               </TutorButton>

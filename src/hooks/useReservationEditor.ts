@@ -1,8 +1,17 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { updateReservation } from "../services/firebase";
+import type {
+  Reservation,
+  ReservationEditorFormData,
+} from "@/types/reservation";
 
-const useReservationEditor = (reservation, onClose) => {
-  const [form, setForm] = useState({
+const useReservationEditor = (
+  reservation: Reservation | null,
+  onClose: () => void
+) => {
+  const [form, setForm] = useState<ReservationEditorFormData>({
     question: "",
     resourceLink: "",
     timeSlot: "",
@@ -25,12 +34,19 @@ const useReservationEditor = (reservation, onClose) => {
     }
   }, [reservation]);
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const update = async () => {
+    if (!reservation) {
+      alert("수정할 예약이 없습니다.");
+      return;
+    }
+
     try {
       await updateReservation(reservation.id, form);
       alert("수정 완료!");

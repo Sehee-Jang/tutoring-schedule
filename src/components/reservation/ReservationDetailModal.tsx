@@ -1,4 +1,5 @@
 import React from "react";
+import type { Reservation } from "@/types/reservation";
 import { useAvailability } from "../../context/AvailabilityContext";
 import { useReservations } from "../../context/ReservationContext";
 import ModalLayout from "../shared/ModalLayout";
@@ -7,7 +8,17 @@ import TimeSlotButton from "../shared/TimeSlotButton";
 import useReservationEditor from "../../hooks/useReservationEditor";
 import sortTimeSlots from "../../utils/sortTimeSlots";
 
-const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
+interface ReservationDetailModalProps {
+  isOpen: boolean;
+  reservation: Reservation | null;
+  onClose: () => void;
+}
+
+const ReservationDetailModal = ({
+  isOpen,
+  reservation,
+  onClose,
+}: ReservationDetailModalProps) => {
   const { availability } = useAvailability();
   const { reservations } = useReservations();
 
@@ -17,12 +28,15 @@ const ReservationDetailModal = ({ isOpen, reservation, onClose }) => {
   if (!isOpen || !reservation) return null;
 
   const bookedTimeSlots = reservations
-    .filter((r) => r.tutor === reservation.tutor && r.id !== reservation.id)
-    .map((r) => r.timeSlot);
+    .filter(
+      (r: Reservation) =>
+        r.tutor === reservation.tutor && r.id !== reservation.id
+    )
+    .map((r: Reservation) => r.timeSlot);
 
   const availableSlots = sortTimeSlots(
     (availability[reservation.tutor] || []).filter(
-      (slot) => !bookedTimeSlots.includes(slot)
+      (slot: string) => !bookedTimeSlots.includes(slot)
     )
   );
 

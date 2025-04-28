@@ -1,6 +1,9 @@
-import { useState, useEffect } from "react";
+"use client";
 
-const emptyForm = {
+import { useState, useEffect } from "react";
+import type { ReservationFormData } from "@/types/reservation";
+
+const emptyForm: ReservationFormData = {
   teamName: "",
   tutor: "",
   timeSlot: "",
@@ -9,8 +12,10 @@ const emptyForm = {
 };
 
 const useReservationForm = () => {
-  const [form, setForm] = useState(emptyForm);
-  const [errors, setErrors] = useState({});
+  const [form, setForm] = useState<ReservationFormData>(emptyForm);
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof ReservationFormData, string>>
+  >({});
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
@@ -30,22 +35,30 @@ const useReservationForm = () => {
     }
   }, [form, submitted]);
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+
     if (name === "tutor") {
       setForm((prev) => ({ ...prev, tutor: value, timeSlot: "" }));
     }
-    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
+
+    if (errors[name as keyof ReservationFormData]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
-  const selectTimeSlot = (slot) => {
+  const selectTimeSlot = (slot: string) => {
     setForm((prev) => ({ ...prev, timeSlot: slot }));
-    if (errors.timeSlot) setErrors((prev) => ({ ...prev, timeSlot: "" }));
+    if (errors.timeSlot) {
+      setErrors((prev) => ({ ...prev, timeSlot: "" }));
+    }
   };
 
   const validate = () => {
-    const newErrors = {};
+    const newErrors: Partial<Record<keyof ReservationFormData, string>> = {};
     const urlPattern = /^https?:\/\/[^\s$.?#].[^\s]*$/;
 
     if (!form.teamName.trim()) newErrors.teamName = "팀명을 입력해주세요";
