@@ -3,9 +3,9 @@ import { AvailabilityProvider } from "./context/AvailabilityContext";
 import { ReservationProvider } from "./context/ReservationContext";
 import { AuthProvider } from "./context/AuthContext";
 import { ModalProvider } from "./context/ModalContext";
-
 import AppContent from "./components/layout/AppContent";
-function App() {
+
+const App: React.FC = () => {
   return (
     <AuthProvider>
       <ModalProvider>
@@ -17,6 +17,6 @@ function App() {
       </ModalProvider>
     </AuthProvider>
   );
-}
+};
 
 export default App;
