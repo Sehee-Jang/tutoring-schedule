@@ -1,4 +1,5 @@
 "use client";
+
 import {
   createContext,
   useContext,
@@ -6,8 +7,8 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../services/firebase";
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { Tutor } from "../types/tutor";
 
 interface TutorContextType {
@@ -22,15 +23,29 @@ export const TutorProvider = ({ children }: { children: ReactNode }) => {
   const [tutors, setTutors] = useState<Tutor[]>([]);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "tutors"), (snapshot) => {
-      const tutorList = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Tutor, "id">),
-      }));
-      setTutors(tutorList); // ✅ 필터링 없이 전체 tutors 저장
-    });
+    const fetchTutors = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, "tutors"));
+        const initialTutors = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...(doc.data() as Omit<Tutor, "id">),
+        }));
+        setTutors(initialTutors);
 
-    return () => unsubscribe();
+        // 실시간 업데이트 시작
+        onSnapshot(collection(db, "tutors"), (snapshot) => {
+          const liveTutors = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...(doc.data() as Omit<Tutor, "id">),
+          }));
+          setTutors(liveTutors);
+        });
+      } catch (error) {
+        console.error("튜터 초기 로딩 실패:", error);
+      }
+    };
+
+    fetchTutors();
   }, []);
 
   return (

@@ -1,59 +1,64 @@
 "use client";
 
-import React, {
+import {
   createContext,
-  useState,
-  useEffect,
   useContext,
+  useEffect,
+  useState,
   ReactNode,
 } from "react";
-import type { Reservation } from "../types/reservation";
-import { subscribeToTodayReservations } from "../services/firebase";
+import { db } from "../services/firebase";
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
+import { Reservation } from "../types/reservation";
 
-// Context 타입 정의
 interface ReservationContextType {
   reservations: Reservation[];
   loading: boolean;
-  getTutorReservations: (tutorName: string) => Reservation[];
   isTimeSlotBooked: (tutor: string, timeSlot: string) => boolean;
 }
 
 const ReservationContext = createContext<ReservationContextType>({
   reservations: [],
   loading: true,
-  getTutorReservations: () => [],
-  isTimeSlotBooked: () => false,
+  isTimeSlotBooked: () => false, // 기본값
 });
 
 export const useReservations = () => useContext(ReservationContext);
 
-interface ReservationProviderProps {
-  children: ReactNode;
-}
-
-export const ReservationProvider = ({ children }: ReservationProviderProps) => {
+export const ReservationProvider = ({ children }: { children: ReactNode }) => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = subscribeToTodayReservations(
-      (newReservations: Reservation[]) => {
-        setReservations(newReservations);
+    const fetchReservations = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, "reservations"));
+        const initialReservations = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...(doc.data() as Omit<Reservation, "id">),
+        }));
+        setReservations(initialReservations);
+        setLoading(false);
+
+        // 실시간 업데이트 시작
+        onSnapshot(collection(db, "reservations"), (snapshot) => {
+          const liveReservations = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...(doc.data() as Omit<Reservation, "id">),
+          }));
+          setReservations(liveReservations);
+        });
+      } catch (error) {
+        console.error("예약 초기 로딩 실패:", error);
         setLoading(false);
       }
-    );
+    };
 
-    // 컴포넌트 언마운트 시 구독 해제
-    return () => unsubscribe();
+    fetchReservations();
   }, []);
 
-  // 특정 튜터의 예약만 필터링
-  const getTutorReservations = (tutorName: string): Reservation[] => {
-    return reservations.filter((res) => res.tutor === tutorName);
-  };
-
-  // 특정 시간대가 예약되었는지 확인
-  const isTimeSlotBooked = (tutor: string, timeSlot: string): boolean => {
+  // ✅ 추가: 시간대가 예약되었는지 확인하는 함수
+  const isTimeSlotBooked = (tutor: string, timeSlot: string) => {
     return reservations.some(
       (res) => res.tutor === tutor && res.timeSlot === timeSlot
     );
@@ -61,12 +66,7 @@ export const ReservationProvider = ({ children }: ReservationProviderProps) => {
 
   return (
     <ReservationContext.Provider
-      value={{
-        reservations,
-        loading,
-        getTutorReservations,
-        isTimeSlotBooked,
-      }}
+      value={{ reservations, loading, isTimeSlotBooked }}
     >
       {children}
     </ReservationContext.Provider>
