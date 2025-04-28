@@ -87,7 +87,15 @@ const ReservationForm = () => {
         <div>
           <h3 className='font-semibold text-gray-700 mb-2'>튜터 선택</h3>
           <div className='grid grid-cols-3 sm:grid-cols-4 gap-2'>
-            {tutors.map((tutor) => (
+            {tutors.length === 0 ? (
+            [...Array(8)].map((_, idx) => (
+              <div
+                key={idx}
+                className="animate-pulse bg-gray-200 h-10 rounded"
+              ></div>
+            ))
+            ) : (
+              tutors.map((tutor) => (
               <TutorButton
                 key={tutor.id}
                 selected={form.tutor === tutor.name}
@@ -95,7 +103,7 @@ const ReservationForm = () => {
               >
                 {tutor.name}
               </TutorButton>
-            ))}
+            )))}
           </div>
           {errors.tutor && (
             <p className='text-red-500 text-sm mt-1'>{errors.tutor}</p>

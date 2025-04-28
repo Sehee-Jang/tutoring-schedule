@@ -71,7 +71,12 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
       </div>
 
       {/* 테이블 */}
-      {filtered.length ? (
+      {loading ? (
+        // 로딩 중
+        <div className='flex justify-center py-10'>
+          <div className='animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500' />
+        </div>
+      ) : filtered.length ? (
         <table className='w-full text-sm border border-gray-200 rounded overflow-hidden'>
           <thead>
             <tr className='bg-blue-50 text-blue-800 text-left'>
