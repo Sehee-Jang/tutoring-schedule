@@ -14,6 +14,7 @@ import TutorButton from "../shared/TutorButton";
 import ReservationGuideModal from "./ReservationGuideModal";
 import sortTimeSlots from "../../utils/sortTimeSlots";
 import { useTutors } from "../../context/TutorContext";
+import { toast } from "react-hot-toast";
 
 const ReservationForm = () => {
   const { isTimeSlotBooked } = useReservations();
@@ -45,9 +46,11 @@ const ReservationForm = () => {
       reset();
       setSubmitted(true);
       setTimeout(() => setSubmitted(false), 5000);
+      toast.success("✅ 예약이 성공적으로 완료되었습니다!");
     } catch (error) {
       alert("예약 중 오류가 발생했습니다.");
       console.error("❌ 예약 실패:", error);
+      toast.error("❌ 예약 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 

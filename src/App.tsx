@@ -8,32 +8,36 @@ import AppContent from "./components/layout/AppContent";
 import TutorsPage from "./pages/admin/TutorsPage";
 import { TutorProvider } from "./context/TutorContext";
 import AdminRoute from "./components/common/AdminRoute";
+import { Toaster } from "react-hot-toast";
 
 const App: React.FC = () => {
   return (
-    <AuthProvider>
-      <ModalProvider>
-        <AvailabilityProvider>
-          <ReservationProvider>
-            <TutorProvider>
-              <Router>
-                <Routes>
-                  <Route path='/' element={<AppContent />} />
-                  <Route
-                    path='/admin/tutors'
-                    element={
-                      <AdminRoute>
-                        <TutorsPage />
-                      </AdminRoute>
-                    }
-                  />
-                </Routes>
-              </Router>
-            </TutorProvider>
-          </ReservationProvider>
-        </AvailabilityProvider>
-      </ModalProvider>
-    </AuthProvider>
+    <>
+      <AuthProvider>
+        <ModalProvider>
+          <AvailabilityProvider>
+            <ReservationProvider>
+              <TutorProvider>
+                <Router>
+                  <Routes>
+                    <Route path='/' element={<AppContent />} />
+                    <Route
+                      path='/admin/tutors'
+                      element={
+                        <AdminRoute>
+                          <TutorsPage />
+                        </AdminRoute>
+                      }
+                    />
+                  </Routes>
+                </Router>
+              </TutorProvider>
+            </ReservationProvider>
+          </AvailabilityProvider>
+        </ModalProvider>
+      </AuthProvider>
+      <Toaster />
+    </>
   );
 };
 

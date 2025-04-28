@@ -7,6 +7,7 @@ import { cancelReservation } from "../../services/firebase";
 import ReservationDetailModal from "./ReservationDetailModal";
 import TutorButton from "../shared/TutorButton";
 import { useTutors } from "../../context/TutorContext";
+import { toast } from "react-hot-toast";
 
 interface ReservationStatusProps {
   isAdmin: boolean;
@@ -28,8 +29,9 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
     if (window.confirm("예약을 취소하시겠습니까?")) {
       try {
         await cancelReservation(id);
+        toast.success("✅ 예약이 성공적으로 취소되었습니다!");
       } catch {
-        alert("오류 발생");
+        toast.error("❌ 예약 취소 중 오류가 발생했습니다.");
       }
     }
   };
