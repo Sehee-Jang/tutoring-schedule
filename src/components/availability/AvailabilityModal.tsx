@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAvailability } from "../../context/AvailabilityContext";
+import { useTutors } from "../../context/TutorContext";
 import ModalLayout from "../shared/ModalLayout";
 import TimeSlotButton from "../shared/TimeSlotButton";
 
@@ -26,26 +27,22 @@ const generateTimeSlots = (): string[] => {
   return slots;
 };
 
-const tutors: string[] = [
-  "오은화",
-  "김다희",
-  "박소연",
-  "정기식",
-  "남궁찬양",
-  "김훈",
-  "홍윤정",
-  "김수진",
-  "송조해",
-];
-
 const AvailabilityModal = ({ isOpen, onClose }: AvailabilityModalProps) => {
   const { availability: globalAvailability, updateAvailability } =
     useAvailability();
-  const [selectedTutor, setSelectedTutor] = useState<string>(tutors[0]);
+  const { tutors } = useTutors();
+  const [selectedTutor, setSelectedTutor] = useState<string>("");
   const [availability, setAvailability] = useState<Record<string, string[]>>(
     {}
   ); // { 튜터이름: ["시간대", ...] }
   const slots = generateTimeSlots();
+
+  // tutors가 바뀔 때 초기값 세팅
+  useEffect(() => {
+    if (tutors.length > 0 && !selectedTutor) {
+      setSelectedTutor(tutors[0].name);
+    }
+  }, [tutors, selectedTutor]);
 
   // 모달 열릴 때 Firestore에서 불러온 시간대 상태로 복사
   useEffect(() => {
@@ -88,8 +85,8 @@ const AvailabilityModal = ({ isOpen, onClose }: AvailabilityModalProps) => {
           className='border px-3 py-1 rounded'
         >
           {tutors.map((tutor) => (
-            <option key={tutor} value={tutor}>
-              {tutor}
+            <option key={tutor.id} value={tutor.name}>
+              {tutor.name}
             </option>
           ))}
         </select>

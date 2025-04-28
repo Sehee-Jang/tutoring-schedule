@@ -1,31 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import type { Reservation } from "../../types/reservation";
 import { useReservations } from "../../context/ReservationContext";
 import { cancelReservation } from "../../services/firebase";
 import ReservationDetailModal from "./ReservationDetailModal";
 import TutorButton from "../shared/TutorButton";
-import { useMemo } from "react";
+import { useTutors } from "../../context/TutorContext";
 
 interface ReservationStatusProps {
   isAdmin: boolean;
 }
-
-const tutors = [
-  "오은화",
-  "김다희",
-  "박소연",
-  "정기식",
-  "남궁찬양",
-  "김훈",
-  "홍윤정",
-  "김수진",
-  "송조해",
-];
-
 const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
   const { reservations, loading } = useReservations();
+  const { tutors } = useTutors();
   const [activeTab, setActiveTab] = useState<string>("all");
   const [selectedReservation, setSelectedReservation] =
     useState<Reservation | null>(null);
@@ -66,15 +54,15 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
         </button>
         {tutors.map((tutor) => {
           const count = reservations.filter(
-            (r: Reservation) => r.tutor === tutor
+            (r: Reservation) => r.tutor === tutor.name
           ).length;
           return (
             <TutorButton
-              key={tutor}
-              selected={activeTab === tutor}
-              onClick={() => setActiveTab(tutor)}
+              key={tutor.id}
+              selected={activeTab === tutor.name}
+              onClick={() => setActiveTab(tutor.name)}
             >
-              {tutor} <span className='text-xs font-bold'>{count}</span>
+              {tutor.name} <span className='text-xs font-bold'>{count}</span>
             </TutorButton>
           );
         })}
