@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { db } from "../../services/firebase";
 import {
   collection,
   onSnapshot,
   addDoc,
   updateDoc,
-  deleteDoc,
   doc,
 } from "firebase/firestore";
 import { Tutor } from "../../types/tutor";
+import { toast } from "react-hot-toast";
+import { Switch } from "../../components/ui/switch";
 import TutorFormModal from "../../components/tutor/TutorFormModal";
 
 const TutorsPage = () => {
@@ -53,23 +54,28 @@ const TutorsPage = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("정말 삭제하시겠습니까?")) return;
-
+  const toggleTutorStatus = async (tutor: Tutor) => {
     try {
-      const tutorRef = doc(db, "tutors", id);
-      await deleteDoc(tutorRef);
-      // fetchTutors 필요 없음! 자동 갱신됨
-    } catch (err) {
-      console.error("튜터 삭제 오류:", err);
-      setError("튜터 삭제에 실패했습니다.");
+      const tutorRef = doc(db, "tutors", tutor.id);
+      const newStatus = tutor.status === "active" ? "inactive" : "active";
+      await updateDoc(tutorRef, { status: newStatus });
+      toast.success(
+        `튜터가 ${newStatus === "active" ? "활성화" : "비활성화"}되었습니다.`
+      );
+    } catch (error) {
+      console.error("튜터 상태 변경 오류:", error);
+      toast.error("튜터 상태 변경에 실패했습니다.");
     }
   };
 
   const handleSubmit = async (name: string, email: string) => {
     try {
       if (modalMode === "create") {
-        await addDoc(collection(db, "tutors"), { name, email });
+        await addDoc(collection(db, "tutors"), {
+          name,
+          email,
+          status: "active",
+        });
       } else if (modalMode === "edit" && selectedTutor) {
         const tutorRef = doc(db, "tutors", selectedTutor.id);
         await updateDoc(tutorRef, { name, email });
@@ -112,18 +118,18 @@ const TutorsPage = () => {
                 <div className='font-semibold'>{tutor.name}</div>
                 <div className='text-gray-600 text-sm'>{tutor.email}</div>
               </div>
-              <div className='space-x-2'>
+              <div className='flex items-center space-x-4'>
+                {/* ✅ 토글 스위치 */}
+                <Switch
+                  checked={tutor.status === "active"}
+                  onCheckedChange={() => toggleTutorStatus(tutor)}
+                />
+                {/* ✅ 수정 버튼 그대로 */}
                 <button
-                  className='px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600'
+                  className='px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm'
                   onClick={() => handleEdit(tutor)}
                 >
                   수정
-                </button>
-                <button
-                  className='px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600'
-                  onClick={() => handleDelete(tutor.id)}
-                >
-                  삭제
                 </button>
               </div>
             </li>

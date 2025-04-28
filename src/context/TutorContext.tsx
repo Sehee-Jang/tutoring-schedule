@@ -27,10 +27,10 @@ export const TutorProvider = ({ children }: { children: ReactNode }) => {
         id: doc.id,
         ...(doc.data() as Omit<Tutor, "id">),
       }));
-      setTutors(tutorList);
+      setTutors(tutorList); // ✅ 필터링 없이 전체 tutors 저장
     });
 
-    return () => unsubscribe(); // 컴포넌트 unmount 시 구독 해제
+    return () => unsubscribe();
   }, []);
 
   return (
