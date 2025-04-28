@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+
 import { useAuth } from "../../context/AuthContext";
 import { useModal } from "../../context/ModalContext";
 import ReservationStatus from "../reservation/ReservationStatus";
@@ -8,10 +9,10 @@ import { logout } from "../../services/auth";
 
 const AppContent = () => {
   const { user } = useAuth();
-  const isAdmin = user?.role === "admin";
+  const isAdmin: boolean = user?.role === "admin";
   const { showModal } = useModal();
 
-  const today = new Date().toLocaleDateString("ko-KR", {
+  const today: string = new Date().toLocaleDateString("ko-KR", {
     year: "numeric",
     month: "long",
     day: "numeric",
