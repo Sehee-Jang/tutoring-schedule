@@ -1,10 +1,17 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { useAvailability } from "../../context/AvailabilityContext";
 import ModalLayout from "../shared/ModalLayout";
 import TimeSlotButton from "../shared/TimeSlotButton";
 
-const generateTimeSlots = () => {
-  const slots = [];
+interface AvailabilityModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const generateTimeSlots = (): string[] => {
+  const slots: string[] = [];
   for (let hour = 9; hour < 21; hour++) {
     slots.push(
       `${String(hour).padStart(2, "0")}:00-${String(hour).padStart(2, "0")}:30`
@@ -19,7 +26,7 @@ const generateTimeSlots = () => {
   return slots;
 };
 
-const tutors = [
+const tutors: string[] = [
   "오은화",
   "김다희",
   "박소연",
@@ -31,11 +38,13 @@ const tutors = [
   "송조해",
 ];
 
-const AvailabilityModal = ({ isOpen, onClose }) => {
+const AvailabilityModal = ({ isOpen, onClose }: AvailabilityModalProps) => {
   const { availability: globalAvailability, updateAvailability } =
     useAvailability();
-  const [selectedTutor, setSelectedTutor] = useState(tutors[0]);
-  const [availability, setAvailability] = useState({}); // { 튜터이름: ["시간대", ...] }
+  const [selectedTutor, setSelectedTutor] = useState<string>(tutors[0]);
+  const [availability, setAvailability] = useState<Record<string, string[]>>(
+    {}
+  ); // { 튜터이름: ["시간대", ...] }
   const slots = generateTimeSlots();
 
   // 모달 열릴 때 Firestore에서 불러온 시간대 상태로 복사
@@ -45,7 +54,7 @@ const AvailabilityModal = ({ isOpen, onClose }) => {
     }
   }, [isOpen, globalAvailability]);
 
-  const toggleSlot = (slot) => {
+  const toggleSlot = (slot: string) => {
     setAvailability((prev) => {
       const current = prev[selectedTutor] || [];
       const updated = current.includes(slot)
@@ -68,6 +77,7 @@ const AvailabilityModal = ({ isOpen, onClose }) => {
         튜터 가능 시간 설정
       </h2>
 
+      {/* 튜터 선택 */}
       <div className='mb-4'>
         <label className='font-semibold text-sm text-gray-600 mr-2'>
           튜터 선택:
@@ -85,11 +95,13 @@ const AvailabilityModal = ({ isOpen, onClose }) => {
         </select>
       </div>
 
+      {/* 시간 선택 */}
       <div className='grid grid-cols-3 sm:grid-cols-4 gap-2 text-sm text-gray-700 mb-4 max-h-64 overflow-y-auto'>
         {slots.map((slot) => (
           <TimeSlotButton
             key={slot}
             active={availability[selectedTutor]?.includes(slot)}
+            disabled={false}
             onClick={() => toggleSlot(slot)}
           >
             {slot}
@@ -97,6 +109,7 @@ const AvailabilityModal = ({ isOpen, onClose }) => {
         ))}
       </div>
 
+      {/* 저장/닫기 버튼 */}
       <div className='flex justify-end gap-2'>
         <button
           onClick={onClose}
