@@ -7,22 +7,19 @@ import {
   ReactNode,
 } from "react";
 import { db } from "../services/firebase";
+import { User, UserRole } from "../types/user";
 import { watchAuthState } from "../services/auth";
 import { doc, getDoc } from "firebase/firestore";
 
-interface User {
-  uid: string;
-  email: string;
-  name: string;
-  role: string;
-  [key: string]: any; // 유연성을 위해 추가 (추후 필요한 필드 대응)
-}
-
 interface AuthContextType {
   user: User | null;
+  isLoading: boolean;
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null });
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  isLoading: true,
+});
 
 export const useAuth = () => useContext(AuthContext);
 
@@ -31,7 +28,17 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null); // { uid, email, name, role }
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 앱 시작할 때 localStorage에 저장된 user 복구
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = watchAuthState(async (firebaseUser: any) => {
@@ -43,24 +50,33 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             name: string;
             role: string;
           };
-          setUser({
-            uid: firebaseUser.uid,
+          const newUser: User = {
+            id: firebaseUser.uid,
             email: data.email,
             name: data.name,
-            role: data.role,
-          });
+            role: data.role as UserRole,
+          };
+          setUser(newUser);
+
+          // localStorage에 저장
+          localStorage.setItem("user", JSON.stringify(newUser));
         } else {
           setUser(null);
+          localStorage.removeItem("user");
         }
       } else {
         setUser(null);
+        localStorage.removeItem("user");
       }
+      setIsLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, isLoading }}>
+      {children}
+    </AuthContext.Provider>
   );
 };

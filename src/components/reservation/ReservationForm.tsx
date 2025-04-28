@@ -13,11 +13,12 @@ import TimeSlotButton from "../shared/TimeSlotButton";
 import TutorButton from "../shared/TutorButton";
 import ReservationGuideModal from "./ReservationGuideModal";
 import sortTimeSlots from "../../utils/sortTimeSlots";
+import { useTutors } from "../../context/TutorContext";
 
 const ReservationForm = () => {
   const { isTimeSlotBooked } = useReservations();
   const { availability } = useAvailability();
-  const tutors = Object.keys(availability);
+  const { tutors } = useTutors();
 
   const {
     form,
@@ -85,11 +86,11 @@ const ReservationForm = () => {
           <div className='grid grid-cols-3 sm:grid-cols-4 gap-2'>
             {tutors.map((tutor) => (
               <TutorButton
-                key={tutor}
-                selected={form.tutor === tutor}
-                onClick={() => handleTutorSelect(tutor)}
+                key={tutor.id}
+                selected={form.tutor === tutor.name}
+                onClick={() => handleTutorSelect(tutor.name)}
               >
-                {tutor}
+                {tutor.name}
               </TutorButton>
             ))}
           </div>

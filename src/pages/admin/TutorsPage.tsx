@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { db } from "../../services/firebase";
 import {
   collection,
-  getDocs,
+  onSnapshot,
   addDoc,
   updateDoc,
   deleteDoc,
@@ -13,33 +13,32 @@ import TutorFormModal from "../../components/tutor/TutorFormModal";
 
 const TutorsPage = () => {
   const [tutors, setTutors] = useState<Tutor[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
   const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null);
 
-  const fetchTutors = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const snapshot = await getDocs(collection(db, "tutors"));
-      const tutorsData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Tutor, "id">),
-      }));
-      setTutors(tutorsData);
-    } catch (err) {
-      console.error("튜터 목록 불러오기 오류:", err);
-      setError("튜터 목록을 불러오는 데 실패했습니다.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchTutors();
+    const unsubscribe = onSnapshot(
+      collection(db, "tutors"),
+      (snapshot) => {
+        const tutorsData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...(doc.data() as Omit<Tutor, "id">),
+        }));
+        setTutors(tutorsData);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("튜터 목록 실시간 감지 실패:", error);
+        setError("튜터 목록을 불러오는 데 실패했습니다.");
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe(); // ✅ 컴포넌트 unmount 시 실시간 구독 해제
   }, []);
 
   const handleCreate = () => {
@@ -56,23 +55,18 @@ const TutorsPage = () => {
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
-    setLoading(true);
-    setError(null);
+
     try {
       const tutorRef = doc(db, "tutors", id);
       await deleteDoc(tutorRef);
-      await fetchTutors();
+      // fetchTutors 필요 없음! 자동 갱신됨
     } catch (err) {
       console.error("튜터 삭제 오류:", err);
       setError("튜터 삭제에 실패했습니다.");
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleSubmit = async (name: string, email: string) => {
-    setLoading(true);
-    setError(null);
     try {
       if (modalMode === "create") {
         await addDoc(collection(db, "tutors"), { name, email });
@@ -80,13 +74,11 @@ const TutorsPage = () => {
         const tutorRef = doc(db, "tutors", selectedTutor.id);
         await updateDoc(tutorRef, { name, email });
       }
-      await fetchTutors();
       setIsModalOpen(false);
+      // fetchTutors 필요 없음! 자동 갱신됨
     } catch (err) {
       console.error("튜터 추가/수정 오류:", err);
       setError("튜터 추가 또는 수정에 실패했습니다.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -139,7 +131,6 @@ const TutorsPage = () => {
         </ul>
       )}
 
-      {/* 모달 */}
       <TutorFormModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

@@ -1,4 +1,4 @@
-import React from "react";
+
 import type { Reservation } from  "../../types/reservation"
 import { useAvailability } from "../../context/AvailabilityContext";
 import { useReservations } from "../../context/ReservationContext";
