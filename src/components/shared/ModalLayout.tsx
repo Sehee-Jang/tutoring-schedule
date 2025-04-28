@@ -1,6 +1,12 @@
-import React from "react";
+"use client";
+import { ReactNode } from "react";
 
-const ModalLayout = ({ children, onClose }) => (
+interface ModalLayoutProps {
+  children: ReactNode;
+  onClose: () => void;
+}
+
+const ModalLayout = ({ children, onClose }: ModalLayoutProps) => (
   <div className='fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50'>
     <div className='bg-white rounded-xl shadow-lg max-w-lg w-full p-6 relative'>
       {children}

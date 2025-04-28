@@ -1,4 +1,20 @@
-const TimeSlotButton = ({ active, disabled, children, ...props }) => {
+"use client";
+
+import React from "react";
+
+interface TimeSlotButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  active: boolean;
+  disabled: boolean;
+  children: React.ReactNode;
+}
+
+const TimeSlotButton = ({
+  active,
+  disabled,
+  children,
+  ...props
+}: TimeSlotButtonProps) => {
   const base =
     "rounded-lg border px-4 py-2 text-sm transition disabled:cursor-not-allowed";
   const activeClass = "bg-blue-600 text-white";

@@ -1,4 +1,3 @@
-import React from "react";
 import { useModal } from "../../context/ModalContext";
 import LoginModal from "../auth/LoginModal";
 import AvailabilityModal from "../availability/AvailabilityModal";
@@ -18,7 +17,7 @@ const ModalRenderer = () => {
       return (
         <ReservationDetailModal
           isOpen={true}
-          reservation={modalProps?.reservation}
+          reservation={modalProps?.reservation || null}
           onClose={closeModal}
         />
       );
