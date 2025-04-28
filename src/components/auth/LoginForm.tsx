@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+"use client";
+
+import { useState } from "react";
 import { login } from "../../services/auth";
 import PrimaryButton from "../shared/PrimaryButton";
 
 const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
@@ -19,6 +21,15 @@ const LoginForm = () => {
     }
   };
 
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+
   return (
     <div className='max-w-sm mx-auto bg-white shadow rounded p-6 mt-4'>
       <h2 className='text-lg font-bold text-gray-800 mb-4'>관리자 로그인</h2>
@@ -29,14 +40,14 @@ const LoginForm = () => {
           placeholder='이메일'
           className='border px-3 py-2 rounded'
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={handleEmailChange}
         />
         <input
           type='password'
           placeholder='비밀번호'
           className='border px-3 py-2 rounded'
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={handlePasswordChange}
         />
         <PrimaryButton type='submit'>로그인</PrimaryButton>
       </form>

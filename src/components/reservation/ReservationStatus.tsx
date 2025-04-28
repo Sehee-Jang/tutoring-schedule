@@ -1,32 +1,42 @@
-import ReservationDetailModal from "./ReservationDetailModal";
-import React, { useState } from "react";
+"use client";
+
+import { useState } from "react";
+import type { Reservation } from "@/types/reservation";
 import { useReservations } from "../../context/ReservationContext";
 import { cancelReservation } from "../../services/firebase";
+import ReservationDetailModal from "./ReservationDetailModal";
 import TutorButton from "../shared/TutorButton";
+import { useMemo } from "react";
 
-const ReservationStatus = ({ isAdmin }) => {
+interface ReservationStatusProps {
+  isAdmin: boolean;
+}
+
+const tutors = [
+  "오은화",
+  "김다희",
+  "박소연",
+  "정기식",
+  "남궁찬양",
+  "김훈",
+  "홍윤정",
+  "김수진",
+  "송조해",
+];
+
+const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
   const { reservations, loading } = useReservations();
-  const [activeTab, setActiveTab] = useState("all");
-  const [selectedReservation, setSelectedReservation] = useState(null);
+  const [activeTab, setActiveTab] = useState<string>("all");
+  const [selectedReservation, setSelectedReservation] =
+    useState<Reservation | null>(null);
 
-  const tutors = [
-    "오은화",
-    "김다희",
-    "박소연",
-    "정기식",
-    "남궁찬양",
-    "김훈",
-    "홍윤정",
-    "김수진",
-    "송조해",
-  ];
-
-  const filtered =
-    activeTab === "all"
+  const filtered = useMemo(() => {
+    return activeTab === "all"
       ? reservations
-      : reservations.filter((r) => r.tutor === activeTab);
+      : reservations.filter((r: Reservation) => r.tutor === activeTab);
+  }, [reservations, activeTab]);
 
-  const handleCancel = async (id) => {
+  const handleCancel = async (id: string) => {
     if (window.confirm("예약을 취소하시겠습니까?")) {
       try {
         await cancelReservation(id);
@@ -42,6 +52,7 @@ const ReservationStatus = ({ isAdmin }) => {
         실시간 예약 현황
       </h2>
 
+      {/* 탭 선택 */}
       <div className='flex flex-wrap gap-2 mb-4'>
         <button
           onClick={() => setActiveTab("all")}
@@ -54,7 +65,9 @@ const ReservationStatus = ({ isAdmin }) => {
           전체 예약
         </button>
         {tutors.map((tutor) => {
-          const count = reservations.filter((r) => r.tutor === tutor).length;
+          const count = reservations.filter(
+            (r: Reservation) => r.tutor === tutor
+          ).length;
           return (
             <TutorButton
               key={tutor}
@@ -79,7 +92,7 @@ const ReservationStatus = ({ isAdmin }) => {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((res) => (
+            {filtered.map((res: Reservation) => (
               <tr key={res.id} className='even:bg-gray-50'>
                 <td className='px-4 py-2 border'>{res.tutor}</td>
                 <td className='px-4 py-2 border'>{res.timeSlot}</td>
@@ -111,6 +124,8 @@ const ReservationStatus = ({ isAdmin }) => {
           예약된 튜터링이 없습니다.
         </p>
       )}
+
+      {/* 예약 상세 모달 */}
       <ReservationDetailModal
         isOpen={!!selectedReservation}
         reservation={selectedReservation}

@@ -1,28 +1,44 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { login } from "../../services/auth";
 import { useAuth } from "../../context/AuthContext";
 import ModalLayout from "../shared/ModalLayout";
 
-const LoginModal = ({ isOpen, onClose }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+interface LoginModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const { user } = useAuth();
 
   useEffect(() => {
     if (user) {
       onClose(); // 로그인 성공 시 모달 닫기
     }
-  }, [user]);
+  }, [user, onClose]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
+
     try {
       await login(email, password);
     } catch (err) {
       setError("이메일 또는 비밀번호가 올바르지 않습니다.");
     }
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
   };
 
   if (!isOpen) return null;
@@ -38,14 +54,14 @@ const LoginModal = ({ isOpen, onClose }) => {
           type='email'
           placeholder='이메일'
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={handleEmailChange}
           className='border px-3 py-2 rounded'
         />
         <input
           type='password'
           placeholder='비밀번호'
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={handlePasswordChange}
           className='border px-3 py-2 rounded'
         />
         <button
