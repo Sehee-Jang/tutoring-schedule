@@ -16,7 +16,11 @@ import sortTimeSlots from "../../utils/sortTimeSlots";
 import { useTutors } from "../../context/TutorContext";
 import { toast } from "react-hot-toast";
 
-const ReservationForm = () => {
+interface ReservationFormProps {
+  onSuccess?: () => void;
+}
+
+const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
   const { isTimeSlotBooked } = useReservations();
   const { availability } = useAvailability();
   const { tutors } = useTutors();
@@ -40,16 +44,20 @@ const ReservationForm = () => {
     if (!validate()) return;
 
     try {
-      await createReservation(form as ReservationFormData); // 확실하게 타입 명시
+      await createReservation(form as ReservationFormData);
       await sendEmailAlert(form as ReservationFormData); // 이메일 전송
-      console.log("✅ 예약 및 이메일 전송 성공");
+
       reset();
       setSubmitted(true);
       setTimeout(() => setSubmitted(false), 5000);
+
       toast.success("예약이 성공적으로 완료되었습니다!");
+
+      if (onSuccess) {
+        onSuccess(); // 추가: 성공하면 탭 이동
+      }
     } catch (error) {
       alert("예약 중 오류가 발생했습니다.");
-      console.error("❌ 예약 실패:", error);
       toast.error("❌ 예약 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
@@ -87,23 +95,22 @@ const ReservationForm = () => {
         <div>
           <h3 className='font-semibold text-gray-700 mb-2'>튜터 선택</h3>
           <div className='grid grid-cols-3 sm:grid-cols-4 gap-2'>
-            {tutors.length === 0 ? (
-            [...Array(8)].map((_, idx) => (
-              <div
-                key={idx}
-                className="animate-pulse bg-gray-200 h-10 rounded"
-              ></div>
-            ))
-            ) : (
-              tutors.map((tutor) => (
-              <TutorButton
-                key={tutor.id}
-                selected={form.tutor === tutor.name}
-                onClick={() => handleTutorSelect(tutor.name)}
-              >
-                {tutor.name}
-              </TutorButton>
-            )))}
+            {tutors.length === 0
+              ? [...Array(8)].map((_, idx) => (
+                  <div
+                    key={idx}
+                    className='animate-pulse bg-gray-200 h-10 rounded'
+                  ></div>
+                ))
+              : tutors.map((tutor) => (
+                  <TutorButton
+                    key={tutor.id}
+                    selected={form.tutor === tutor.name}
+                    onClick={() => handleTutorSelect(tutor.name)}
+                  >
+                    {tutor.name}
+                  </TutorButton>
+                ))}
           </div>
           {errors.tutor && (
             <p className='text-red-500 text-sm mt-1'>{errors.tutor}</p>
