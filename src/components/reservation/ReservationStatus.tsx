@@ -330,6 +330,7 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
         isOpen={!!selectedReservation}
         reservation={selectedReservation}
         onClose={() => setSelectedReservation(null)}
+        isAdmin={isAdmin}
       />
 
       {/* 비밀번호 모달 */}

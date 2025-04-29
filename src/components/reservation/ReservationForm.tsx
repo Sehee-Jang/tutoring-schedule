@@ -125,7 +125,7 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
               {(() => {
                 if (!form.tutor) {
                   return (
-                    <div className='col-span-3 text-gray-400 text-center py-8'>
+                    <div className='col-span-3 w-full bg-gray-100 text-gray-400 text-center py-8 rounded'>
                       먼저 튜터를 선택해 주세요.
                     </div>
                   );

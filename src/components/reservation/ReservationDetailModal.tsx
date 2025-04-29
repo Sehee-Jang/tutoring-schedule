@@ -11,12 +11,14 @@ interface ReservationDetailModalProps {
   isOpen: boolean;
   reservation: Reservation | null;
   onClose: () => void;
+  isAdmin: boolean;
 }
 
 const ReservationDetailModal = ({
   isOpen,
   reservation,
   onClose,
+  isAdmin,
 }: ReservationDetailModalProps) => {
   const { availability } = useAvailability();
   const { reservations } = useReservations();
@@ -100,16 +102,22 @@ const ReservationDetailModal = ({
 
                 const now = new Date();
                 const nowMinutes = now.getHours() * 60 + now.getMinutes();
+                const minUserSelectableMinutes = nowMinutes + 30;
 
                 const isPast = slotStart < nowMinutes; // 현재 시각 이전만 비활성화
+                const isVisible = isAdmin
+                  ? slotStart >= nowMinutes // 관리자는 현재시간 이후 다 보이게
+                  : slotStart > minUserSelectableMinutes; // 일반 사용자는 현재시간+30분 이후만
+
+                if (!isVisible) return null; // 조건에 안 맞으면 렌더링 안함
 
                 return (
                   <TimeSlotButton
                     key={slot}
                     active={form.timeSlot === slot}
-                    disabled={isPast} // 관리자도 과거시간은 비활성화
+                    disabled={isPast && isAdmin} // 관리자는 과거시간 비활성화만
                     onClick={() =>
-                      !isPast &&
+                      !(isPast && isAdmin) &&
                       setForm((prev) => ({ ...prev, timeSlot: slot }))
                     }
                   >

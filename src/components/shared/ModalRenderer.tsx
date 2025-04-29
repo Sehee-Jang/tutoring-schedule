@@ -19,6 +19,7 @@ const ModalRenderer = () => {
           isOpen={true}
           reservation={modalProps?.reservation || null}
           onClose={closeModal}
+          isAdmin={modalProps?.isAdmin || false}
         />
       );
     default:
