@@ -21,11 +21,25 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
     useState<Reservation | null>(null);
   const [visibleCount, setVisibleCount] = useState(10);
 
-  const filtered = useMemo(() => {
-    return activeTab === "all"
-      ? reservations
-      : reservations.filter((r: Reservation) => r.tutor === activeTab);
+  // 예약 시간 순으로 정렬
+  const sortedReservations = useMemo(() => {
+    const base =
+      activeTab === "all"
+        ? reservations
+        : reservations.filter((r: Reservation) => r.tutor === activeTab);
+
+    return [...base].sort((a, b) => {
+      const [aHour, aMin] = a.timeSlot.split("-")[0].split(":").map(Number);
+      const [bHour, bMin] = b.timeSlot.split("-")[0].split(":").map(Number);
+
+      const aTotalMinutes = aHour * 60 + aMin;
+      const bTotalMinutes = bHour * 60 + bMin;
+
+      return aTotalMinutes - bTotalMinutes;
+    });
   }, [reservations, activeTab]);
+
+  const displayedReservations = sortedReservations.slice(0, visibleCount);
 
   const handleCancel = async (id: string) => {
     if (window.confirm("예약을 취소하시겠습니까?")) {
@@ -37,8 +51,6 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
       }
     }
   };
-
-  const displayedReservations = filtered.slice(0, visibleCount);
 
   return (
     <div>
@@ -80,7 +92,7 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
         <div className='flex justify-center py-10'>
           <div className='animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500' />
         </div>
-      ) : filtered.length ? (
+      ) : sortedReservations.length ? (
         <>
           <table className='w-full text-sm border border-gray-200 rounded overflow-hidden'>
             <thead>
@@ -119,7 +131,7 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
               ))}
             </tbody>
           </table>
-          {filtered.length > visibleCount && (
+          {sortedReservations.length > visibleCount && (
             <div className='w-full flex justify-center mt-6'>
               <button
                 onClick={() => setVisibleCount((prev) => prev + 10)}
