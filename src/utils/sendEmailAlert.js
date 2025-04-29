@@ -7,18 +7,6 @@ export const sendEmailAlert = async (formData) => {
   const TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
   const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 
-  // 튜터 정보 하드 코딩
-  // const tutorEmails = {
-  //   김다희: process.env.REACT_APP_TUTOR_EMAIL_KIMDAHEE,
-  //   김수진: process.env.REACT_APP_TUTOR_EMAIL_KIMSUJIN,
-  //   김훈: process.env.REACT_APP_TUTOR_EMAIL_KIMHOON,
-  //   남궁찬양: process.env.REACT_APP_TUTOR_EMAIL_NAMGOONGCHANYANG,
-  //   박소연: process.env.REACT_APP_TUTOR_EMAIL_PARKSOYEON,
-  //   송조해: process.env.REACT_APP_TUTOR_EMAIL_SONGJOHAE,
-  //   오은화: process.env.REACT_APP_TUTOR_EMAIL_OEUNHWA,
-  //   정기식: process.env.REACT_APP_TUTOR_EMAIL_JEONGGISIK,
-  //   홍윤정: process.env.REACT_APP_TUTOR_EMAIL_HONGYUNJEONG,
-  // };
   try {
     // 1. Firestore tutors 컬렉션 가져오기
     const tutorsSnapshot = await getDocs(collection(db, "tutors"));
