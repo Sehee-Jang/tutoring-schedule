@@ -5,7 +5,11 @@ import ReservationForm from "./ReservationForm";
 import ReservationStatus from "./ReservationStatus";
 import TabButton from "../shared/TabButton";
 
-const ReservationTabs = () => {
+interface ReservationTabsProps {
+  isAdmin?: boolean;
+}
+
+const ReservationTabs = ({ isAdmin = false }: ReservationTabsProps) => {
   const [activeTab, setActiveTab] = useState<"form" | "status">("form");
 
   const handleReservationSuccess = () => {
@@ -39,8 +43,7 @@ const ReservationTabs = () => {
         )}
         {activeTab === "status" && (
           <div className='bg-white rounded-xl shadow px-6 py-8'>
-            {/* isAdmin={true}로 기본 설정 (필요 시 props로 넘길 수 있음) */}
-            <ReservationStatus isAdmin={true} />
+            <ReservationStatus isAdmin={isAdmin} />
           </div>
         )}
       </div>

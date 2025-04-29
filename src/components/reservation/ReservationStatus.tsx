@@ -20,6 +20,12 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
   const [selectedReservation, setSelectedReservation] =
     useState<Reservation | null>(null);
   const [visibleCount, setVisibleCount] = useState(10);
+  const [futureVisibleCount, setFutureVisibleCount] = useState(10);
+  const [pastVisibleCount, setPastVisibleCount] = useState(10);
+
+  const now = new Date();
+  const todayString = now.toISOString().slice(0, 10); // "YYYY-MM-DD"
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
 
   // 예약 시간 순으로 정렬
   const sortedReservations = useMemo(() => {
@@ -40,6 +46,18 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
   }, [reservations, activeTab]);
 
   const displayedReservations = sortedReservations.slice(0, visibleCount);
+
+  const futureReservations = sortedReservations.filter((res) => {
+    const [hour, min] = res.timeSlot.split("-")[0].split(":").map(Number);
+    const reservationStartMinutes = hour * 60 + min;
+    return reservationStartMinutes > nowMinutes;
+  });
+
+  const pastReservations = sortedReservations.filter((res) => {
+    const [hour, min] = res.timeSlot.split("-")[0].split(":").map(Number);
+    const reservationStartMinutes = hour * 60 + min;
+    return reservationStartMinutes <= nowMinutes;
+  });
 
   const handleCancel = async (id: string) => {
     if (window.confirm("예약을 취소하시겠습니까?")) {
@@ -87,7 +105,7 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
       </div>
 
       {/* 테이블 */}
-      {loading ? (
+      {/* {loading ? (
         // 로딩 중
         <div className='flex justify-center py-10'>
           <div className='animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500' />
@@ -147,8 +165,140 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
         <p className='text-center text-gray-500 py-6'>
           예약된 튜터링이 없습니다.
         </p>
-      )}
+      )} */}
 
+      {loading ? (
+        <div className='flex justify-center py-10'>
+          <div className='animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500' />
+        </div>
+      ) : (
+        <>
+          {/* 진행 예정 예약 */}
+          <h3 className='text-lg font-semibold text-gray-700 mb-4 mt-8'>
+            진행 예정 예약
+          </h3>
+          {futureReservations.length > 0 ? (
+            <>
+              <table className='w-full text-sm border border-gray-200 rounded overflow-hidden'>
+                <thead>
+                  <tr className='bg-blue-50 text-blue-800 text-left'>
+                    <th className='px-4 py-2 border'>튜터명</th>
+                    <th className='px-4 py-2 border'>시간</th>
+                    <th className='px-4 py-2 border'>예약자</th>
+                    {isAdmin && <th className='px-4 py-2 border'>관리</th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {futureReservations
+                    .slice(0, futureVisibleCount)
+                    .map((res: Reservation) => (
+                      <tr key={res.id} className='even:bg-gray-50'>
+                        <td className='px-4 py-2 border'>{res.tutor}</td>
+                        <td className='px-4 py-2 border'>{res.timeSlot}</td>
+                        <td className='px-4 py-2 border'>{res.teamName}</td>
+                        {isAdmin && (
+                          <td className='px-4 py-2 border'>
+                            <div className='flex gap-2'>
+                              <button
+                                onClick={() => setSelectedReservation(res)}
+                                className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
+                              >
+                                보기
+                              </button>
+                              <button
+                                onClick={() => handleCancel(res.id)}
+                                className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
+                              >
+                                삭제
+                              </button>
+                            </div>
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+              {futureReservations.length > futureVisibleCount && (
+                <div className='flex justify-center mt-6'>
+                  <button
+                    onClick={() => setFutureVisibleCount((prev) => prev + 10)}
+                    className='flex items-center gap-2 px-5 py-2 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-full text-sm font-semibold transition'
+                  >
+                    <ChevronDown className='w-4 h-4' />
+                    더보기
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <p className='text-center text-gray-400 py-6'>
+              진행 예정 예약이 없습니다.
+            </p>
+          )}
+          {/* 지난 예약 */}
+          <h3 className='text-lg font-semibold text-gray-700 mb-4 mt-12'>
+            지난 예약
+          </h3>
+          {pastReservations.length > 0 ? (
+            <>
+              <table className='w-full text-sm border border-gray-200 rounded overflow-hidden'>
+                <thead>
+                  <tr className='bg-blue-50 text-blue-800 text-left'>
+                    <th className='px-4 py-2 border'>튜터명</th>
+                    <th className='px-4 py-2 border'>시간</th>
+                    <th className='px-4 py-2 border'>예약자</th>
+                    {isAdmin && <th className='px-4 py-2 border'>관리</th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {pastReservations
+                    .slice(0, pastVisibleCount)
+                    .map((res: Reservation) => (
+                      <tr key={res.id} className='even:bg-gray-50'>
+                        <td className='px-4 py-2 border'>{res.tutor}</td>
+                        <td className='px-4 py-2 border'>{res.timeSlot}</td>
+                        <td className='px-4 py-2 border'>{res.teamName}</td>
+                        {isAdmin && (
+                          <td className='px-4 py-2 border'>
+                            <div className='flex gap-2'>
+                              <button
+                                onClick={() => setSelectedReservation(res)}
+                                className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
+                              >
+                                보기
+                              </button>
+                              <button
+                                onClick={() => handleCancel(res.id)}
+                                className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
+                              >
+                                삭제
+                              </button>
+                            </div>
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+              {pastReservations.length > pastVisibleCount && (
+                <div className='flex justify-center mt-6'>
+                  <button
+                    onClick={() => setPastVisibleCount((prev) => prev + 10)}
+                    className='flex items-center gap-2 px-5 py-2 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-full text-sm font-semibold transition'
+                  >
+                    <ChevronDown className='w-4 h-4' />
+                    더보기
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <p className='text-center text-gray-400 py-6'>
+              지난 예약이 없습니다.
+            </p>
+          )}
+        </>
+      )}
       {/* 예약 상세 모달 */}
       <ReservationDetailModal
         isOpen={!!selectedReservation}
