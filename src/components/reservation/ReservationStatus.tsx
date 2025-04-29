@@ -8,6 +8,7 @@ import ReservationDetailModal from "./ReservationDetailModal";
 import TutorButton from "../shared/TutorButton";
 import { useTutors } from "../../context/TutorContext";
 import { toast } from "react-hot-toast";
+import { ChevronDown } from "lucide-react";
 
 interface ReservationStatusProps {
   isAdmin: boolean;
@@ -18,6 +19,7 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [selectedReservation, setSelectedReservation] =
     useState<Reservation | null>(null);
+  const [visibleCount, setVisibleCount] = useState(10);
 
   const filtered = useMemo(() => {
     return activeTab === "all"
@@ -35,6 +37,8 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
       }
     }
   };
+
+  const displayedReservations = filtered.slice(0, visibleCount);
 
   return (
     <div>
@@ -77,43 +81,56 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
           <div className='animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500' />
         </div>
       ) : filtered.length ? (
-        <table className='w-full text-sm border border-gray-200 rounded overflow-hidden'>
-          <thead>
-            <tr className='bg-blue-50 text-blue-800 text-left'>
-              <th className='px-4 py-2 border'>튜터명</th>
-              <th className='px-4 py-2 border'>시간</th>
-              <th className='px-4 py-2 border'>예약자</th>
-              {isAdmin && <th className='px-4 py-2 border'>관리</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((res: Reservation) => (
-              <tr key={res.id} className='even:bg-gray-50'>
-                <td className='px-4 py-2 border'>{res.tutor}</td>
-                <td className='px-4 py-2 border'>{res.timeSlot}</td>
-                <td className='px-4 py-2 border'>{res.teamName}</td>
-                {isAdmin && (
-                  <td className='px-4 py-2 border'>
-                    <div className='flex gap-2'>
-                      <button
-                        onClick={() => setSelectedReservation(res)}
-                        className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
-                      >
-                        보기
-                      </button>
-                      <button
-                        onClick={() => handleCancel(res.id)}
-                        className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
-                      >
-                        삭제
-                      </button>
-                    </div>
-                  </td>
-                )}
+        <>
+          <table className='w-full text-sm border border-gray-200 rounded overflow-hidden'>
+            <thead>
+              <tr className='bg-blue-50 text-blue-800 text-left'>
+                <th className='px-4 py-2 border'>튜터명</th>
+                <th className='px-4 py-2 border'>시간</th>
+                <th className='px-4 py-2 border'>예약자</th>
+                {isAdmin && <th className='px-4 py-2 border'>관리</th>}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {displayedReservations.map((res: Reservation) => (
+                <tr key={res.id} className='even:bg-gray-50'>
+                  <td className='px-4 py-2 border'>{res.tutor}</td>
+                  <td className='px-4 py-2 border'>{res.timeSlot}</td>
+                  <td className='px-4 py-2 border'>{res.teamName}</td>
+                  {isAdmin && (
+                    <td className='px-4 py-2 border'>
+                      <div className='flex gap-2'>
+                        <button
+                          onClick={() => setSelectedReservation(res)}
+                          className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
+                        >
+                          보기
+                        </button>
+                        <button
+                          onClick={() => handleCancel(res.id)}
+                          className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
+                        >
+                          삭제
+                        </button>
+                      </div>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {filtered.length > visibleCount && (
+            <div className='w-full flex justify-center mt-6'>
+              <button
+                onClick={() => setVisibleCount((prev) => prev + 10)}
+                className='flex items-center gap-2 px-5 py-2 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-full text-sm font-semibold transition'
+              >
+                <ChevronDown className='w-4 h-4' />
+                더보기
+              </button>
+            </div>
+          )}
+        </>
       ) : (
         <p className='text-center text-gray-500 py-6'>
           예약된 튜터링이 없습니다.

@@ -117,38 +117,6 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
           )}
         </div>
 
-        {/* {form.tutor && (
-          <div>
-            <h3 className='font-semibold text-gray-700 mb-2'>시간 선택</h3>
-            <div className='grid grid-cols-2 sm:grid-cols-3 gap-3  max-h-[100px] overflow-y-auto pr-1'>
-              {sortTimeSlots(availability[form.tutor] || [])
-                .filter((slot) => {
-                  const [hour, min] = slot.split("-")[0].split(":").map(Number);
-                  const slotStart = hour * 60 + min;
-
-                  const now = new Date();
-                  const nowMinutes = now.getHours() * 60 + now.getMinutes();
-
-                  return slotStart > nowMinutes + 30; // 현재로부터 30분 이후만 표시
-                })
-                .map((slot) => {
-                  const isBooked = isTimeSlotBooked(form.tutor, slot);
-
-                  return (
-                    <TimeSlotButton
-                      key={slot}
-                      disabled={isBooked}
-                      active={form.timeSlot === slot}
-                      onClick={() => !isBooked && selectTimeSlot(slot)}
-                    >
-                      {slot} {isBooked && "(예약됨)"}
-                    </TimeSlotButton>
-                  );
-                })}
-            </div>
-          </div>
-        )} */}
-
         <div>
           <h3 className='font-semibold text-gray-700 mb-2'>시간 선택</h3>
 
