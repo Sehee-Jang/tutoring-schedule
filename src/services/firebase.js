@@ -33,11 +33,13 @@ const auth = getAuth(app);
 // 예약 생성
 export const createReservation = async (reservationData) => {
   try {
+    const todayString = new Date().toISOString().slice(0, 10);
     const docRef = await addDoc(collection(db, "reservations"), {
       ...reservationData,
+      classDate: todayString,
       createdAt: Timestamp.now(),
     });
-    return { id: docRef.id, ...reservationData };
+    return { id: docRef.id, ...reservationData, classDate: todayString };
   } catch (error) {
     console.error("예약 생성 오류:", error);
     throw error;
@@ -65,7 +67,6 @@ export const updateReservation = async (id, updatedData) => {
     throw error;
   }
 };
-
 
 // 오늘의 예약 실시간 모니터링
 export const subscribeToTodayReservations = (callback) => {

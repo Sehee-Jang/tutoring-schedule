@@ -11,6 +11,7 @@ export interface Reservation {
   question?: string; // 선택사항: 예약할 때 질문 남긴 경우
   resourceLink?: string; // 선택사항: 링크 첨부한 경우
   createdAt?: string; // Firestore 저장된 생성일
+  classDate: string;
 }
 
 export interface ReservationFormData {

@@ -1,3 +1,4 @@
+// ReservationContext.tsx (최적화 및 실시간 반영 버전)
 "use client";
 
 import {
@@ -9,13 +10,7 @@ import {
 } from "react";
 import type { Reservation } from "../types/reservation";
 import { db } from "../services/firebase";
-import {
-  collection,
-  onSnapshot,
-  query,
-  where,
-  orderBy,
-} from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 
 interface ReservationContextType {
   reservations: Reservation[];
@@ -41,27 +36,31 @@ export const ReservationProvider = ({ children }: ReservationProviderProps) => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const todayString = new Date().toISOString().slice(0, 10); // 'YYYY-MM-DD'
+ useEffect(() => {
+   const todayString = new Date().toISOString().slice(0, 10);
 
-    const reservationsQuery = query(
-      collection(db, "reservations"),
-      where("classDate", "==", todayString),
-      orderBy("classTime", "asc")
-    );
+   const reservationsQuery = query(
+     collection(db, "reservations"),
+     orderBy("createdAt", "asc")
+   );
 
-    const unsubscribe = onSnapshot(reservationsQuery, (snapshot) => {
-      const fetchedReservations: Reservation[] = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Reservation[];
+   const unsubscribe = onSnapshot(reservationsQuery, (snapshot) => {
+     const fetchedReservations: Reservation[] = snapshot.docs.map((doc) => ({
+       id: doc.id,
+       ...doc.data(),
+     })) as Reservation[];
 
-      setReservations(fetchedReservations);
-      setLoading(false);
-    });
+     const todayReservations = fetchedReservations.filter(
+       (res) => (res as any).classDate === todayString
+     );
 
-    return () => unsubscribe();
-  }, []);
+     setReservations(todayReservations);
+     setLoading(false);
+   });
+
+   return () => unsubscribe();
+ }, []);
+
 
   const getTutorReservations = (tutorName: string) =>
     reservations.filter((res) => res.tutor === tutorName);
