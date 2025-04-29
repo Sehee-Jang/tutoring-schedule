@@ -1,6 +1,6 @@
 "use client";
 
-import React, {
+import {
   createContext,
   useState,
   useEffect,
@@ -8,9 +8,15 @@ import React, {
   ReactNode,
 } from "react";
 import type { Reservation } from "../types/reservation";
-import { subscribeToTodayReservations } from "../services/firebase";
+import { db } from "../services/firebase";
+import {
+  collection,
+  onSnapshot,
+  query,
+  where,
+  orderBy,
+} from "firebase/firestore";
 
-// Context 타입 정의
 interface ReservationContextType {
   reservations: Reservation[];
   loading: boolean;
@@ -36,37 +42,38 @@ export const ReservationProvider = ({ children }: ReservationProviderProps) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const unsubscribe = subscribeToTodayReservations(
-      (newReservations: Reservation[]) => {
-        setReservations(newReservations);
-        setLoading(false);
-      }
+    const todayString = new Date().toISOString().slice(0, 10); // 'YYYY-MM-DD'
+
+    const reservationsQuery = query(
+      collection(db, "reservations"),
+      where("classDate", "==", todayString),
+      orderBy("classTime", "asc")
     );
 
-    // 컴포넌트 언마운트 시 구독 해제
+    const unsubscribe = onSnapshot(reservationsQuery, (snapshot) => {
+      const fetchedReservations: Reservation[] = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Reservation[];
+
+      setReservations(fetchedReservations);
+      setLoading(false);
+    });
+
     return () => unsubscribe();
   }, []);
 
-  // 특정 튜터의 예약만 필터링
-  const getTutorReservations = (tutorName: string): Reservation[] => {
-    return reservations.filter((res) => res.tutor === tutorName);
-  };
+  const getTutorReservations = (tutorName: string) =>
+    reservations.filter((res) => res.tutor === tutorName);
 
-  // 특정 시간대가 예약되었는지 확인
-  const isTimeSlotBooked = (tutor: string, timeSlot: string): boolean => {
-    return reservations.some(
+  const isTimeSlotBooked = (tutor: string, timeSlot: string) =>
+    reservations.some(
       (res) => res.tutor === tutor && res.timeSlot === timeSlot
     );
-  };
 
   return (
     <ReservationContext.Provider
-      value={{
-        reservations,
-        loading,
-        getTutorReservations,
-        isTimeSlotBooked,
-      }}
+      value={{ reservations, loading, getTutorReservations, isTimeSlotBooked }}
     >
       {children}
     </ReservationContext.Provider>
