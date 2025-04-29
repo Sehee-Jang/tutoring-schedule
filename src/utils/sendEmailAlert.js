@@ -7,6 +7,15 @@ export const sendEmailAlert = async (formData) => {
   const TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
   const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 
+  // ✅ 테스트용: 이메일 발송 끄기
+  if (process.env.REACT_APP_DISABLE_EMAIL === "true") {
+    console.log(
+      "📢 [테스트 모드] 이메일 발송이 비활성화되었습니다. 대신 예약 정보 출력:"
+    );
+    console.log(formData);
+    return;
+  }
+  
   try {
     // 1. Firestore tutors 컬렉션 가져오기
     const tutorsSnapshot = await getDocs(collection(db, "tutors"));
