@@ -9,6 +9,7 @@ import TutorButton from "../shared/TutorButton";
 import { useTutors } from "../../context/TutorContext";
 import { toast } from "react-hot-toast";
 import { ChevronDown } from "lucide-react";
+import PasswordModal from "./PasswordModal";
 
 interface ReservationStatusProps {
   isAdmin: boolean;
@@ -22,6 +23,9 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
   const [visibleCount, setVisibleCount] = useState(10);
   const [futureVisibleCount, setFutureVisibleCount] = useState(10);
   const [pastVisibleCount, setPastVisibleCount] = useState(10);
+  const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
+  const [pendingReservation, setPendingReservation] =
+    useState<Reservation | null>(null);
 
   const now = new Date();
   const todayString = now.toISOString().slice(0, 10); // "YYYY-MM-DD"
@@ -63,13 +67,35 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
     if (window.confirm("예약을 취소하시겠습니까?")) {
       try {
         await cancelReservation(id);
-        toast.success("✅ 예약이 성공적으로 취소되었습니다!");
+        toast.success("예약이 성공적으로 취소되었습니다!");
       } catch {
-        toast.error("❌ 예약 취소 중 오류가 발생했습니다.");
+        toast.error("예약 취소 중 오류가 발생했습니다.");
       }
     }
   };
 
+  // 보기 버튼
+  const handleViewClick = (reservation: Reservation) => {
+    if (isAdmin) {
+      setSelectedReservation(reservation); // 관리자는 바로 상세 모달
+    } else {
+      setPendingReservation(reservation); // 비관리자는 비번 입력
+      setPasswordModalOpen(true);
+    }
+  };
+
+  // 비밀번호 입력 버튼
+  const handlePasswordSubmit = (inputPassword: string) => {
+    if (
+      pendingReservation &&
+      inputPassword === pendingReservation.editPassword
+    ) {
+      setSelectedReservation(pendingReservation);
+      setPasswordModalOpen(false);
+    } else {
+      alert("비밀번호가 틀렸습니다.");
+    }
+  };
   return (
     <div>
       <h2 className='text-xl font-semibold text-blue-700 mb-6'>
@@ -185,7 +211,7 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
                     <th className='px-4 py-2 border'>튜터명</th>
                     <th className='px-4 py-2 border'>시간</th>
                     <th className='px-4 py-2 border'>예약자</th>
-                    {isAdmin && <th className='px-4 py-2 border'>관리</th>}
+                    <th className='px-4 py-2 border'>보기</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -196,24 +222,24 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
                         <td className='px-4 py-2 border'>{res.tutor}</td>
                         <td className='px-4 py-2 border'>{res.timeSlot}</td>
                         <td className='px-4 py-2 border'>{res.teamName}</td>
-                        {isAdmin && (
-                          <td className='px-4 py-2 border'>
-                            <div className='flex gap-2'>
-                              <button
-                                onClick={() => setSelectedReservation(res)}
-                                className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
-                              >
-                                보기
-                              </button>
+                        <td className='px-4 py-2 border'>
+                          <div className='flex gap-2'>
+                            <button
+                              onClick={() => handleViewClick(res)}
+                              className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
+                            >
+                              보기
+                            </button>
+                            {isAdmin && (
                               <button
                                 onClick={() => handleCancel(res.id)}
                                 className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
                               >
                                 삭제
                               </button>
-                            </div>
-                          </td>
-                        )}
+                            )}
+                          </div>
+                        </td>
                       </tr>
                     ))}
                 </tbody>
@@ -304,6 +330,13 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
         isOpen={!!selectedReservation}
         reservation={selectedReservation}
         onClose={() => setSelectedReservation(null)}
+      />
+
+      {/* 비밀번호 모달 */}
+      <PasswordModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setPasswordModalOpen(false)}
+        onSuccess={handlePasswordSubmit}
       />
     </div>
   );

@@ -12,6 +12,7 @@ export interface Reservation {
   resourceLink?: string; // 선택사항: 링크 첨부한 경우
   createdAt?: string; // Firestore 저장된 생성일
   classDate: string;
+  editPassword: string;
 }
 
 export interface ReservationFormData {
@@ -20,6 +21,7 @@ export interface ReservationFormData {
   timeSlot: string;
   resourceLink: string;
   question: string;
+  editPassword: string;
 }
 
 export interface ReservationEditorFormData {

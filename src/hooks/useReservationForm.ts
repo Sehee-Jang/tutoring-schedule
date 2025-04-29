@@ -8,6 +8,7 @@ const emptyForm: ReservationFormData = {
   timeSlot: "",
   resourceLink: "",
   question: "",
+  editPassword: "",
 };
 
 const useReservationForm = () => {

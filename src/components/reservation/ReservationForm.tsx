@@ -220,6 +220,20 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
           )}
         </div>
 
+        <div>
+          <label className='block font-medium text-gray-700 mb-1'>
+            비밀번호
+          </label>
+          <input
+            name='editPassword'
+            type='password'
+            value={form.editPassword || ""}
+            onChange={handleChange}
+            placeholder='예약 수정 시, 사용할 비밀번호를 입력해주세요.'
+            className='w-full border rounded px-4 py-2 text-sm focus:ring-2 focus:ring-blue-300'
+          />
+        </div>
+
         <PrimaryButton type='submit'>예약하기</PrimaryButton>
       </form>
 

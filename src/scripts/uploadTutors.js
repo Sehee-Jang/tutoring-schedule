@@ -23,9 +23,9 @@ const uploadTutors = async () => {
       await setDoc(docRef, tutor);
       console.log(`추가 완료: ${tutor.name}`);
     }
-    console.log("✅ 모든 튜터 정보가 성공적으로 업로드 되었습니다.");
+    console.log("모든 튜터 정보가 성공적으로 업로드 되었습니다.");
   } catch (error) {
-    console.error("❌ 튜터 정보 업로드 중 에러 발생:", error);
+    console.error("튜터 정보 업로드 중 에러 발생:", error);
   }
 };
 

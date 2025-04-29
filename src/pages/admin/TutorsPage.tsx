@@ -119,12 +119,12 @@ const TutorsPage = () => {
                 <div className='text-gray-600 text-sm'>{tutor.email}</div>
               </div>
               <div className='flex items-center space-x-4'>
-                {/* ✅ 토글 스위치 */}
+                {/* 토글 스위치 */}
                 <Switch
                   checked={tutor.status === "active"}
                   onCheckedChange={() => toggleTutorStatus(tutor)}
                 />
-                {/* ✅ 수정 버튼 그대로 */}
+                {/* 수정 버튼 그대로 */}
                 <button
                   className='px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm'
                   onClick={() => handleEdit(tutor)}
