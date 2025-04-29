@@ -31,7 +31,7 @@ const ReservationTabs = () => {
       </div>
 
       {/* 탭 내용 */}
-      <div className='space-y-6'>
+      <div className='space-y-6 min-h-[700px]'>
         {activeTab === "form" && (
           <div className='bg-white rounded-xl shadow px-6 py-8'>
             <ReservationForm onSuccess={handleReservationSuccess} />

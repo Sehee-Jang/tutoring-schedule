@@ -117,10 +117,10 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
           )}
         </div>
 
-        {form.tutor && (
+        {/* {form.tutor && (
           <div>
             <h3 className='font-semibold text-gray-700 mb-2'>시간 선택</h3>
-            <div className='grid grid-cols-2 sm:grid-cols-3 gap-3'>
+            <div className='grid grid-cols-2 sm:grid-cols-3 gap-3  max-h-[100px] overflow-y-auto pr-1'>
               {sortTimeSlots(availability[form.tutor] || [])
                 .filter((slot) => {
                   const [hour, min] = slot.split("-")[0].split(":").map(Number);
@@ -147,7 +147,60 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
                 })}
             </div>
           </div>
-        )}
+        )} */}
+
+        <div>
+          <h3 className='font-semibold text-gray-700 mb-2'>시간 선택</h3>
+
+          <div className='max-h-[100px] min-h-[100px] overflow-y-scroll pr-1 rounded'>
+            <div className='grid grid-cols-2 sm:grid-cols-3 gap-3'>
+              {(() => {
+                if (!form.tutor) {
+                  return (
+                    <div className='col-span-3 text-gray-400 text-center py-8'>
+                      먼저 튜터를 선택해 주세요.
+                    </div>
+                  );
+                }
+
+                const availableSlots = sortTimeSlots(
+                  availability[form.tutor] || []
+                ).filter((slot) => {
+                  const [hour, min] = slot.split("-")[0].split(":").map(Number);
+                  const slotStart = hour * 60 + min;
+
+                  const now = new Date();
+                  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+                  return slotStart > nowMinutes + 30;
+                });
+
+                if (availableSlots.length === 0) {
+                  return (
+                    <div className='col-span-3 text-gray-400 text-center py-8'>
+                      예약 가능한 시간이 없습니다.
+                    </div>
+                  );
+                }
+
+                return availableSlots.map((slot) => {
+                  const isBooked = isTimeSlotBooked(form.tutor!, slot);
+
+                  return (
+                    <TimeSlotButton
+                      key={slot}
+                      disabled={isBooked}
+                      active={form.timeSlot === slot}
+                      onClick={() => !isBooked && selectTimeSlot(slot)}
+                    >
+                      {slot} {isBooked && "(예약됨)"}
+                    </TimeSlotButton>
+                  );
+                });
+              })()}
+            </div>
+          </div>
+        </div>
 
         <div>
           <label className='block font-medium text-gray-700 mb-1'>
