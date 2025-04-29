@@ -6,6 +6,7 @@ import ReservationStatus from "../reservation/ReservationStatus";
 import ReservationForm from "../reservation/ReservationForm";
 import ModalRenderer from "../shared/ModalRenderer";
 import { logout } from "../../services/auth";
+import ReservationTabs from "../reservation/ReservationTabs";
 
 const AppContent = () => {
   const { user } = useAuth();
@@ -55,8 +56,7 @@ const AppContent = () => {
         )}
       </header>
 
-      <ReservationStatus isAdmin={isAdmin} />
-      <ReservationForm />
+      <ReservationTabs />
       <ModalRenderer />
     </div>
   );

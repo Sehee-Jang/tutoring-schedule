@@ -37,7 +37,7 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
   };
 
   return (
-    <div className='bg-white rounded-xl shadow px-6 py-8 mb-8'>
+    <div>
       <h2 className='text-xl font-semibold text-blue-700 mb-6'>
         실시간 예약 현황
       </h2>

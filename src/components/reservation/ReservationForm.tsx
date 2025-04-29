@@ -67,7 +67,7 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
   };
 
   return (
-    <div className='bg-white rounded-xl shadow px-6 py-8'>
+    <div>
       <div className='flex items-center mb-4'>
         <h2 className='text-xl font-semibold text-blue-700 mr-2'>
           튜터링 예약하기
