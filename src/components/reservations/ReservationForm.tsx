@@ -103,7 +103,7 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
       <form className='flex flex-col gap-6' onSubmit={handleSubmit}>
         <div>
           <h3 className='font-semibold text-gray-700 mb-2'>튜터 선택</h3>
-          <div className='grid grid-cols-3 sm:grid-cols-4 gap-2'>
+          <div className='grid grid-cols-3 sm:grid-cols-3 gap-2'>
             {tutors.length === 0
               ? [...Array(8)].map((_, idx) => (
                   <div

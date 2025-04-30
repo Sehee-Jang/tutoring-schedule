@@ -93,7 +93,7 @@ const AvailabilityModal = ({ isOpen, onClose }: AvailabilityModalProps) => {
       </div>
 
       {/* 시간 선택 */}
-      <div className='grid grid-cols-3 sm:grid-cols-4 gap-2 text-sm text-gray-700 mb-4 max-h-64 overflow-y-auto'>
+      <div className='grid grid-cols-3 sm:grid-cols-3 gap-2 text-sm text-gray-700 mb-4 max-h-64 overflow-y-auto'>
         {slots.map((slot) => (
           <TimeSlotButton
             key={slot}

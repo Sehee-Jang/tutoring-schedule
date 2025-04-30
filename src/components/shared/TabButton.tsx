@@ -12,7 +12,7 @@ const TabButton = ({ isActive, onClick, children }: TabButtonProps) => {
   return (
     <button
       onClick={onClick}
-      className={`w-1/2 px-6 py-2 text-sm font-semibold rounded-full transition
+      className={`w-1/2 px-6 py-2 text-sm font-semibold rounded-xl transition
         ${
           isActive
             ? "bg-white text-blue-600 shadow-sm"
