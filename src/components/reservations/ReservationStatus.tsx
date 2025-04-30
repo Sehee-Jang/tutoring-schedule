@@ -10,6 +10,7 @@ import { useTutors } from "../../context/TutorContext";
 import { useToast } from "../../hooks/use-toast";
 import { ChevronDown } from "lucide-react";
 import PasswordModal from "./PasswordModal";
+import TutorScheduleTable from "./TutorScheduleTable";
 
 interface ReservationStatusProps {
   isAdmin: boolean;
@@ -20,7 +21,6 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [selectedReservation, setSelectedReservation] =
     useState<Reservation | null>(null);
-  const [visibleCount, setVisibleCount] = useState(10);
   const [futureVisibleCount, setFutureVisibleCount] = useState(10);
   const [pastVisibleCount, setPastVisibleCount] = useState(10);
   const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
@@ -28,7 +28,6 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
     useState<Reservation | null>(null);
 
   const now = new Date();
-  const todayString = now.toISOString().slice(0, 10); // "YYYY-MM-DD"
   const nowMinutes = now.getHours() * 60 + now.getMinutes();
   const { toast } = useToast();
 
@@ -142,6 +141,12 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
         <div className='flex justify-center py-10'>
           <div className='animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500' />
         </div>
+      ) : activeTab !== "all" ? (
+        <TutorScheduleTable
+          tutorName={activeTab}
+          isAdmin={isAdmin}
+          onView={handleViewClick}
+        />
       ) : (
         <>
           {/* 진행 예정 예약 */}
