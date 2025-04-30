@@ -5,19 +5,18 @@ import type { Reservation } from "../../types/reservation";
 import { useReservations } from "../../context/ReservationContext";
 import { cancelReservation } from "../../services/firebase";
 import ReservationDetailModal from "./ReservationDetailModal";
-import TutorButton from "../shared/TutorButton";
-import { useTutors } from "../../context/TutorContext";
 import { useToast } from "../../hooks/use-toast";
-import { ChevronDown } from "lucide-react";
 import PasswordModal from "./PasswordModal";
 import TutorScheduleTable from "./TutorScheduleTable";
+import FutureReservationTable from "./FutureReservationTable";
+import PastReservationTable from "./PastReservationTable";
+import ReservationTabsHeader from "./ReservationTabsHeader";
 
 interface ReservationStatusProps {
   isAdmin: boolean;
 }
 const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
   const { reservations, loading } = useReservations();
-  const { tutors } = useTutors();
   const [activeTab, setActiveTab] = useState<string>("all");
   const [selectedReservation, setSelectedReservation] =
     useState<Reservation | null>(null);
@@ -110,32 +109,11 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
       </h2>
 
       {/* 탭 선택 */}
-      <div className='flex flex-wrap gap-2 mb-4'>
-        <button
-          onClick={() => setActiveTab("all")}
-          className={`px-4 py-1 rounded-full text-sm font-medium ${
-            activeTab === "all"
-              ? "bg-blue-600 text-white"
-              : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-          }`}
-        >
-          전체 예약
-        </button>
-        {tutors.map((tutor) => {
-          const count = reservations.filter(
-            (r: Reservation) => r.tutor === tutor.name
-          ).length;
-          return (
-            <TutorButton
-              key={tutor.id}
-              selected={activeTab === tutor.name}
-              onClick={() => setActiveTab(tutor.name)}
-            >
-              {tutor.name} <span className='text-xs font-bold'>{count}</span>
-            </TutorButton>
-          );
-        })}
-      </div>
+      <ReservationTabsHeader
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        reservations={reservations}
+      />
 
       {loading ? (
         <div className='flex justify-center py-10'>
@@ -153,126 +131,27 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
           <h3 className='text-lg font-semibold text-gray-700 mb-4 mt-8'>
             진행 예정 예약
           </h3>
-          {futureReservations.length > 0 ? (
-            <>
-              <table className='w-full text-sm border border-gray-200 rounded overflow-hidden'>
-                <thead>
-                  <tr className='bg-blue-50 text-blue-800 text-left'>
-                    <th className='px-4 py-2 border'>튜터명</th>
-                    <th className='px-4 py-2 border'>시간</th>
-                    <th className='px-4 py-2 border'>예약자</th>
-                    <th className='px-4 py-2 border'>보기</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {futureReservations
-                    .slice(0, futureVisibleCount)
-                    .map((res: Reservation) => (
-                      <tr key={res.id} className='even:bg-gray-50'>
-                        <td className='px-4 py-2 border'>{res.tutor}</td>
-                        <td className='px-4 py-2 border'>{res.timeSlot}</td>
-                        <td className='px-4 py-2 border'>{res.teamName}</td>
-                        <td className='px-4 py-2 border'>
-                          <div className='flex gap-2'>
-                            <button
-                              onClick={() => handleViewClick(res)}
-                              className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
-                            >
-                              보기
-                            </button>
-                            {isAdmin && (
-                              <button
-                                onClick={() => handleCancel(res.id)}
-                                className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
-                              >
-                                삭제
-                              </button>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-              {futureReservations.length > futureVisibleCount && (
-                <div className='flex justify-center mt-6'>
-                  <button
-                    onClick={() => setFutureVisibleCount((prev) => prev + 10)}
-                    className='flex items-center gap-2 px-5 py-2 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-full text-sm font-semibold transition'
-                  >
-                    <ChevronDown className='w-4 h-4' />
-                    더보기
-                  </button>
-                </div>
-              )}
-            </>
-          ) : (
-            <p className='text-center text-gray-400 py-6'>
-              진행 예정 예약이 없습니다.
-            </p>
-          )}
+          <FutureReservationTable
+            reservations={futureReservations}
+            visibleCount={futureVisibleCount}
+            onLoadMore={() => setFutureVisibleCount((prev) => prev + 10)}
+            onView={handleViewClick}
+            onCancel={handleCancel}
+            isAdmin={isAdmin}
+          />
+
           {/* 지난 예약 */}
           <h3 className='text-lg font-semibold text-gray-700 mb-4 mt-12'>
             지난 예약
           </h3>
-          {pastReservations.length > 0 ? (
-            <>
-              <table className='w-full text-sm border border-gray-200 rounded overflow-hidden'>
-                <thead>
-                  <tr className='bg-blue-50 text-blue-800 text-left'>
-                    <th className='px-4 py-2 border'>튜터명</th>
-                    <th className='px-4 py-2 border'>시간</th>
-                    <th className='px-4 py-2 border'>예약자</th>
-                    {isAdmin && <th className='px-4 py-2 border'>관리</th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {pastReservations
-                    .slice(0, pastVisibleCount)
-                    .map((res: Reservation) => (
-                      <tr key={res.id} className='even:bg-gray-50'>
-                        <td className='px-4 py-2 border'>{res.tutor}</td>
-                        <td className='px-4 py-2 border'>{res.timeSlot}</td>
-                        <td className='px-4 py-2 border'>{res.teamName}</td>
-                        {isAdmin && (
-                          <td className='px-4 py-2 border'>
-                            <div className='flex gap-2'>
-                              <button
-                                onClick={() => setSelectedReservation(res)}
-                                className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
-                              >
-                                보기
-                              </button>
-                              <button
-                                onClick={() => handleCancel(res.id)}
-                                className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
-                              >
-                                삭제
-                              </button>
-                            </div>
-                          </td>
-                        )}
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-              {pastReservations.length > pastVisibleCount && (
-                <div className='flex justify-center mt-6'>
-                  <button
-                    onClick={() => setPastVisibleCount((prev) => prev + 10)}
-                    className='flex items-center gap-2 px-5 py-2 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-full text-sm font-semibold transition'
-                  >
-                    <ChevronDown className='w-4 h-4' />
-                    더보기
-                  </button>
-                </div>
-              )}
-            </>
-          ) : (
-            <p className='text-center text-gray-400 py-6'>
-              지난 예약이 없습니다.
-            </p>
-          )}
+          <PastReservationTable
+            reservations={pastReservations}
+            visibleCount={pastVisibleCount}
+            onLoadMore={() => setPastVisibleCount((prev) => prev + 10)}
+            onView={(res) => setSelectedReservation(res)}
+            onCancel={handleCancel}
+            isAdmin={isAdmin}
+          />
         </>
       )}
       {/* 예약 상세 모달 */}
