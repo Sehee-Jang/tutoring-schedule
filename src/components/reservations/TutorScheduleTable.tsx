@@ -20,8 +20,16 @@ const TutorScheduleTable = ({
 }: TutorScheduleTableProps) => {
   const { availability } = useAvailability();
   const { reservations } = useReservations();
+  const rawTimeSlots = availability[tutorName] || [];
 
-  const timeSlots = availability[tutorName] || [];
+ const timeSlots = [...rawTimeSlots].sort((a, b) => {
+   const getStartMinutes = (time: string) => {
+     const [start] = time.split("-");
+     const [h, m] = start.split(":").map(Number);
+     return h * 60 + m;
+   };
+   return getStartMinutes(a) - getStartMinutes(b);
+ });
 
   const getReservationForSlot = (slot: string) => {
     return reservations.find(
