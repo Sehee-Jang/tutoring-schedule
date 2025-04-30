@@ -50,8 +50,6 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
     });
   }, [reservations, activeTab]);
 
-  const displayedReservations = sortedReservations.slice(0, visibleCount);
-
   const futureReservations = sortedReservations.filter((res) => {
     const [hour, min] = res.timeSlot.split("-")[0].split(":").map(Number);
     const reservationStartMinutes = hour * 60 + min;
@@ -139,69 +137,6 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
           );
         })}
       </div>
-
-      {/* 테이블 */}
-      {/* {loading ? (
-        // 로딩 중
-        <div className='flex justify-center py-10'>
-          <div className='animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500' />
-        </div>
-      ) : sortedReservations.length ? (
-        <>
-          <table className='w-full text-sm border border-gray-200 rounded overflow-hidden'>
-            <thead>
-              <tr className='bg-blue-50 text-blue-800 text-left'>
-                <th className='px-4 py-2 border'>튜터명</th>
-                <th className='px-4 py-2 border'>시간</th>
-                <th className='px-4 py-2 border'>예약자</th>
-                {isAdmin && <th className='px-4 py-2 border'>관리</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {displayedReservations.map((res: Reservation) => (
-                <tr key={res.id} className='even:bg-gray-50'>
-                  <td className='px-4 py-2 border'>{res.tutor}</td>
-                  <td className='px-4 py-2 border'>{res.timeSlot}</td>
-                  <td className='px-4 py-2 border'>{res.teamName}</td>
-                  {isAdmin && (
-                    <td className='px-4 py-2 border'>
-                      <div className='flex gap-2'>
-                        <button
-                          onClick={() => setSelectedReservation(res)}
-                          className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
-                        >
-                          보기
-                        </button>
-                        <button
-                          onClick={() => handleCancel(res.id)}
-                          className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
-                        >
-                          삭제
-                        </button>
-                      </div>
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {sortedReservations.length > visibleCount && (
-            <div className='w-full flex justify-center mt-6'>
-              <button
-                onClick={() => setVisibleCount((prev) => prev + 10)}
-                className='flex items-center gap-2 px-5 py-2 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-full text-sm font-semibold transition'
-              >
-                <ChevronDown className='w-4 h-4' />
-                더보기
-              </button>
-            </div>
-          )}
-        </>
-      ) : (
-        <p className='text-center text-gray-500 py-6'>
-          예약된 튜터링이 없습니다.
-        </p>
-      )} */}
 
       {loading ? (
         <div className='flex justify-center py-10'>
