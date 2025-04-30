@@ -27,7 +27,7 @@ const TimeSlotButton = ({
   else className += ` ${defaultClass}`;
 
   return (
-    <button {...props} className={className} disabled={disabled}>
+    <button type='button' {...props} className={className} disabled={disabled}>
       {children}
     </button>
   );
