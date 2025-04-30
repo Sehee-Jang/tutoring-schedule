@@ -7,7 +7,7 @@ import { cancelReservation } from "../../services/firebase";
 import ReservationDetailModal from "./ReservationDetailModal";
 import TutorButton from "../shared/TutorButton";
 import { useTutors } from "../../context/TutorContext";
-import { toast } from "react-hot-toast";
+import { useToast } from "../../hooks/use-toast";
 import { ChevronDown } from "lucide-react";
 import PasswordModal from "./PasswordModal";
 
@@ -30,6 +30,7 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
   const now = new Date();
   const todayString = now.toISOString().slice(0, 10); // "YYYY-MM-DD"
   const nowMinutes = now.getHours() * 60 + now.getMinutes();
+  const { toast } = useToast();
 
   // 예약 시간 순으로 정렬
   const sortedReservations = useMemo(() => {
@@ -67,9 +68,15 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
     if (window.confirm("예약을 취소하시겠습니까?")) {
       try {
         await cancelReservation(id);
-        toast.success("예약이 성공적으로 취소되었습니다!");
+        toast({
+          title: "예약이 성공적으로 취소되었습니다!",
+          variant: "default",
+        });
       } catch {
-        toast.error("예약 취소 중 오류가 발생했습니다.");
+        toast({
+          title: "❌ 예약 취소 중 오류가 발생했습니다.",
+          variant: "destructive",
+        });
       }
     }
   };
@@ -93,7 +100,10 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
       setSelectedReservation(pendingReservation);
       setPasswordModalOpen(false);
     } else {
-      alert("비밀번호가 틀렸습니다.");
+      toast({
+        title: "❌ 비밀번호가 틀렸습니다.",
+        variant: "destructive",
+      });
     }
   };
   return (

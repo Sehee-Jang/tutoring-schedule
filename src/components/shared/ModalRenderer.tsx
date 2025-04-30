@@ -1,7 +1,7 @@
 import { useModal } from "../../context/ModalContext";
 import LoginModal from "../auth/LoginModal";
 import AvailabilityModal from "../availability/AvailabilityModal";
-import ReservationDetailModal from "../reservation/ReservationDetailModal";
+import ReservationDetailModal from "../reservations/ReservationDetailModal";
 
 const ModalRenderer = () => {
   const { modalType, modalProps, closeModal } = useModal();

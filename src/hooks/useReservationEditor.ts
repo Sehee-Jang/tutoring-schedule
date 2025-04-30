@@ -6,6 +6,7 @@ import type {
   Reservation,
   ReservationEditorFormData,
 } from "../types/reservation";
+import { useToast } from "./use-toast";
 
 const useReservationEditor = (
   reservation: Reservation | null,
@@ -17,6 +18,7 @@ const useReservationEditor = (
     timeSlot: "",
   });
   const [editMode, setEditMode] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (reservation) {
@@ -43,17 +45,26 @@ const useReservationEditor = (
 
   const update = async () => {
     if (!reservation) {
-      alert("수정할 예약이 없습니다.");
+      toast({
+        title: "수정할 예약이 없습니다.",
+        variant: "default",
+      });
       return;
     }
 
     try {
       await updateReservation(reservation.id, form);
-      alert("수정 완료!");
+      toast({
+        title: "수정 되었습니다!",
+        variant: "default",
+      });
       setEditMode(false);
       onClose();
     } catch {
-      alert("수정 실패 😢");
+      toast({
+        title: "수정 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
     }
   };
 

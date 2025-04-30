@@ -8,11 +8,11 @@ import {
   doc,
 } from "firebase/firestore";
 import { Tutor } from "../../types/tutor";
-import { toast } from "react-hot-toast";
+import { useToast } from "../../hooks/use-toast";
 import { Switch } from "../../components/ui/switch";
-import TutorFormModal from "../../components/tutor/TutorFormModal";
+import TutorFormModal from "../../components/admin/tutors/TutorFormModal";
 
-const TutorsPage = () => {
+const AdminPage = () => {
   const [tutors, setTutors] = useState<Tutor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,6 +20,8 @@ const TutorsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
   const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null);
+
+  const { toast } = useToast();
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -59,12 +61,18 @@ const TutorsPage = () => {
       const tutorRef = doc(db, "tutors", tutor.id);
       const newStatus = tutor.status === "active" ? "inactive" : "active";
       await updateDoc(tutorRef, { status: newStatus });
-      toast.success(
-        `튜터가 ${newStatus === "active" ? "활성화" : "비활성화"}되었습니다.`
-      );
+      toast({
+        title: `튜터가 ${
+          newStatus === "active" ? "활성화" : "비활성화"
+        }되었습니다.`,
+        variant: "default",
+      });
     } catch (error) {
       console.error("튜터 상태 변경 오류:", error);
-      toast.error("튜터 상태 변경에 실패했습니다.");
+      toast({
+        title: "튜터 상태 변경에 실패했습니다.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -149,4 +157,4 @@ const TutorsPage = () => {
   );
 };
 
-export default TutorsPage;
+export default AdminPage;
