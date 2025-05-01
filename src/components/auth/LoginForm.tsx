@@ -29,7 +29,6 @@ const LoginForm = () => {
     setPassword(e.target.value);
   };
 
-
   return (
     <div className='max-w-sm mx-auto bg-white shadow rounded p-6 mt-4'>
       <h2 className='text-lg font-bold text-gray-800 mb-4'>관리자 로그인</h2>

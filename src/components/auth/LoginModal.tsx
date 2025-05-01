@@ -4,6 +4,15 @@ import React, { useState, useEffect } from "react";
 import { login } from "../../services/auth";
 import { useAuth } from "../../context/AuthContext";
 import ModalLayout from "../shared/ModalLayout";
+import { loginWithGoogle } from "../../services/auth";
+
+const handleGoogleLogin = async () => {
+  try {
+    await loginWithGoogle();
+  } catch (err) {
+    console.error("Google 로그인 실패:", err);
+  }
+};
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -70,6 +79,13 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
         >
           로그인
         </button>
+        {/* <button
+          type='button'
+          onClick={handleGoogleLogin}
+          className='border px-3 py-2 rounded bg-red-500 text-white hover:bg-red-600'
+        >
+          Google로 로그인
+        </button> */}
       </form>
     </ModalLayout>
   );

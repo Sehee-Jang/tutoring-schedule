@@ -1,5 +1,3 @@
-// src/components/tutor/TutorFormModal.tsx
-
 import React from "react";
 
 interface TutorFormModalProps {

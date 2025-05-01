@@ -10,6 +10,7 @@ import { TutorProvider } from "./context/TutorContext";
 import AdminRoute from "./components/common/AdminRoute";
 import { ToastProvider } from "./components/ui/toast";
 import { Toaster } from "./components/ui/toaster";
+import SignUpForm from "./components/auth/SignUpForm";
 
 const App: React.FC = () => {
   return (
@@ -22,6 +23,7 @@ const App: React.FC = () => {
                 <Router>
                   <Routes>
                     <Route path='/' element={<AppContent />} />
+                    <Route path='/signup' element={<SignUpForm />} />
                     <Route
                       path='/admin/tutors'
                       element={

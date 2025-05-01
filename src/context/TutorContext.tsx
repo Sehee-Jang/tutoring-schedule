@@ -10,6 +10,7 @@ import {
 import { db } from "../services/firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import { Tutor } from "../types/tutor";
+import { useFetchTutors } from "../hooks/useFetchTutors";
 
 interface TutorContextType {
   tutors: Tutor[];
@@ -24,20 +25,20 @@ interface TutorProviderProps {
 }
 
 export const TutorProvider = ({ children }: TutorProviderProps) => {
-  const [tutors, setTutors] = useState<Tutor[]>([]);
+  // const [tutors, setTutors] = useState<Tutor[]>([]);
 
-  useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "tutors"), (snapshot) => {
-      const liveTutors = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Tutor, "id">),
-      }));
-      setTutors(liveTutors);
-    });
+  // useEffect(() => {
+  //   const unsubscribe = onSnapshot(collection(db, "tutors"), (snapshot) => {
+  //     const liveTutors = snapshot.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...(doc.data() as Omit<Tutor, "id">),
+  //     }));
+  //     setTutors(liveTutors);
+  //   });
 
-    return () => unsubscribe();
-  }, []);
-
+  //   return () => unsubscribe();
+  // }, []);
+  const { tutors } = useFetchTutors();
   return (
     <TutorContext.Provider value={{ tutors }}>{children}</TutorContext.Provider>
   );
