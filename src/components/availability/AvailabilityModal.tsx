@@ -4,13 +4,9 @@ import { useEffect, useState } from "react";
 import { useAvailability } from "../../context/AvailabilityContext";
 import { useTutors } from "../../context/TutorContext";
 import { useAuth } from "../../context/AuthContext";
+import { useModal } from "../../context/ModalContext";
 import ModalLayout from "../shared/ModalLayout";
 import TimeSlotButton from "../shared/TimeSlotButton";
-
-interface AvailabilityModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
 
 const generateTimeSlots = (): string[] => {
   const slots: string[] = [];
@@ -28,7 +24,10 @@ const generateTimeSlots = (): string[] => {
   return slots;
 };
 
-const AvailabilityModal = ({ isOpen, onClose }: AvailabilityModalProps) => {
+const AvailabilityModal = () => {
+  const { modalType, closeModal } = useModal();
+  const isOpen = modalType === "availability";
+
   const { availability: globalAvailability, updateAvailability } =
     useAvailability();
   const { tutors } = useTutors();
@@ -84,13 +83,13 @@ const AvailabilityModal = ({ isOpen, onClose }: AvailabilityModalProps) => {
 
   const handleSave = async () => {
     await updateAvailability(selectedTutor, availability[selectedTutor] || []);
-    onClose();
+    closeModal();
   };
 
   if (!isOpen) return null;
 
   return (
-    <ModalLayout onClose={onClose}>
+    <ModalLayout onClose={closeModal}>
       <h2 className='text-xl font-bold mb-4 text-blue-800'>
         {selectedTutor
           ? `${selectedTutor} 튜터님의 시간 설정`
@@ -151,7 +150,7 @@ const AvailabilityModal = ({ isOpen, onClose }: AvailabilityModalProps) => {
       {/* 저장/닫기 버튼 */}
       <div className='flex justify-end gap-2'>
         <button
-          onClick={onClose}
+          onClick={closeModal}
           className='text-gray-600 hover:underline text-sm'
         >
           닫기

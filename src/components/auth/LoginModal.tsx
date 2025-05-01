@@ -3,33 +3,32 @@
 import React, { useState, useEffect } from "react";
 import { login } from "../../services/auth";
 import { useAuth } from "../../context/AuthContext";
+import { useModal } from "../../context/ModalContext";
 import ModalLayout from "../shared/ModalLayout";
-import { loginWithGoogle } from "../../services/auth";
+// import { loginWithGoogle } from "../../services/auth";
 
-const handleGoogleLogin = async () => {
-  try {
-    await loginWithGoogle();
-  } catch (err) {
-    console.error("Google 로그인 실패:", err);
-  }
-};
+// const handleGoogleLogin = async () => {
+//   try {
+//     await loginWithGoogle();
+//   } catch (err) {
+//     console.error("Google 로그인 실패:", err);
+//   }
+// };
 
-interface LoginModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
+const LoginModal = () => {
+  const { modalType, closeModal } = useModal();
+  const { user } = useAuth();
+  const isOpen = modalType === "login";
 
-const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const { user } = useAuth();
 
   useEffect(() => {
     if (user) {
-      onClose(); // 로그인 성공 시 모달 닫기
+      closeModal(); // 로그인 성공 시 모달 닫기
     }
-  }, [user, onClose]);
+  }, [user, closeModal]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -53,7 +52,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <ModalLayout onClose={onClose}>
+    <ModalLayout onClose={closeModal}>
       <h2 className='text-xl font-bold mb-4 text-center'>관리자 로그인</h2>
       {error && (
         <p className='text-red-500 text-sm mb-3 text-center'>{error}</p>

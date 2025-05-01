@@ -1,7 +1,12 @@
 "use client";
 import { createContext, useContext, useState, ReactNode } from "react";
 
-type ModalType = "login" | "availability" | "reservationDetail" | null;
+type ModalType =
+  | "login"
+  | "signup"
+  | "availability"
+  | "reservationDetail"
+  | null;
 
 interface ModalContextType {
   modalType: ModalType;

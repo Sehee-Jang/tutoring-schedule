@@ -25,7 +25,6 @@ const App: React.FC = () => {
                 <Router>
                   <Routes>
                     <Route path='/' element={<AppContent />} />
-                    <Route path='/signup' element={<SignUpForm />} />
                     <Route
                       path='/admin/tutors'
                       element={

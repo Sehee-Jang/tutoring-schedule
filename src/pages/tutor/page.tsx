@@ -3,11 +3,12 @@
 import { useAuth } from "../../context/AuthContext";
 import { useReservations } from "../../context/ReservationContext";
 import { useModal } from "../../context/ModalContext";
-import { Settings } from "lucide-react";
+import { Settings, LogOut } from "lucide-react";
 import TutorScheduleTable from "../../components/reservations/TutorScheduleTable";
 import ReservationDetailModal from "../../components/reservations/ReservationDetailModal";
 import AvailabilityModal from "../../components/availability/AvailabilityModal";
 import type { Reservation } from "../../types/reservation";
+import { logout } from "../../services/auth";
 
 const TutorPage = () => {
   const { user, isAdmin, isTutor } = useAuth();
@@ -17,14 +18,24 @@ const TutorPage = () => {
   // 로그인 안 되어있을 때
   if (!user) {
     return (
-      <div className='p-8 text-center'>
-        <p className='text-lg'>튜터링 서비스를 이용하려면 로그인해주세요.</p>
-        <button
-          onClick={() => showModal("login")}
-          className='bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700'
-        >
-          로그인
-        </button>
+      <div className='p-10 text-center space-y-6 bg-white rounded-xl shadow max-w-md mx-auto mt-24'>
+        <h2 className='text-2xl font-bold text-gray-800'>
+          튜터링 서비스를 이용하려면 로그인해주세요
+        </h2>
+        <div className='flex justify-center gap-4'>
+          <button
+            onClick={() => showModal("login")}
+            className='bg-blue-600 text-white px-5 py-2 rounded-md text-sm hover:bg-blue-700'
+          >
+            로그인
+          </button>
+          <button
+            onClick={() => showModal("signup")}
+            className='border border-blue-600 text-blue-600 px-5 py-2 rounded-md text-sm hover:bg-blue-50'
+          >
+            회원가입
+          </button>
+        </div>
       </div>
     );
   }
@@ -52,18 +63,30 @@ const TutorPage = () => {
         <h1 className='text-2xl font-bold'>
           {user.name} 튜터님, 안녕하세요 👋
         </h1>
+
         <button
-          onClick={() => showModal("availability")}
-          title='튜터링 가능 시간 설정'
+          onClick={logout}
+          title='로그아웃'
           className='text-gray-700 hover:text-black'
         >
-          <Settings className='w-5 h-5' />
+          <LogOut className='w-5 h-5' />
         </button>
       </div>
 
       {/* 오늘 예약 현황 */}
-      <section>
+      <section className='relative'>
         <h2 className='text-xl font-semibold mb-4'>오늘 예약 현황</h2>
+
+        {/* 시간 설정 버튼 */}
+        <button
+          onClick={() => showModal("availability")}
+          title='튜터링 가능 시간 설정'
+          className='absolute right-0 top-0 text-sm text-gray-700 hover:text-black'
+        >
+          <Settings className='w-5 h-5' />
+        </button>
+
+        {/* 오늘 예약 현황 테이블 */}
         <TutorScheduleTable
           tutorName={user.name}
           isAdmin={isAdmin}
@@ -82,9 +105,7 @@ const TutorPage = () => {
         />
       )}
 
-      {modalType === "availability" && (
-        <AvailabilityModal isOpen={true} onClose={closeModal} />
-      )}
+      {modalType === "availability" && <AvailabilityModal />}
     </div>
   );
 };

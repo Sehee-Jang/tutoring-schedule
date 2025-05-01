@@ -1,6 +1,7 @@
 import { useModal } from "../../context/ModalContext";
 import { useAuth } from "../../context/AuthContext";
 import LoginModal from "../auth/LoginModal";
+import SignUpModal from "../auth/SignUpModal";
 import AvailabilityModal from "../availability/AvailabilityModal";
 import ReservationDetailModal from "../reservations/ReservationDetailModal";
 
@@ -12,9 +13,11 @@ const ModalRenderer = () => {
 
   switch (modalType) {
     case "login":
-      return <LoginModal isOpen={true} onClose={closeModal} />;
+      return <LoginModal />;
+    case "signup":
+      return <SignUpModal />;
     case "availability":
-      return <AvailabilityModal isOpen={true} onClose={closeModal} />;
+      return <AvailabilityModal />;
     case "reservationDetail":
       return (
         <ReservationDetailModal
