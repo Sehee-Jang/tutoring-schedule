@@ -2,12 +2,12 @@
 
 import { useAuth } from "../../context/AuthContext";
 import { useReservations } from "../../context/ReservationContext";
-import { Settings } from "lucide-react";
 import { useModal } from "../../context/ModalContext";
+import { Settings } from "lucide-react";
+import TutorScheduleTable from "../../components/reservations/TutorScheduleTable";
 import ReservationDetailModal from "../../components/reservations/ReservationDetailModal";
 import AvailabilityModal from "../../components/availability/AvailabilityModal";
-import ReservationCard from "../../components/reservations/ReservationCard";
-import PrimaryButton from "../../components/shared/PrimaryButton";
+import type { Reservation } from "../../types/reservation";
 
 const TutorPage = () => {
   const { user } = useAuth();
@@ -38,6 +38,22 @@ const TutorPage = () => {
     );
   }
 
+  // 로그인한 튜터의 예약만 필터링
+  const tutorReservations = reservations.filter(
+    (res) => res.tutor === user.name
+  );
+
+  const tutorName = user.name;
+  const isAdmin = false;
+
+  const handleView = (reservation: Reservation) => {
+    showModal("reservationDetail", {
+      reservation,
+      isAdmin: false,
+      isTutor: true,
+    });
+  };
+
   return (
     <div className='p-6 max-w-3xl mx-auto'>
       <div className='flex justify-between items-center mb-6'>
@@ -53,17 +69,14 @@ const TutorPage = () => {
         </button>
       </div>
 
+      {/* 오늘 예약 현황 */}
       <section>
         <h2 className='text-xl font-semibold mb-4'>오늘 예약 현황</h2>
-        {reservations.length === 0 ? (
-          <p className='text-gray-500'>오늘 예약이 없습니다.</p>
-        ) : (
-          <ul className='space-y-4'>
-            {reservations.map((res) => (
-              <ReservationCard key={res.id} reservation={res} />
-            ))}
-          </ul>
-        )}
+        <TutorScheduleTable
+          tutorName={tutorName}
+          isAdmin={isAdmin}
+          onView={handleView}
+        />
       </section>
 
       {/* 모달 렌더링 */}
@@ -73,6 +86,7 @@ const TutorPage = () => {
           reservation={modalProps?.reservation || null}
           onClose={closeModal}
           isAdmin={false} // 튜터 페이지니까 false
+          isTutor={modalProps?.isTutor || false}
         />
       )}
 

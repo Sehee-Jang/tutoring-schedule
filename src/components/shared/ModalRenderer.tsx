@@ -20,6 +20,7 @@ const ModalRenderer = () => {
           reservation={modalProps?.reservation || null}
           onClose={closeModal}
           isAdmin={modalProps?.isAdmin || false}
+          isTutor={modalProps?.isTutor || false}
         />
       );
     default:
