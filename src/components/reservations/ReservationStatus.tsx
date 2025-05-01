@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import type { Reservation } from "../../types/reservation";
 import { useReservations } from "../../context/ReservationContext";
+import { useAuth } from "../../context/AuthContext";
 import { cancelReservation } from "../../services/firebase";
 import ReservationDetailModal from "./ReservationDetailModal";
 import { useToast } from "../../hooks/use-toast";
@@ -12,10 +13,8 @@ import FutureReservationTable from "./FutureReservationTable";
 import PastReservationTable from "./PastReservationTable";
 import ReservationTabsHeader from "./ReservationTabsHeader";
 
-interface ReservationStatusProps {
-  isAdmin: boolean;
-}
-const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
+const ReservationStatus = () => {
+  const { isAdmin } = useAuth();
   const { reservations, loading } = useReservations();
   const [activeTab, setActiveTab] = useState<string>("all");
   const [selectedReservation, setSelectedReservation] =

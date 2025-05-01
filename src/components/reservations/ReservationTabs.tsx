@@ -1,15 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 import ReservationForm from "./ReservationForm";
 import ReservationStatus from "./ReservationStatus";
 import TabButton from "../shared/TabButton";
 
-interface ReservationTabsProps {
-  isAdmin?: boolean;
-}
-
-const ReservationTabs = ({ isAdmin = false }: ReservationTabsProps) => {
+const ReservationTabs = () => {
+  const { isAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState<"form" | "status">("form");
 
   const handleReservationSuccess = () => {
@@ -44,7 +42,7 @@ const ReservationTabs = ({ isAdmin = false }: ReservationTabsProps) => {
           )}
           {activeTab === "status" && (
             <div className='bg-white rounded-xl shadow px-6 py-8'>
-              <ReservationStatus isAdmin={isAdmin} />
+              <ReservationStatus />
             </div>
           )}
         </div>

@@ -10,7 +10,7 @@ import AvailabilityModal from "../../components/availability/AvailabilityModal";
 import type { Reservation } from "../../types/reservation";
 
 const TutorPage = () => {
-  const { user } = useAuth();
+  const { user, isAdmin, isTutor } = useAuth();
   const { reservations } = useReservations();
   const { modalType, modalProps, closeModal, showModal } = useModal();
 
@@ -38,19 +38,11 @@ const TutorPage = () => {
     );
   }
 
-  // 로그인한 튜터의 예약만 필터링
-  const tutorReservations = reservations.filter(
-    (res) => res.tutor === user.name
-  );
-
-  const tutorName = user.name;
-  const isAdmin = false;
-
   const handleView = (reservation: Reservation) => {
     showModal("reservationDetail", {
       reservation,
-      isAdmin: false,
-      isTutor: true,
+      isAdmin,
+      isTutor,
     });
   };
 
@@ -73,7 +65,7 @@ const TutorPage = () => {
       <section>
         <h2 className='text-xl font-semibold mb-4'>오늘 예약 현황</h2>
         <TutorScheduleTable
-          tutorName={tutorName}
+          tutorName={user.name}
           isAdmin={isAdmin}
           onView={handleView}
         />

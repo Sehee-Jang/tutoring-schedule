@@ -1,10 +1,12 @@
 import { useModal } from "../../context/ModalContext";
+import { useAuth } from "../../context/AuthContext";
 import LoginModal from "../auth/LoginModal";
 import AvailabilityModal from "../availability/AvailabilityModal";
 import ReservationDetailModal from "../reservations/ReservationDetailModal";
 
 const ModalRenderer = () => {
   const { modalType, modalProps, closeModal } = useModal();
+  const { isAdmin, isTutor } = useAuth();
 
   if (!modalType) return null;
 
@@ -19,8 +21,8 @@ const ModalRenderer = () => {
           isOpen={true}
           reservation={modalProps?.reservation || null}
           onClose={closeModal}
-          isAdmin={modalProps?.isAdmin || false}
-          isTutor={modalProps?.isTutor || false}
+          isAdmin={isAdmin}
+          isTutor={isTutor}
         />
       );
     default:

@@ -14,11 +14,15 @@ import { doc, getDoc } from "firebase/firestore";
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
+  isAdmin: boolean;
+  isTutor: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   isLoading: true,
+  isAdmin: false,
+  isTutor: false,
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -74,8 +78,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return () => unsubscribe();
   }, []);
 
+  const isAdmin = user?.role === "admin";
+  const isTutor = user?.role === "tutor";
+
   return (
-    <AuthContext.Provider value={{ user, isLoading }}>
+    <AuthContext.Provider value={{ user, isLoading, isAdmin, isTutor }}>
       {children}
     </AuthContext.Provider>
   );
