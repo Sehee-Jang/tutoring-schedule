@@ -2,34 +2,33 @@
 
 import { useReservations } from "../../context/ReservationContext";
 import { useAvailability } from "../../context/AvailabilityContext";
-import { useState } from "react";
 import { Reservation } from "../../types/reservation";
-import PrimaryButton from "../shared/PrimaryButton";
-import ModalLayout from "../shared/ModalLayout";
 
 interface TutorScheduleTableProps {
   tutorName: string;
   isAdmin: boolean;
   onView: (reservation: Reservation) => void;
+  onCancel?: (id: string) => void;
 }
 
 const TutorScheduleTable = ({
   tutorName,
   isAdmin,
   onView,
+  onCancel,
 }: TutorScheduleTableProps) => {
   const { availability } = useAvailability();
   const { reservations } = useReservations();
   const rawTimeSlots = availability[tutorName] || [];
 
- const timeSlots = [...rawTimeSlots].sort((a, b) => {
-   const getStartMinutes = (time: string) => {
-     const [start] = time.split("-");
-     const [h, m] = start.split(":").map(Number);
-     return h * 60 + m;
-   };
-   return getStartMinutes(a) - getStartMinutes(b);
- });
+  const timeSlots = [...rawTimeSlots].sort((a, b) => {
+    const getStartMinutes = (time: string) => {
+      const [start] = time.split("-");
+      const [h, m] = start.split(":").map(Number);
+      return h * 60 + m;
+    };
+    return getStartMinutes(a) - getStartMinutes(b);
+  });
 
   const getReservationForSlot = (slot: string) => {
     return reservations.find(
@@ -73,15 +72,26 @@ const TutorScheduleTable = ({
                   {isBooked ? reservation?.teamName : "-"}
                 </td>
                 <td className='px-4 py-2 border'>
-                  {isBooked ? (
-                    <PrimaryButton
-                      onClick={() => reservation && onView(reservation)}
-                    >
-                      보기
-                    </PrimaryButton>
-                  ) : (
-                    <span className='text-gray-300'>-</span>
-                  )}
+                  <div className='flex gap-2'>
+                    {isBooked ? (
+                      <button
+                        onClick={() => reservation && onView(reservation)}
+                        className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
+                      >
+                        보기
+                      </button>
+                    ) : (
+                      <span className='text-gray-300'>-</span>
+                    )}
+                    {isBooked && isAdmin && onCancel && (
+                      <button
+                        onClick={() => onCancel(reservation!.id)}
+                        className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
+                      >
+                        삭제
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             );

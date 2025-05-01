@@ -127,7 +127,12 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
         </div>
 
         <div>
-          <h3 className='font-semibold text-gray-700 mb-2'>시간 선택</h3>
+          <div className='flex items-center mb-2'>
+            <h3 className='font-semibold text-gray-700'>시간 선택&nbsp;</h3>
+            <p className='text-sm text-blue-500 hover:text-blue-700'>
+              (예약 가능한 시간대만 노출됩니다.)
+            </p>
+          </div>
 
           <div className='max-h-[100px] min-h-[100px] overflow-y-scroll pr-1 rounded'>
             <div className='grid grid-cols-2 sm:grid-cols-3 gap-3'>

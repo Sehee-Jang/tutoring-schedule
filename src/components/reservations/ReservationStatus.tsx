@@ -124,6 +124,7 @@ const ReservationStatus = ({ isAdmin }: ReservationStatusProps) => {
           tutorName={activeTab}
           isAdmin={isAdmin}
           onView={handleViewClick}
+          onCancel={handleCancel}
         />
       ) : (
         <>
