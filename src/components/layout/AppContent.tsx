@@ -10,14 +10,6 @@ import Footer from "./Footer";
 const AppContent = () => {
   const { user } = useAuth();
   const isAdmin: boolean = user?.role === "admin";
-  const { showModal } = useModal();
-
-  const today: string = new Date().toLocaleDateString("ko-KR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    weekday: "long",
-  });
 
   return (
     <div className='relative max-w-5xl mx-auto px-4 py-6 font-sans bg-gray-50 min-h-screen'>

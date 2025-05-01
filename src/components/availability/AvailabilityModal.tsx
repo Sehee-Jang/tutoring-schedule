@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAvailability } from "../../context/AvailabilityContext";
 import { useTutors } from "../../context/TutorContext";
+import { useAuth } from "../../context/AuthContext";
 import ModalLayout from "../shared/ModalLayout";
 import TimeSlotButton from "../shared/TimeSlotButton";
 
@@ -31,20 +32,40 @@ const AvailabilityModal = ({ isOpen, onClose }: AvailabilityModalProps) => {
   const { availability: globalAvailability, updateAvailability } =
     useAvailability();
   const { tutors } = useTutors();
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
+  const isTutor = user?.role === "tutor";
+
   const [selectedTutor, setSelectedTutor] = useState<string>("");
   const [availability, setAvailability] = useState<Record<string, string[]>>(
     {}
   ); // { 튜터이름: ["시간대", ...] }
   const slots = generateTimeSlots();
 
-  // tutors가 바뀔 때 초기값 세팅
+  // // tutors가 바뀔 때 초기값 세팅
+  // useEffect(() => {
+  //   if (tutors.length > 0 && !selectedTutor) {
+  //     setSelectedTutor(tutors[0].name);
+  //   }
+  // }, [tutors, selectedTutor]);
+
+  // // 모달 열릴 때 Firestore에서 불러온 시간대 상태로 복사
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     setAvailability(globalAvailability);
+  //   }
+  // }, [isOpen, globalAvailability]);
+
+  // selectedTutor 초기값 설정
   useEffect(() => {
-    if (tutors.length > 0 && !selectedTutor) {
+    if (isTutor && user?.name) {
+      setSelectedTutor(user.name);
+    } else if (isAdmin && tutors.length > 0 && !selectedTutor) {
       setSelectedTutor(tutors[0].name);
     }
-  }, [tutors, selectedTutor]);
+  }, [tutors, selectedTutor, isAdmin, isTutor, user]);
 
-  // 모달 열릴 때 Firestore에서 불러온 시간대 상태로 복사
+  // 모달 열릴 때 global availability 복사
   useEffect(() => {
     if (isOpen) {
       setAvailability(globalAvailability);
@@ -71,11 +92,12 @@ const AvailabilityModal = ({ isOpen, onClose }: AvailabilityModalProps) => {
   return (
     <ModalLayout onClose={onClose}>
       <h2 className='text-xl font-bold mb-4 text-blue-800'>
-        튜터 가능 시간 설정
+        {selectedTutor
+          ? `${selectedTutor} 튜터님의 시간 설정`
+          : "튜터 가능 시간 설정"}
       </h2>
-
       {/* 튜터 선택 */}
-      <div className='mb-4'>
+      {/* <div className='mb-4'>
         <label className='font-semibold text-sm text-gray-600 mr-2'>
           튜터 선택:
         </label>
@@ -90,7 +112,27 @@ const AvailabilityModal = ({ isOpen, onClose }: AvailabilityModalProps) => {
             </option>
           ))}
         </select>
-      </div>
+      </div> */}
+
+      {/* 관리자만 튜터 선택 드롭다운 사용 가능 */}
+      {isAdmin && (
+        <div className='mb-4'>
+          <label className='font-semibold text-sm text-gray-600 mr-2'>
+            튜터 선택:
+          </label>
+          <select
+            value={selectedTutor}
+            onChange={(e) => setSelectedTutor(e.target.value)}
+            className='border px-3 py-1 rounded'
+          >
+            {tutors.map((tutor) => (
+              <option key={tutor.id} value={tutor.name}>
+                {tutor.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* 시간 선택 */}
       <div className='grid grid-cols-3 sm:grid-cols-3 gap-2 text-sm text-gray-700 mb-4 max-h-64 overflow-y-auto'>

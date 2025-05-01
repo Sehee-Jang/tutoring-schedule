@@ -11,6 +11,8 @@ import AdminRoute from "./components/common/AdminRoute";
 import { ToastProvider } from "./components/ui/toast";
 import { Toaster } from "./components/ui/toaster";
 import SignUpForm from "./components/auth/SignUpForm";
+import TutorPage from "./pages/tutor/page";
+import ModalRenderer from "./components/shared/ModalRenderer";
 
 const App: React.FC = () => {
   return (
@@ -32,8 +34,10 @@ const App: React.FC = () => {
                         </AdminRoute>
                       }
                     />
+                    <Route path='/tutor' element={<TutorPage />} />
                   </Routes>
                 </Router>
+                <ModalRenderer />
               </TutorProvider>
             </ReservationProvider>
           </AvailabilityProvider>
