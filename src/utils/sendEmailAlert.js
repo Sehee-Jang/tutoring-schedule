@@ -1,5 +1,5 @@
 import emailjs from "emailjs-com";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../services/firebase";
 
 export const sendEmailAlert = async (formData) => {
