@@ -17,10 +17,13 @@ export const sendEmailAlert = async (formData) => {
   // }
 
   try {
-    // 1. Firestore tutors 컬렉션 가져오기
-    const tutorsSnapshot = await getDocs(collection(db, "tutors"));
+    // 1. Firestore users 콜렉션에서 role: "tutor"인 유저만 가져오기
+    const usersRef = collection(db, "users");
+    const tutorQuery = query(usersRef, where("role", "==", "tutor"));
+    const snapshot = await getDocs(tutorQuery);
+
     const tutors = {};
-    tutorsSnapshot.forEach((doc) => {
+    snapshot.forEach((doc) => {
       const data = doc.data();
       tutors[data.name] = data.email;
     });
