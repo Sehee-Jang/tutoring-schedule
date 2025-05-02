@@ -15,7 +15,7 @@ const ReservationTabs = () => {
   };
 
   return (
-    <div className='max-w-4xl mx-auto p-4'>
+    <div className='max-w-5xl mx-auto p-4'>
       <div className='bg-white rounded-xl shadow px-6 py-8'>
         {/* 탭 버튼 */}
         <div className='bg-gray-50 p-2 rounded-xl flex justify-center gap-2 mb-6'>
