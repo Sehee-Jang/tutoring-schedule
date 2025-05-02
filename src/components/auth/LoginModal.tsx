@@ -5,6 +5,7 @@ import { login } from "../../services/auth";
 import { useAuth } from "../../context/AuthContext";
 import { useModal } from "../../context/ModalContext";
 import ModalLayout from "../shared/ModalLayout";
+import { useToast } from "../../hooks/use-toast";
 // import { loginWithGoogle } from "../../services/auth";
 
 // const handleGoogleLogin = async () => {
@@ -19,6 +20,7 @@ const LoginModal = () => {
   const { modalType, closeModal } = useModal();
   const { user } = useAuth();
   const isOpen = modalType === "login";
+  const { toast } = useToast();
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -36,6 +38,11 @@ const LoginModal = () => {
 
     try {
       await login(email, password);
+      // 성공
+      toast({
+        title: "로그인 성공",
+        variant: "default",
+      });
     } catch (err) {
       setError("이메일 또는 비밀번호가 올바르지 않습니다.");
     }
