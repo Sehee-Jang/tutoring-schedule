@@ -2,7 +2,15 @@ import emailjs from "emailjs-com";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../services/firebase";
 
-export const sendEmailAlert = async (formData) => {
+interface EmailParams {
+  teamName: string;
+  tutor: string;
+  timeSlot: string;
+  resourceLink: string;
+  question: string;
+}
+
+export const sendEmailAlert = async (formData: EmailParams) => {
   const SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
   const TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
   const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
@@ -16,13 +24,18 @@ export const sendEmailAlert = async (formData) => {
   //   return;
   // }
 
+  if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
+    throw new Error("EmailJS 환경변수가 설정되지 않았습니다.");
+  }
+
   try {
     // 1. Firestore users 콜렉션에서 role: "tutor"인 유저만 가져오기
     const usersRef = collection(db, "users");
     const tutorQuery = query(usersRef, where("role", "==", "tutor"));
     const snapshot = await getDocs(tutorQuery);
 
-    const tutors = {};
+    const tutors: Record<string, string> = {};
+
     snapshot.forEach((doc) => {
       const data = doc.data();
       tutors[data.name] = data.email;
