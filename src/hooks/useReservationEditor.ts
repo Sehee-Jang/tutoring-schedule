@@ -7,6 +7,7 @@ import type {
   ReservationEditorFormData,
 } from "../types/reservation";
 import { useToast } from "./use-toast";
+import { sendEmailAlert } from "../utils/sendEmailAlert";
 
 const useReservationEditor = (
   reservation: Reservation | null,
@@ -54,6 +55,21 @@ const useReservationEditor = (
 
     try {
       await updateReservation(reservation.id, form);
+
+      // 이메일 발송 실패는 UI 영향 없이 별도 처리
+      try {
+        await sendEmailAlert({
+          teamName: reservation.teamName,
+          tutor: reservation.tutor,
+          timeSlot: form.timeSlot,
+          resourceLink: form.resourceLink,
+          question: form.question,
+          isUpdate: true,
+        });
+      } catch (emailError) {
+        console.warn("📭 이메일 발송 실패 (예약은 성공):", emailError);
+      }
+
       toast({
         title: "수정 되었습니다!",
         variant: "default",

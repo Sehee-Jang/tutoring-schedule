@@ -22,6 +22,7 @@ export interface ReservationFormData {
   resourceLink: string;
   question: string;
   editPassword: string;
+  isUpdate: boolean;
 }
 
 export interface ReservationEditorFormData {

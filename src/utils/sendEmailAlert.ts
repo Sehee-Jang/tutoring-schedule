@@ -8,11 +8,15 @@ interface EmailParams {
   timeSlot: string;
   resourceLink: string;
   question: string;
+  isUpdate: boolean;
 }
 
 export const sendEmailAlert = async (formData: EmailParams) => {
   const SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
-  const TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
+  // const TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
+  const TEMPLATE_ID = formData.isUpdate
+    ? process.env.REACT_APP_EMAILJS_UPDATE_TEMPLATE_ID
+    : process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
   const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 
   // 테스트용: 이메일 발송 끄기
@@ -63,6 +67,10 @@ export const sendEmailAlert = async (formData: EmailParams) => {
         link: formData.resourceLink,
         question: formData.question,
       };
+
+      console.log("📩 발송 대상 이메일:", email);
+      console.log("🧾 발송 템플릿 ID:", TEMPLATE_ID);
+      console.log("📨 템플릿 파라미터:", templateParams);
 
       await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
     }

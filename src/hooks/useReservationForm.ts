@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { ReservationFormData } from "../types/reservation"
+import type { ReservationFormData } from "../types/reservation";
 const emptyForm: ReservationFormData = {
   teamName: "",
   tutor: "",
@@ -9,6 +9,7 @@ const emptyForm: ReservationFormData = {
   resourceLink: "",
   question: "",
   editPassword: "",
+  isUpdate: false,
 };
 
 const useReservationForm = () => {
