@@ -40,7 +40,7 @@ const Footer = () => {
     // </footer>
     <footer className='text-center text-sm text-gray-500 py-6'>
       <p>© 2025 Sehee Jang. All rights reserved.</p>
-      <p>
+      <div>
         Contact:{" "}
         <a
           href='mailto:seheejang.korea@gmail.com'
@@ -71,7 +71,7 @@ const Footer = () => {
             </button>
           )}
         </div>
-      </p>
+      </div>
     </footer>
   );
 };
