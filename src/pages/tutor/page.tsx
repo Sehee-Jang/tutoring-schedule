@@ -40,6 +40,14 @@ const TutorPage = () => {
               회원가입
             </button>
           </div>
+          <div className='pt-4'>
+            <button
+              onClick={() => navigate("/")}
+              className='text-sm text-gray-500 hover:text-gray-700 underline'
+            >
+              ← 메인으로 돌아가기
+            </button>
+          </div>
         </div>
       </div>
     );
