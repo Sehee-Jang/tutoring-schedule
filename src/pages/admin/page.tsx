@@ -15,9 +15,8 @@ import { Switch } from "../../components/ui/switch";
 import TutorFormModal from "../../components/admin/tutors/TutorFormModal";
 import { useFetchTutors } from "../../hooks/useFetchTutors";
 
-
 const AdminPage = () => {
-  const { tutors, loading, error } = useFetchTutors(); 
+  const { tutors, loading, error } = useFetchTutors();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");

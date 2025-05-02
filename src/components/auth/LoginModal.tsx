@@ -6,6 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useModal } from "../../context/ModalContext";
 import ModalLayout from "../shared/ModalLayout";
 import { useToast } from "../../hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 // import { loginWithGoogle } from "../../services/auth";
 
 // const handleGoogleLogin = async () => {
@@ -21,6 +22,7 @@ const LoginModal = () => {
   const { user } = useAuth();
   const isOpen = modalType === "login";
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -29,8 +31,15 @@ const LoginModal = () => {
   useEffect(() => {
     if (user) {
       closeModal(); // 로그인 성공 시 모달 닫기
+
+      // 로그인 후 역할에 따라 리디렉션
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else if (user.role === "tutor") {
+        navigate("/tutor");
+      }
     }
-  }, [user, closeModal]);
+  }, [user, closeModal, navigate]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

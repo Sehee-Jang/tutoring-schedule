@@ -5,12 +5,11 @@ import { ReservationProvider } from "./context/ReservationContext";
 import { AuthProvider } from "./context/AuthContext";
 import { ModalProvider } from "./context/ModalContext";
 import AppContent from "./components/layout/AppContent";
-import AdminPage from "./pages/admin/tutors";
+import AdminPage from "./pages/admin/page";
 import { TutorProvider } from "./context/TutorContext";
 import AdminRoute from "./components/common/AdminRoute";
 import { ToastProvider } from "./components/ui/toast";
 import { Toaster } from "./components/ui/toaster";
-import SignUpForm from "./components/auth/SignUpForm";
 import TutorPage from "./pages/tutor/page";
 import ModalRenderer from "./components/shared/ModalRenderer";
 
@@ -26,7 +25,7 @@ const App: React.FC = () => {
                   <Routes>
                     <Route path='/' element={<AppContent />} />
                     <Route
-                      path='/admin/tutors'
+                      path='/admin'
                       element={
                         <AdminRoute>
                           <AdminPage />
@@ -35,8 +34,8 @@ const App: React.FC = () => {
                     />
                     <Route path='/tutor' element={<TutorPage />} />
                   </Routes>
+                  <ModalRenderer />
                 </Router>
-                <ModalRenderer />
               </TutorProvider>
             </ReservationProvider>
           </AvailabilityProvider>

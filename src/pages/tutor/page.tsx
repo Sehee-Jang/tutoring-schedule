@@ -10,6 +10,7 @@ import AvailabilityModal from "../../components/availability/AvailabilityModal";
 import type { Reservation } from "../../types/reservation";
 import { logout } from "../../services/auth";
 
+
 const TutorPage = () => {
   const { user, isAdmin, isTutor } = useAuth();
   const { reservations } = useReservations();

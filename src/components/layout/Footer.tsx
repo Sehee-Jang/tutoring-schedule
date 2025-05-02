@@ -1,5 +1,6 @@
 "use client";
 
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useModal } from "../../context/ModalContext";
 import { logout } from "../../services/auth";
@@ -47,6 +48,29 @@ const Footer = () => {
         >
           seheejang.korea@gmail.com
         </a>
+        <div className='flex justify-center items-center py-6 gap-2'>
+          {!user && (
+            <>
+              관리자이신가요?&nbsp;
+              <button
+                onClick={() => showModal("login")}
+                className='underline text-blue-600 hover:text-blue-800'
+              >
+                관리자 로그인
+              </button>
+            </>
+          )}
+          {user && (
+            <button
+              onClick={logout}
+              className='flex items-center gap-1 hover:text-black'
+              title='로그아웃'
+            >
+              <LogOut className='w-4 h-4' />
+              <span>로그아웃</span>
+            </button>
+          )}
+        </div>
       </p>
     </footer>
   );
