@@ -7,7 +7,6 @@ import type {
   ReservationEditorFormData,
 } from "../types/reservation";
 import { useToast } from "./use-toast";
-import { sendEmailAlert } from "../utils/sendEmailAlert";
 
 const useReservationEditor = (
   reservation: Reservation | null,
@@ -55,15 +54,6 @@ const useReservationEditor = (
 
     try {
       await updateReservation(reservation.id, form);
-
-      // 이메일 발송
-      await sendEmailAlert({
-        ...form,
-        tutor: reservation.tutor,
-        teamName: reservation.teamName,
-        isUpdate: true,
-      });
-
       toast({
         title: "수정 되었습니다!",
         variant: "default",

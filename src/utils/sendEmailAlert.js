@@ -2,16 +2,7 @@ import emailjs from "emailjs-com";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../services/firebase";
 
-interface EmailParams {
-  teamName: string;
-  tutor: string;
-  timeSlot: string;
-  resourceLink: string;
-  question: string;
-  isUpdate?: boolean;
-}
-
-export const sendEmailAlert = async (formData: EmailParams) => {
+export const sendEmailAlert = async (formData) => {
   const SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
   const TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
   const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
@@ -31,8 +22,7 @@ export const sendEmailAlert = async (formData: EmailParams) => {
     const tutorQuery = query(usersRef, where("role", "==", "tutor"));
     const snapshot = await getDocs(tutorQuery);
 
-    const tutors: Record<string, string> = {};
-
+    const tutors = {};
     snapshot.forEach((doc) => {
       const data = doc.data();
       tutors[data.name] = data.email;
@@ -59,12 +49,7 @@ export const sendEmailAlert = async (formData: EmailParams) => {
         time: formData.timeSlot,
         link: formData.resourceLink,
         question: formData.question,
-        isUpdate: formData.isUpdate ? "true" : "",
       };
-
-      if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
-        throw new Error("EmailJS 환경변수가 설정되지 않았습니다.");
-      }
 
       await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
     }
