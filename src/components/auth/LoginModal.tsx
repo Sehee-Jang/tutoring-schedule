@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 // };
 
 const LoginModal = () => {
-  const { modalType, closeModal } = useModal();
+  const { modalType, closeModal, showModal } = useModal();
   const { user } = useAuth();
   const isOpen = modalType === "login";
   const { toast } = useToast();
@@ -65,6 +65,10 @@ const LoginModal = () => {
     setPassword(e.target.value);
   };
 
+  const handleSignupClick = () => {
+    showModal("signup");
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -88,12 +92,16 @@ const LoginModal = () => {
           onChange={handlePasswordChange}
           className='border px-3 py-2 rounded'
         />
+
+        {/* 일반 로그인 버튼 */}
         <button
           type='submit'
           className='bg-[#262626] text-white py-2 rounded hover:bg-[#404040]'
         >
           로그인
         </button>
+
+        {/* 구글 로그인 버튼 */}
         {/* <button
           type='button'
           onClick={handleGoogleLogin}
@@ -101,6 +109,14 @@ const LoginModal = () => {
         >
           Google로 로그인
         </button> */}
+
+        {/* 회원가입 버튼 */}
+        <button
+          onClick={handleSignupClick}
+          className='mt-4 text-sm text-blue-500 hover:underline'
+        >
+          아직 계정이 없으신가요? 회원가입
+        </button>
       </form>
     </ModalLayout>
   );
