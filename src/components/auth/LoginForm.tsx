@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { login } from "../../services/auth";
-import PrimaryButton from "../shared/Button";
+import Button from "../shared/Button";
 
 const LoginForm = () => {
   const [email, setEmail] = useState<string>("");
@@ -48,7 +48,7 @@ const LoginForm = () => {
           value={password}
           onChange={handlePasswordChange}
         />
-        <PrimaryButton type='submit'>로그인</PrimaryButton>
+        <Button type='submit' variant="primary">로그인</Button>
       </form>
     </div>
   );

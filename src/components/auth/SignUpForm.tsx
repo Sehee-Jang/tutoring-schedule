@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import PrimaryButton from "../shared/Button";
+import Button from "../shared/Button";
 import { serverTimestamp } from "firebase/firestore";
 
 const SignUpForm = () => {
@@ -103,9 +103,9 @@ const SignUpForm = () => {
           <option value='tutor'>튜터</option>
           <option value='student'>수강생</option>
         </select>
-        <PrimaryButton type='submit' disabled={loading}>
+        <Button type='submit' variant='primary' disabled={loading}>
           {loading ? "가입 중..." : "회원가입"}
-        </PrimaryButton>
+        </Button>
       </form>
     </div>
   );

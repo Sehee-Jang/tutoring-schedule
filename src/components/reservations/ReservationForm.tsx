@@ -8,7 +8,7 @@ import { useAvailability } from "../../context/AvailabilityContext";
 import { sendEmailAlert } from "../../utils/sendEmailAlert";
 import useReservationForm from "../../hooks/useReservationForm";
 
-import PrimaryButton from "../shared/Button";
+import Button from "../shared/Button";
 import TimeSlotButton from "../shared/TimeSlotButton";
 import TutorButton from "../shared/TutorButton";
 import ReservationGuideModal from "./ReservationGuideModal";
@@ -248,7 +248,9 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
           />
         </div>
 
-        <PrimaryButton type='submit'>예약하기</PrimaryButton>
+        <Button type='submit' variant='primary'>
+          예약하기
+        </Button>
       </form>
 
       {/* 예약 가이드 모달 */}

@@ -2,7 +2,7 @@ import type { Reservation } from "../../types/reservation";
 import { useAvailability } from "../../context/AvailabilityContext";
 import { useReservations } from "../../context/ReservationContext";
 import ModalLayout from "../shared/ModalLayout";
-import PrimaryButton from "../shared/Button";
+import Button from "../shared/Button";
 import TimeSlotButton from "../shared/TimeSlotButton";
 import useReservationEditor from "../../hooks/useReservationEditor";
 import sortTimeSlots from "../../utils/sortTimeSlots";
@@ -138,7 +138,9 @@ const ReservationDetailModal = ({
       <div className='flex justify-center gap-4 mt-6'>
         {editMode ? (
           <>
-            <PrimaryButton onClick={update}>저장</PrimaryButton>
+            <Button variant='primary' onClick={update}>
+              저장
+            </Button>
             <button
               onClick={() => setEditMode(false)}
               className='text-sm text-gray-500 hover:underline'
@@ -147,7 +149,9 @@ const ReservationDetailModal = ({
             </button>
           </>
         ) : (
-          <PrimaryButton onClick={() => setEditMode(true)}>수정</PrimaryButton>
+          <Button variant='primary' onClick={() => setEditMode(true)}>
+            수정
+          </Button>
         )}
       </div>
     </ModalLayout>

@@ -6,6 +6,7 @@ import { logout } from "../../services/auth";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { LogOut } from "lucide-react";
+import Button from "../shared/Button";
 
 const Header = () => {
   const { showModal } = useModal();
@@ -14,31 +15,29 @@ const Header = () => {
   const today = format(new Date(), "yyyy년 M월 d일 EEEE", { locale: ko });
 
   return (
-    <header className='flex items-center justify-between px-6 py-4'>
+    <header className='flex items-end justify-between px-6 py-4'>
       <div>
-        <h1 className='text-lg font-semibold'>
+        <h1 className='text-2xl font-bold text-gray-800'>
           {user?.name ?? "튜터"}님, 안녕하세요 👋
         </h1>
-        <p className='text-sm text-gray-500'>{today}</p>
+        <p className='text-sm text-gray-500 mt-1'>{today}</p>
       </div>
 
       <div className='flex justify-center items-center gap-2'>
         {!user && (
-          <button
-            onClick={() => showModal("login")}
-            className='underline text-blue-600 hover:text-blue-800'
-          >
+          <Button onClick={() => showModal("login")} variant='outline'>
             로그인
-          </button>
+          </Button>
         )}
         {user && (
-          <button
+          <Button
+            variant='outline'
             onClick={logout}
-            className='flex items-center gap-1 hover:text-black'
+            className='flex items-center gap-1'
           >
             <LogOut className='w-4 h-4' />
             <span>로그아웃</span>
-          </button>
+          </Button>
         )}
       </div>
     </header>
