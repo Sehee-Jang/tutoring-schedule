@@ -19,8 +19,11 @@ const TutorPage = () => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    await logout();
-    navigate("/");
+    try {
+      await logout();
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
+    }
   };
 
   const handleView = (reservation: Reservation) => {

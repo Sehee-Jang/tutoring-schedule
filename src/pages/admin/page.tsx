@@ -16,6 +16,8 @@ import TutorFormModal from "../../components/admin/tutors/TutorFormModal";
 import { useFetchTutors } from "../../hooks/useFetchTutors";
 import { useAuth } from "../../context/AuthContext";
 import ProtectedRoute from "../../components/ProtectedRoute";
+import { logout } from "../../services/auth";
+import { LogOut } from "lucide-react";
 
 const AdminPage = () => {
   const { tutors, loading, error } = useFetchTutors();
@@ -77,16 +79,34 @@ const AdminPage = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
+    }
+  };
+
   return (
     <ProtectedRoute requiredRole='admin'>
       <div className='max-w-3xl mx-auto p-8'>
-        <h1 className='text-2xl font-bold mb-6'>튜터 관리</h1>
+        <div className='flex justify-between items-center mb-6'>
+          <h1 className='text-2xl font-bold'>튜터 관리</h1>
 
-        {error && (
-          <div className='bg-red-100 text-red-700 p-4 mb-4 rounded'>
-            {error}
-          </div>
-        )}
+          {error && (
+            <div className='bg-red-100 text-red-700 p-4 mb-4 rounded'>
+              {error}
+            </div>
+          )}
+
+          <button
+            onClick={handleLogout}
+            title='로그아웃'
+            className='text-gray-700 hover:text-black'
+          >
+            <LogOut className='w-5 h-5' />
+          </button>
+        </div>
 
         {/* <div className='flex justify-end mb-4'>
         <button
