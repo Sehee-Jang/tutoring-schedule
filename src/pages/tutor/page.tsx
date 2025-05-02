@@ -11,12 +11,15 @@ import type { Reservation } from "../../types/reservation";
 import { logout } from "../../services/auth";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import { useNavigate } from "react-router-dom";
+import { cancelReservation } from "../../services/firebase";
+import { useToast } from "../../hooks/use-toast";
 
 const TutorPage = () => {
   const { user, isAdmin, isTutor } = useAuth();
   const { reservations } = useReservations();
   const { modalType, modalProps, closeModal, showModal } = useModal();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   // user === null이면 로그인 하도록 유도
   if (!user) {
@@ -70,6 +73,23 @@ const TutorPage = () => {
     });
   };
 
+  const handleCancel = async (id: string) => {
+    if (window.confirm("예약을 취소하시겠습니까?")) {
+      try {
+        await cancelReservation(id);
+        toast({
+          title: "예약이 성공적으로 취소되었습니다!",
+          variant: "default",
+        });
+      } catch {
+        toast({
+          title: "❌ 예약 취소 중 오류가 발생했습니다.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
   return (
     <ProtectedRoute requiredRole='tutor'>
       <div className='p-6 max-w-3xl mx-auto'>
@@ -104,7 +124,9 @@ const TutorPage = () => {
           <TutorScheduleTable
             tutorName={user!.name}
             isAdmin={isAdmin}
+            isTutor={isTutor}
             onView={handleView}
+            onCancel={handleCancel}
           />
         </section>
 
