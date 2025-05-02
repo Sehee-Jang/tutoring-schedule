@@ -9,7 +9,7 @@ interface TutorLayoutProps {
 
 const TutorLayout = ({ children }: TutorLayoutProps) => {
   return (
-    <div className='flex h-screen'>
+    <div className='flex flex-col h-screen bg-gray-50'>
       <Header />
 
       <div className='flex flex-1'>

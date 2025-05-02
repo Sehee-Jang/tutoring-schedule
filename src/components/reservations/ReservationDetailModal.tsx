@@ -2,7 +2,7 @@ import type { Reservation } from "../../types/reservation";
 import { useAvailability } from "../../context/AvailabilityContext";
 import { useReservations } from "../../context/ReservationContext";
 import ModalLayout from "../shared/ModalLayout";
-import PrimaryButton from "../shared/PrimaryButton";
+import PrimaryButton from "../shared/Button";
 import TimeSlotButton from "../shared/TimeSlotButton";
 import useReservationEditor from "../../hooks/useReservationEditor";
 import sortTimeSlots from "../../utils/sortTimeSlots";

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { login } from "../../services/auth";
-import PrimaryButton from "../shared/PrimaryButton";
+import PrimaryButton from "../shared/Button";
 
 const LoginForm = () => {
   const [email, setEmail] = useState<string>("");

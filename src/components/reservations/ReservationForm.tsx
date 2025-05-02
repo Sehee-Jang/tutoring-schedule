@@ -8,7 +8,7 @@ import { useAvailability } from "../../context/AvailabilityContext";
 import { sendEmailAlert } from "../../utils/sendEmailAlert";
 import useReservationForm from "../../hooks/useReservationForm";
 
-import PrimaryButton from "../shared/PrimaryButton";
+import PrimaryButton from "../shared/Button";
 import TimeSlotButton from "../shared/TimeSlotButton";
 import TutorButton from "../shared/TutorButton";
 import ReservationGuideModal from "./ReservationGuideModal";

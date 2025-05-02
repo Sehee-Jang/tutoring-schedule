@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import PrimaryButton from "../shared/PrimaryButton";
+import PrimaryButton from "../shared/Button";
 import { serverTimestamp } from "firebase/firestore";
 
 const SignUpForm = () => {

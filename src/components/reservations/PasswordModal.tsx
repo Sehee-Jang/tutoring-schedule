@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ModalLayout from "../shared/ModalLayout";
-import PrimaryButton from "../shared/PrimaryButton";
+import PrimaryButton from "../shared/Button";
 
 interface PasswordModalProps {
   isOpen: boolean;
