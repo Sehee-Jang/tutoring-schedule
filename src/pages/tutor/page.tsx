@@ -10,36 +10,18 @@ import AvailabilityModal from "../../components/availability/AvailabilityModal";
 import type { Reservation } from "../../types/reservation";
 import { logout } from "../../services/auth";
 import ProtectedRoute from "../../components/ProtectedRoute";
+import { useNavigate } from "react-router-dom";
 
 const TutorPage = () => {
   const { user, isAdmin, isTutor } = useAuth();
   const { reservations } = useReservations();
   const { modalType, modalProps, closeModal, showModal } = useModal();
+  const navigate = useNavigate();
 
-  // 로그인 안 되어있을 때
-  if (!user) {
-    return (
-      <div className='p-10 text-center space-y-6 bg-white rounded-xl shadow max-w-md mx-auto mt-24'>
-        <h2 className='text-2xl font-bold text-gray-800'>
-          튜터링 서비스를 이용하려면 로그인해주세요
-        </h2>
-        <div className='flex justify-center gap-4'>
-          <button
-            onClick={() => showModal("login")}
-            className='bg-blue-600 text-white px-5 py-2 rounded-md text-sm hover:bg-blue-700'
-          >
-            로그인
-          </button>
-          <button
-            onClick={() => showModal("signup")}
-            className='border border-blue-600 text-blue-600 px-5 py-2 rounded-md text-sm hover:bg-blue-50'
-          >
-            회원가입
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const handleLogout = async () => {
+    await logout();
+    navigate("/");
+  };
 
   const handleView = (reservation: Reservation) => {
     showModal("reservationDetail", {
@@ -54,11 +36,11 @@ const TutorPage = () => {
       <div className='p-6 max-w-3xl mx-auto'>
         <div className='flex justify-between items-center mb-6'>
           <h1 className='text-2xl font-bold'>
-            {user.name} 튜터님, 안녕하세요 👋
+            {user!.name} 튜터님, 안녕하세요 👋
           </h1>
 
           <button
-            onClick={logout}
+            onClick={handleLogout}
             title='로그아웃'
             className='text-gray-700 hover:text-black'
           >
@@ -81,7 +63,7 @@ const TutorPage = () => {
 
           {/* 오늘 예약 현황 테이블 */}
           <TutorScheduleTable
-            tutorName={user.name}
+            tutorName={user!.name}
             isAdmin={isAdmin}
             onView={handleView}
           />
