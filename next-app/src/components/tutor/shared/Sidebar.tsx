@@ -5,6 +5,7 @@ import React from "react";
 import { CalendarCheck, Clock } from "lucide-react";
 import { useReservations } from "@/context/ReservationContext";
 import { useAuth } from "@/context/AuthContext";
+import NotificationBox from "../NotificationBox";
 
 interface SidebarProps {
   setViewMode: (mode: "timeSettings" | "reservations") => void;
@@ -14,12 +15,18 @@ const Sidebar = ({ setViewMode, viewMode }: SidebarProps) => {
   const { reservations } = useReservations();
   const { user } = useAuth();
 
-  // 오늘 날짜 형식
-  const today = new Date().toISOString().split("T")[0];
+  // 오늘 날짜 형식 (로컬 시간, 한국 시간 UTC+9)
+  const today = new Date();
+  const localToday = new Date(today.getTime() + 9 * 60 * 60 * 1000) // UTC+9 (KST)
+    .toISOString()
+    .split("T")[0];
 
-  // 오늘 예약 건수
+  // 오늘 예약 건수 (classDate 사용)
   const todayReservations = reservations.filter(
-    (r) => r.tutor === user?.name && r.date === today
+    (r) =>
+      r.tutor === user?.name &&
+      r.classDate && // classDate가 존재하는지 확인
+      r.classDate === localToday
   );
 
   return (
@@ -53,14 +60,7 @@ const Sidebar = ({ setViewMode, viewMode }: SidebarProps) => {
       {/* 알림 섹션 */}
       <div className='space-y-2'>
         <h4 className='font-semibold text-gray-700'>알림</h4>
-        <div className='w-[166px] rounded-[4px] border border-[#FFEF8A] bg-[#FEFCE8] px-[12px] py-[8px]'>
-          <p className='text-[14px] leading-[24px] font-semibold text-[#854D0F]'>
-            오늘 예약 <span>{todayReservations.length}</span>건
-          </p>
-          <p className='text-[12px] leading-[24px] font-medium text-[#CA8A03]'>
-            오늘 예약을 확인하세요
-          </p>
-        </div>
+        <NotificationBox count={todayReservations.length} />
       </div>
     </div>
   );
