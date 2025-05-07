@@ -2,7 +2,7 @@
 
 import React from "react";
 import TimeSlotSetting from "./TimeSlotSetting";
-import HolidaySetting from "./holiday/HolidaySetting";
+import HolidaySetting from "../holiday/HolidaySetting";
 
 const TimeSettingsPanel = () => {
   return (

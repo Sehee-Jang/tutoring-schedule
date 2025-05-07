@@ -2,8 +2,8 @@
 
 import { useAuth } from "@/context/AuthContext";
 import { useModal } from "@/context/ModalContext";
-import TutorLayout from "@/components/tutor/TutorLayout";
-import TimeSettingsPanel from "@/components/tutor/TimeSettingPanel";
+import TutorLayout from "@/components/tutor/shared/TutorLayout";
+import TimeSettingsPanel from "@/components/tutor/time-settings/TimeSettingPanel";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ReservationStatusForTutor from "@/components/tutor/reservation/ReservationStatusForTutor";

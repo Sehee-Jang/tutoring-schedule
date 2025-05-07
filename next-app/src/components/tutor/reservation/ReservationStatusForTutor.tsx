@@ -7,16 +7,13 @@ import { format, addDays, subDays } from "date-fns";
 import { generateTimeSlots } from "@/utils/generateTimeSlots"; // 시간대 생성 함수
 import type { Reservation } from "@/types/reservation";
 import ReservationCard from "./ReservationCard";
+import DateSelector from "@/components/shared/DateSelector";
 
 const ReservationStatusForTutor = () => {
   const { user } = useAuth();
   const { reservations } = useReservations();
   const [date, setDate] = useState(new Date());
   const timeSlots = generateTimeSlots(9, 21); // 09:00 - 21:00 시간대 생성
-
-  // 날짜 변경 핸들러
-  const handlePrevDay = () => setDate((prev) => subDays(prev, 1));
-  const handleNextDay = () => setDate((prev) => addDays(prev, 1));
 
   // 선택된 날짜의 예약 필터링
   const filteredReservations = reservations.filter(
@@ -26,24 +23,11 @@ const ReservationStatusForTutor = () => {
 
   return (
     <div className='space-y-4'>
-      <h2 className='text-2xl font-bold'>실시간 예약 현황</h2>
-      <div className='flex items-center justify-between mb-4'>
-        <button
-          onClick={handlePrevDay}
-          className='text-gray-600 hover:text-blue-600'
-        >
-          &lt;
-        </button>
-        <h3 className='text-xl font-semibold'>
-          {format(date, "yyyy년 MM월 dd일 (EEEE)")}
-        </h3>
-        <button
-          onClick={handleNextDay}
-          className='text-gray-600 hover:text-blue-600'
-        >
-          &gt;
-        </button>
-      </div>
+      <h2 className='text-gray-700 text-xl font-semibold mb-4'>
+        실시간 예약 현황
+      </h2>
+      {/* 날짜 선택 바 */}
+      <DateSelector date={date} setDate={setDate} />
 
       <div className='border rounded-lg overflow-hidden'>
         <table className='w-full border text-sm'>

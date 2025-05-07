@@ -1,7 +1,7 @@
 // 좌측 사이드 + 메인 구조 레이아웃
 import { ReactNode } from "react";
-import Header from "@/components/tutor/Header";
-import Sidebar from "@/components/tutor/Sidebar";
+import Header from "@/components/tutor/shared/Header";
+import Sidebar from "@/components/tutor/shared/Sidebar";
 
 interface TutorLayoutProps {
   children: ReactNode;
