@@ -6,7 +6,7 @@ import TutorLayout from "@/components/tutor/TutorLayout";
 import TimeSettingsPanel from "@/components/tutor/TimeSettingPanel";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import ReservationStatus from "@/components/reservations/ReservationStatus";
+import ReservationStatusForTutor from "@/components/tutor/reservation/ReservationStatusForTutor";
 
 const TutorPage = () => {
   const { user } = useAuth();
@@ -55,7 +55,7 @@ const TutorPage = () => {
       {viewMode === "timeSettings" ? (
         <TimeSettingsPanel />
       ) : (
-        <ReservationStatus />
+        <ReservationStatusForTutor />
       )}
     </TutorLayout>
   );

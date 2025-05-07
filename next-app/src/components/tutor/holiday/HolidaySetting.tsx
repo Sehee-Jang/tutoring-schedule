@@ -9,6 +9,8 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { Holiday } from "@/types/tutor";
+import HolidayForm from "./HolidayForm";
+import HolidayTable from "./HolidayTable";
 
 const HolidaySetting = () => {
   const { user } = useAuth();
@@ -82,7 +84,7 @@ const HolidaySetting = () => {
     }
   };
 
-  // handleSave 함수 개선
+  // handleSave 함수
   const handleSave = async () => {
     if (!user?.id) return;
     try {
@@ -126,90 +128,22 @@ const HolidaySetting = () => {
   return (
     <div className='space-y-6'>
       {/* 입력 영역 */}
-      <div className='grid grid-cols-1 md:grid-cols-4 gap-4 items-end min-h-[76px]'>
-        <div className='flex flex-col space-y-1'>
-          <label className='text-sm text-gray-700'>시작일</label>
-          <input
-            type='date'
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className='border border-gray-300 rounded px-3 py-2 text-sm text-gray-400'
-          />
-        </div>
-
-        <div className='flex flex-col space-y-1'>
-          <label className='text-sm font-medium text-gray-700'>종료일</label>
-          <input
-            type='date'
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className={`border ${
-              isDateInvalid ? "border-red-500" : "border-gray-300"
-            } rounded px-3 py-2 text-sm`}
-          />
-        </div>
-
-        <div className='flex flex-col space-y-1'>
-          <label className='text-sm text-gray-700'>사유</label>
-          <input
-            type='text'
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            placeholder='휴가, 세미나 참석 등'
-            className='border border-gray-300 rounded px-3 py-2 text-sm text-gray-400'
-          />
-        </div>
-
-        <div className='flex items-end'>
-          <button
-            onClick={addHoliday}
-            disabled={isDateInvalid}
-            className={`text-sm px-4 py-2 rounded w-full ${
-              isDateInvalid
-                ? "bg-gray-300 text-white cursor-not-allowed"
-                : "bg-[#262626] text-white hover:bg-[#1f1f1f]"
-            }`}
-          >
-            휴무일 추가
-          </button>
-        </div>
-      </div>
+      <HolidayForm
+        startDate={startDate}
+        setStartDate={setStartDate}
+        endDate={endDate}
+        setEndDate={setEndDate}
+        reason={reason}
+        setReason={setReason}
+        addHoliday={addHoliday}
+        isDateInvalid={!!(endDate && startDate > endDate)}
+      />
       {/* 테이블 */}
-      <table className='w-full border text-sm'>
-        <thead>
-          <tr className='bg-gray-50 border-b'>
-            <th className='p-2 border-r border-gray-200 text-left text-gray-700 w-64'>
-              기간
-            </th>
-            <th className='p-2 border-r border-gray-200 text-left text-gray-700'>
-              사유
-            </th>
-            <th className='p-2 text-center text-gray-700 w-32'>관리</th>
-          </tr>
-        </thead>
-        <tbody>
-          {holidays.map((h) => (
-            <tr key={h.id} className='border-t'>
-              <td className='p-2 border-r border-gray-200 text-gray-700'>
-                {h.endDate
-                  ? `${formatDate(h.startDate)} - ${formatDate(h.endDate)}`
-                  : formatDate(h.startDate)}
-              </td>
-              <td className='p-2 border-r border-gray-200 text-gray-700'>
-                {h.reason}
-              </td>
-              <td className='p-2 text-red-500 text-center'>
-                <button
-                  onClick={() => deleteHoliday(h.id)}
-                  className='hover:underline'
-                >
-                  삭제
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <HolidayTable
+        holidays={holidays}
+        formatDate={formatDate}
+        deleteHoliday={deleteHoliday}
+      />
       {/* 저장 버튼 */}
       <div className='flex justify-end'>
         <button

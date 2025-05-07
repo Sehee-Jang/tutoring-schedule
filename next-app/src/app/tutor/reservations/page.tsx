@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useAuth } from "@/context/AuthContext";
-import ReservationStatus from "@/components/reservations/ReservationStatus";
+import ReservationStatusForTutor from "@/components/tutor/reservation/ReservationStatusForTutor";
 
 const ReservationPage = () => {
   const { user } = useAuth();
@@ -20,7 +20,7 @@ const ReservationPage = () => {
   return (
     <div className='p-6'>
       <h2 className='text-2xl font-bold mb-4'>실시간 예약 확인</h2>
-      <ReservationStatus />
+      <ReservationStatusForTutor />
     </div>
   );
 };
