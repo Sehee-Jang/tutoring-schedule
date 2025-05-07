@@ -105,7 +105,7 @@ const AdminPage = () => {
           <button
             onClick={handleLogout}
             title='로그아웃'
-            className='text-gray-700 hover:text-black'
+            className='hover:text-black'
           >
             <LogOut className='w-5 h-5' />
           </button>

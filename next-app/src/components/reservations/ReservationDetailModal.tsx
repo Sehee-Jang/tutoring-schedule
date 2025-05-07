@@ -1,11 +1,11 @@
-import type { Reservation } from "types/reservation";
-import { useAvailability } from "../../context/AvailabilityContext";
-import { useReservations } from "../../context/ReservationContext";
-import ModalLayout from "../shared/ModalLayout";
-import Button from "../shared/Button";
-import TimeSlotButton from "../shared/TimeSlotButton";
-import useReservationEditor from "../../hooks/useReservationEditor";
-import sortTimeSlots from "../../utils/sortTimeSlots";
+import type { Reservation } from "@/types/reservation";
+import { useAvailability } from "@/context/AvailabilityContext";
+import { useReservations } from "@/context/ReservationContext";
+import ModalLayout from "@/components/shared/ModalLayout";
+import Button from "@/components/shared/Button";
+import TimeSlotButton from "@/components/shared/TimeSlotButton";
+import useReservationEditor from "@/hooks/useReservationEditor";
+import sortTimeSlots from "@/utils/sortTimeSlots";
 
 interface ReservationDetailModalProps {
   isOpen: boolean;
