@@ -7,7 +7,10 @@ import { useReservations } from "@/context/ReservationContext";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 
-const Sidebar = () => {
+interface SidebarProps {
+  setViewMode: (mode: "timeSettings" | "reservations") => void;
+}
+const Sidebar = ({ setViewMode }: SidebarProps) => {
   const { reservations } = useReservations();
   const { user } = useAuth();
   const router = useRouter();
@@ -25,14 +28,15 @@ const Sidebar = () => {
       {/* 메뉴 섹션 */}
       <nav className='space-y-4 border-b pb-5'>
         <button
-          onClick={() => router.push("/tutor")}
+          // onClick={() => router.push("/tutor")}
+          onClick={() => setViewMode("timeSettings")}
           className='w-[166px] flex items-center font-semibold text-gray-700 hover:text-blue-600 justify-evenly'
         >
           <Clock className='w-4 h-4' />
           튜터링 시간 설정
         </button>
         <button
-          onClick={() => router.push("/tutor/reservations")}
+          onClick={() => setViewMode("reservations")}
           className='w-[166px] flex items-center font-semibold text-gray-700 hover:text-blue-600 justify-evenly'
         >
           <CalendarCheck className='w-4 h-4' />

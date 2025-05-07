@@ -7,22 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useModal } from "@/context/ModalContext";
 import ModalLayout from "@/components/shared/ModalLayout";
 import TimeSlotButton from "@/components/shared/TimeSlotButton";
-
-const generateTimeSlots = (): string[] => {
-  const slots: string[] = [];
-  for (let hour = 9; hour < 21; hour++) {
-    slots.push(
-      `${String(hour).padStart(2, "0")}:00-${String(hour).padStart(2, "0")}:30`
-    );
-    slots.push(
-      `${String(hour).padStart(2, "0")}:30-${String(hour + 1).padStart(
-        2,
-        "0"
-      )}:00`
-    );
-  }
-  return slots;
-};
+import { generateTimeSlots } from "@/utils/generateTimeSlots";
 
 const AvailabilityModal = () => {
   const { modalType, closeModal } = useModal();

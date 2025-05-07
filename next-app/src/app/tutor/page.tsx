@@ -4,12 +4,17 @@ import { useAuth } from "@/context/AuthContext";
 import { useModal } from "@/context/ModalContext";
 import TutorLayout from "@/components/tutor/TutorLayout";
 import TimeSettingsPanel from "@/components/tutor/TimeSettingPanel";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import ReservationStatus from "@/components/reservations/ReservationStatus";
 
 const TutorPage = () => {
   const { user } = useAuth();
   const { showModal } = useModal();
   const router = useRouter();
+  const [viewMode, setViewMode] = useState<"timeSettings" | "reservations">(
+    "timeSettings"
+  );
 
   if (!user) {
     return (
@@ -46,8 +51,12 @@ const TutorPage = () => {
   }
 
   return (
-    <TutorLayout>
-      <TimeSettingsPanel />
+    <TutorLayout setViewMode={setViewMode}>
+      {viewMode === "timeSettings" ? (
+        <TimeSettingsPanel />
+      ) : (
+        <ReservationStatus />
+      )}
     </TutorLayout>
   );
 };

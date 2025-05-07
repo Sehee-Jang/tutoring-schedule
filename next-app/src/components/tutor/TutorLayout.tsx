@@ -5,16 +5,17 @@ import Sidebar from "@/components/tutor/Sidebar";
 
 interface TutorLayoutProps {
   children: ReactNode;
+  setViewMode: (mode: "timeSettings" | "reservations") => void;
 }
 
-const TutorLayout = ({ children }: TutorLayoutProps) => {
+const TutorLayout = ({ children, setViewMode }: TutorLayoutProps) => {
   return (
     <div className='flex flex-col h-screen bg-gray-50 px-8 py-6 gap-10'>
       <Header />
 
       <div className='flex flex-1 bg-gray-50 gap-5'>
         <aside className='w-[190px] border-1 border-gray-200 bg-white rounded-xl'>
-          <Sidebar />
+          <Sidebar setViewMode={setViewMode} />
         </aside>
 
         <main className='flex-1 overflow-y-auto p-6 border-1 border-gray-200 bg-white rounded-xl'>

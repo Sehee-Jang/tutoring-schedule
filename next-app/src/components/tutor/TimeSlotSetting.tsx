@@ -6,23 +6,7 @@ import { useAvailability } from "@/context/AvailabilityContext";
 import { useTutors } from "@/context/TutorContext";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "@/hooks/use-toast";
-
-const generateTimeSlots = () => {
-  const slots: string[] = [];
-  for (let hour = 9; hour < 21; hour++) {
-    slots.push(
-      `${hour.toString().padStart(2, "0")}:00-${hour
-        .toString()
-        .padStart(2, "0")}:30`
-    );
-    slots.push(
-      `${hour.toString().padStart(2, "0")}:30-${(hour + 1)
-        .toString()
-        .padStart(2, "0")}:00`
-    );
-  }
-  return slots;
-};
+import { generateTimeSlots } from "@/utils/generateTimeSlots";
 
 const TimeSlotSetting = () => {
   const { availability: globalAvailability, updateAvailability } =
