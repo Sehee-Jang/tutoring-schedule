@@ -77,7 +77,7 @@ const TimeSlotSetting = () => {
         </div>
       )}
 
-      <div className='flex flex-wrap gap-2 text-gray-700'>
+      <div className='flex flex-wrap gap-2 text-gray-700 justify-between'>
         {slots.map((slot) => (
           <TimeSlotButton
             key={slot}
@@ -90,7 +90,7 @@ const TimeSlotSetting = () => {
         ))}
       </div>
 
-      <div className='flex justify-end'>
+      <div className='flex justify-end mt-2'>
         <button
           onClick={handleSave}
           className='bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700'

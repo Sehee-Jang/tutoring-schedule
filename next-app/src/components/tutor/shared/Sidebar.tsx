@@ -5,15 +5,14 @@ import React from "react";
 import { CalendarCheck, Clock } from "lucide-react";
 import { useReservations } from "@/context/ReservationContext";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
 
 interface SidebarProps {
   setViewMode: (mode: "timeSettings" | "reservations") => void;
+  viewMode: "timeSettings" | "reservations";
 }
-const Sidebar = ({ setViewMode }: SidebarProps) => {
+const Sidebar = ({ setViewMode, viewMode }: SidebarProps) => {
   const { reservations } = useReservations();
   const { user } = useAuth();
-  const router = useRouter();
 
   // 오늘 날짜 형식
   const today = new Date().toISOString().split("T")[0];
@@ -28,16 +27,23 @@ const Sidebar = ({ setViewMode }: SidebarProps) => {
       {/* 메뉴 섹션 */}
       <nav className='space-y-4 border-b border-gray-200 pb-5'>
         <button
-          // onClick={() => router.push("/tutor")}
           onClick={() => setViewMode("timeSettings")}
-          className='w-[166px] flex items-center font-semibold text-gray-700 hover:text-blue-600 justify-evenly'
+          className={`w-[166px] flex items-center font-semibold justify-evenly px-4 py-2 rounded-md ${
+            viewMode === "timeSettings"
+              ? "bg-[#DBE9FE] text-blue-600"
+              : "text-gray-700 hover:text-blue-600"
+          }`}
         >
           <Clock className='w-4 h-4' />
           튜터링 시간 설정
         </button>
         <button
           onClick={() => setViewMode("reservations")}
-          className='w-[166px] flex items-center font-semibold text-gray-700 hover:text-blue-600 justify-evenly'
+          className={`w-[166px] flex items-center font-semibold justify-evenly px-4 py-2 rounded-md ${
+            viewMode === "reservations"
+              ? "bg-[#DBE9FE] text-blue-600"
+              : "text-gray-700 hover:text-blue-600"
+          }`}
         >
           <CalendarCheck className='w-4 h-4' />
           실시간 예약 확인

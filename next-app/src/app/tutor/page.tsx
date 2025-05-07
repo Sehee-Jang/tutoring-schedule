@@ -51,7 +51,7 @@ const TutorPage = () => {
   }
 
   return (
-    <TutorLayout setViewMode={setViewMode}>
+    <TutorLayout setViewMode={setViewMode} viewMode={viewMode}>
       {viewMode === "timeSettings" ? (
         <TimeSettingsPanel />
       ) : (
