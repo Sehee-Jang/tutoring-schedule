@@ -10,7 +10,7 @@ import AvailabilityModal from "../../components/availability/AvailabilityModal";
 import type { Reservation } from "../../types/reservation";
 import { logout } from "../../services/auth";
 import ProtectedRoute from "../../components/ProtectedRoute";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/router";
 import { cancelReservation } from "../../services/firebase";
 import { useToast } from "../../hooks/use-toast";
 import Header from "@/components/tutor/Header";
@@ -21,7 +21,7 @@ const TutorPage = () => {
   const { user, isAdmin, isTutor } = useAuth();
   const { reservations } = useReservations();
   const { modalType, modalProps, closeModal, showModal } = useModal();
-  const navigate = useNavigate();
+  const router = useRouter();
   const { toast } = useToast();
 
   // user === null이면 로그인 하도록 유도
@@ -48,7 +48,7 @@ const TutorPage = () => {
           </div>
           <div className='pt-4'>
             <button
-              onClick={() => navigate("/")}
+              onClick={() => router.push("/")}
               className='text-sm text-gray-500 hover:text-gray-700 underline'
             >
               ← 메인으로 돌아가기
@@ -62,7 +62,7 @@ const TutorPage = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate("/");
+      router.push("/");
     } catch (error) {
       console.error("로그아웃 실패:", error);
     }

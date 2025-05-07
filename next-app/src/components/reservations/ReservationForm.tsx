@@ -48,11 +48,7 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
   const tutorID = selectedTutor?.id || "";
   const tutorHolidays = holidays[tutorID] || [];
 
-  console.log("현재 불러온 holidays:", holidays);
-  console.log("선택된 튜터 휴무일:", tutorHolidays);
-
   const isTutorOnHoliday = isHoliday(today, tutorHolidays);
-  console.log("오늘 휴무여부:", isTutorOnHoliday);
 
   const [showGuide, setShowGuide] = useState(false);
 

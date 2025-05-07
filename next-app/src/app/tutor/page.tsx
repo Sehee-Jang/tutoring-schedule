@@ -4,7 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useModal } from "@/context/ModalContext";
 import TutorLayout from "@/components/tutor/TutorLayout";
 import TimeSettingsPanel from "@/components/tutor/TimeSettingPanel";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 
 const TutorPage = () => {
   const { user } = useAuth();
