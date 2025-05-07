@@ -19,7 +19,7 @@ const HolidayForm = ({
           type='date'
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
-          className='border border-gray-300 rounded px-3 py-2 text-sm text-gray-400'
+          className='border border-gray-200 rounded px-3 py-2 text-sm text-gray-400'
         />
       </div>
 
@@ -30,8 +30,8 @@ const HolidayForm = ({
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
           className={`border ${
-            isDateInvalid ? "border-red-500" : "border-gray-300"
-          } rounded px-3 py-2 text-sm`}
+            isDateInvalid ? "border-red-500" : "border-gray-200"
+          } rounded px-3 py-2 text-sm text-gray-400`}
         />
       </div>
 
@@ -42,7 +42,7 @@ const HolidayForm = ({
           value={reason}
           onChange={(e) => setReason(e.target.value)}
           placeholder='휴가, 세미나 참석 등'
-          className='border border-gray-300 rounded px-3 py-2 text-sm text-gray-400'
+          className='border border-gray-200 rounded px-3 py-2 text-sm text-gray-400'
         />
       </div>
 
@@ -52,8 +52,8 @@ const HolidayForm = ({
           disabled={isDateInvalid}
           className={`text-sm px-4 py-2 rounded w-full ${
             isDateInvalid
-              ? "bg-gray-300 text-white cursor-not-allowed"
-              : "bg-[#262626] text-white hover:bg-[#1f1f1f]"
+              ? "bg-gray-200 text-white cursor-not-allowed"
+              : "bg-gray-400 text-white hover:bg-[#1f1f1f]"
           }`}
         >
           휴무일 추가

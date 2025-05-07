@@ -153,7 +153,6 @@ const HolidaySetting = () => {
           설정 저장
         </button>
       </div>
-      ;
     </div>
   );
 };

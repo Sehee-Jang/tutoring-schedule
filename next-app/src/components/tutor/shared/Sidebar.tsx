@@ -26,7 +26,7 @@ const Sidebar = ({ setViewMode }: SidebarProps) => {
   return (
     <div className='py-5 px-3 text-sm space-y-5 '>
       {/* 메뉴 섹션 */}
-      <nav className='space-y-4 border-b pb-5'>
+      <nav className='space-y-4 border-b border-gray-200 pb-5'>
         <button
           // onClick={() => router.push("/tutor")}
           onClick={() => setViewMode("timeSettings")}
@@ -47,7 +47,7 @@ const Sidebar = ({ setViewMode }: SidebarProps) => {
       {/* 알림 섹션 */}
       <div className='space-y-2'>
         <h4 className='font-semibold text-gray-700'>알림</h4>
-        <div className='w-[166px] rounded-[4px] border border-[#FFF8A] bg-[#FEFCE8] px-[12px] py-[8px]'>
+        <div className='w-[166px] rounded-[4px] border border-[#FFEF8A] bg-[#FEFCE8] px-[12px] py-[8px]'>
           <p className='text-[14px] leading-[24px] font-semibold text-[#854D0F]'>
             오늘 예약 <span>{todayReservations.length}</span>건
           </p>

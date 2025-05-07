@@ -4,9 +4,9 @@ import { Holiday } from "@/types/tutor";
 
 const HolidayTable = ({ holidays, formatDate, deleteHoliday }: any) => {
   return (
-    <table className='w-full border text-sm'>
+    <table className='w-full border text-sm border-gray-200'>
       <thead>
-        <tr className='bg-gray-50 border-b'>
+        <tr className='bg-gray-50 border-b border-gray-200'>
           <th className='p-2 border-r border-gray-200 text-left text-gray-700 w-64'>
             기간
           </th>
@@ -18,7 +18,7 @@ const HolidayTable = ({ holidays, formatDate, deleteHoliday }: any) => {
       </thead>
       <tbody>
         {holidays.map((h: any) => (
-          <tr key={h.id} className='border-t'>
+          <tr key={h.id}>
             <td className='p-2 border-r border-gray-200 text-gray-700'>
               {h.endDate
                 ? `${formatDate(h.startDate)} - ${formatDate(h.endDate)}`

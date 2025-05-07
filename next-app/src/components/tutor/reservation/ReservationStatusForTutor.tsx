@@ -29,23 +29,27 @@ const ReservationStatusForTutor = () => {
       {/* 날짜 선택 바 */}
       <DateSelector date={date} setDate={setDate} />
 
-      <div className='border rounded-lg overflow-hidden'>
-        <table className='w-full border text-sm'>
-          <thead>
-            <tr className='bg-gray-50'>
-              <th className='p-3 border-r text-left w-24'>시간</th>
-              <th className='p-3 text-left'>예약</th>
+      <div className='border border-gray-200 rounded-md overflow-hidden'>
+        <table className='w-full text-sm'>
+          <thead className='bg-gray-50 text-gray-700'>
+            <tr>
+              <th className='w-[160px] p-3 text-center border-r border-gray-200'>
+                시간
+              </th>
+              <th className='p-3 text-center'>예약</th>
             </tr>
           </thead>
           <tbody>
             {timeSlots.map((slot) => (
-              <tr key={slot} className='border-t'>
-                <td className='p-3 border-r text-gray-700'>{slot}</td>
-                <td className='p-3 space-y-2'>
+              <tr key={slot} className='border-t border-gray-200'>
+                <td className='w-[160px] h-[76px] p-3 text-center text-gray-700 border-r border-gray-200'>
+                  {slot}
+                </td>
+                <td className='h-[76px] p-3 space-y-2'>
                   {filteredReservations.filter((r) =>
                     r.timeSlot.startsWith(slot)
                   ).length === 0 ? (
-                    <p className='text-gray-400'>예약 없음</p>
+                    <p className='text-gray-400 text-center'>예약 없음</p>
                   ) : (
                     filteredReservations
                       .filter((r) => r.timeSlot.startsWith(slot))
