@@ -57,18 +57,6 @@ const TimeSlotSetting = () => {
   };
 
   return (
-    // <div className='flex flex-wrap gap-2 text-gray-700 '>
-    //   {timeSlots.map((slot) => (
-    //     <TimeSlotButton
-    //       key={slot}
-    //       active={selected.includes(slot)}
-    //       disabled={disabledSlots.includes(slot)}
-    //       onClick={() => toggleSlot(slot)}
-    //     >
-    //       {slot}
-    //     </TimeSlotButton>
-    //   ))}
-    // </div>
     <div>
       {isAdmin && (
         <div className='mb-4'>
