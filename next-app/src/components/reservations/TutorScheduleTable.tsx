@@ -3,6 +3,7 @@
 import { useReservations } from "@/context/ReservationContext";
 import { useAvailability } from "@/context/AvailabilityContext";
 import { Reservation } from "@/types/reservation";
+import { useTutors } from "@/context/TutorContext";
 
 interface TutorScheduleTableProps {
   tutorName: string;
@@ -21,16 +22,35 @@ const TutorScheduleTable = ({
 }: TutorScheduleTableProps) => {
   const { availability } = useAvailability();
   const { reservations } = useReservations();
-  const rawTimeSlots = availability[tutorName] || [];
+  const { tutors } = useTutors();
+  // const rawTimeSlots = availability[tutorName] || [];
 
-  const timeSlots = [...rawTimeSlots].sort((a, b) => {
-    const getStartMinutes = (time: string) => {
-      const [start] = time.split("-");
-      const [h, m] = start.split(":").map(Number);
-      return h * 60 + m;
-    };
-    return getStartMinutes(a) - getStartMinutes(b);
-  });
+  // 튜터 ID 찾기 (튜터 이름 기반)
+  const selectedTutor = tutors.find((tutor) => tutor.name === tutorName);
+  const tutorID = selectedTutor?.id || "";
+
+  // 해당 튜터의 시간대 로드
+  const rawTimeSlots = availability[tutorID] || {};
+
+  const timeSlots = Object.values(rawTimeSlots)
+    .flat()
+    .sort((a, b) => {
+      const getStartMinutes = (time: string) => {
+        const [start] = time.split("-");
+        const [h, m] = start.split(":").map(Number);
+        return h * 60 + m;
+      };
+      return getStartMinutes(a) - getStartMinutes(b);
+    });
+
+  // const timeSlots = [...rawTimeSlots].sort((a, b) => {
+  //   const getStartMinutes = (time: string) => {
+  //     const [start] = time.split("-");
+  //     const [h, m] = start.split(":").map(Number);
+  //     return h * 60 + m;
+  //   };
+  //   return getStartMinutes(a) - getStartMinutes(b);
+  // });
 
   const getReservationForSlot = (slot: string) => {
     return reservations.find(

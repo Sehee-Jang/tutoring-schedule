@@ -63,7 +63,6 @@ const TimeSlotSetting = () => {
       selectedTutorId,
       todayString
     );
-    console.log("✅ 불러온 시간대:", fetchedSlots);
 
     setSavedAvailability(fetchedSlots);
   };

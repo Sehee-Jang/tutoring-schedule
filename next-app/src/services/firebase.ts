@@ -114,22 +114,18 @@ export const subscribeToTodayReservations = (
 };
 
 // 튜터 가능 시간 저장 (날짜별)
-// export const saveTutorAvailability = async (tutor: string, slots: string[]) => {
-//   const ref = doc(db, "availability", tutor);
-//   await setDoc(ref, { tutor, slots });
+// export const saveTutorAvailability = async (
+//   tutorId: string,
+//   date: string,
+//   slots: string[]
+// ) => {
+//   const ref = doc(collection(db, "availability"));
+//   await setDoc(ref, {
+//     tutorId,
+//     date,
+//     slots,
+//   });
 // };
-export const saveTutorAvailability = async (
-  tutorId: string,
-  date: string,
-  slots: string[]
-) => {
-  const ref = doc(collection(db, "availability"));
-  await setDoc(ref, {
-    tutorId,
-    date,
-    slots,
-  });
-};
 
 // 반복 스케줄 기반 가능 시간 저장
 export const saveAvailability = async (
@@ -150,9 +146,8 @@ export const saveAvailability = async (
     endDate: endDate,
     slots: slots,
     createdAt: Timestamp.now(), // 생성 시간 추가 (optional)
-  });}
-
-
+  });
+};
 
 // 날짜별 가능한 시간대 불러오기 (반복 스케줄 적용)
 export const fetchAvailableSlotsByDate = async (
@@ -227,71 +222,70 @@ export const fetchAvailableSlotsByDate = async (
     }
   });
 
-  console.log("📌fetchAvailableSlotsByDate RESULTS: ", results);
   return results;
 };
 
 // 모든 튜터 가능 시간 가져오기
-export const fetchAllTutorAvailability = async () => {
-  const q = query(collection(db, "availability"));
-  const snapshot = await getDocs(q);
-  const data: Record<string, Record<string, string[]>> = {};
-  console.log("📌 fetchAllTutorAvailability: ", data);
+// export const fetchAllTutorAvailability = async () => {
+//   const q = query(collection(db, "availability"));
+//   const snapshot = await getDocs(q);
+//   const data: Record<string, Record<string, string[]>> = {};
+//   console.log("📌 fetchAllTutorAvailability: ", data);
 
-  snapshot.forEach((doc) => {
-    const availability = doc.data();
-    const tutorId = availability.tutorId;
-    const startDate = parseISO(availability.startDate);
-    const endDate = availability.endDate
-      ? parseISO(availability.endDate)
-      : startDate;
-    const slots = availability.slots || [];
-    const repeatType = availability.repeatType;
-    const repeatDays = availability.repeatDays || [];
+//   snapshot.forEach((doc) => {
+//     const availability = doc.data();
+//     const tutorId = availability.tutorId;
+//     const startDate = parseISO(availability.startDate);
+//     const endDate = availability.endDate
+//       ? parseISO(availability.endDate)
+//       : startDate;
+//     const slots = availability.slots || [];
+//     const repeatType = availability.repeatType;
+//     const repeatDays = availability.repeatDays || [];
 
-    if (!data[tutorId]) {
-      data[tutorId] = {};
-    }
+//     if (!data[tutorId]) {
+//       data[tutorId] = {};
+//     }
 
-    // data[tutorId][date] = slots;
-    if (repeatType === "none") {
-      // 단일 날짜 (반복 없음)
-      const dateStr = format(startDate, "yyyy-MM-dd");
-      data[tutorId][dateStr] = slots;
-    } else if (repeatType === "daily") {
-      // 매일 반복
-      eachDayOfInterval({ start: startDate, end: endDate }).forEach((date) => {
-        const dateStr = format(date, "yyyy-MM-dd");
-        if (!data[tutorId][dateStr]) {
-          data[tutorId][dateStr] = [...slots];
-        }
-      });
-    } else if (repeatType === "weekly") {
-      // 매주 반복 (요일 지정)
-      eachDayOfInterval({ start: startDate, end: endDate }).forEach((date) => {
-        const dayOfWeek = format(date, "EEEE");
-        if (repeatDays.includes(dayOfWeek)) {
-          const dateStr = format(date, "yyyy-MM-dd");
-          if (!data[tutorId][dateStr]) {
-            data[tutorId][dateStr] = [...slots];
-          }
-        }
-      });
-    } else if (repeatType === "monthly") {
-      // 매월 반복 (일자 기준)
-      eachDayOfInterval({ start: startDate, end: endDate }).forEach((date) => {
-        if (format(date, "dd") === format(startDate, "dd")) {
-          const dateStr = format(date, "yyyy-MM-dd");
-          if (!data[tutorId][dateStr]) {
-            data[tutorId][dateStr] = [...slots];
-          }
-        }
-      });
-    }
-  });
-  console.log("✅ fetchAllTutorAvailability (정상):", data);
-  return data;
-};
+//     // data[tutorId][date] = slots;
+//     if (repeatType === "none") {
+//       // 단일 날짜 (반복 없음)
+//       const dateStr = format(startDate, "yyyy-MM-dd");
+//       data[tutorId][dateStr] = slots;
+//     } else if (repeatType === "daily") {
+//       // 매일 반복
+//       eachDayOfInterval({ start: startDate, end: endDate }).forEach((date) => {
+//         const dateStr = format(date, "yyyy-MM-dd");
+//         if (!data[tutorId][dateStr]) {
+//           data[tutorId][dateStr] = [...slots];
+//         }
+//       });
+//     } else if (repeatType === "weekly") {
+//       // 매주 반복 (요일 지정)
+//       eachDayOfInterval({ start: startDate, end: endDate }).forEach((date) => {
+//         const dayOfWeek = format(date, "EEEE");
+//         if (repeatDays.includes(dayOfWeek)) {
+//           const dateStr = format(date, "yyyy-MM-dd");
+//           if (!data[tutorId][dateStr]) {
+//             data[tutorId][dateStr] = [...slots];
+//           }
+//         }
+//       });
+//     } else if (repeatType === "monthly") {
+//       // 매월 반복 (일자 기준)
+//       eachDayOfInterval({ start: startDate, end: endDate }).forEach((date) => {
+//         if (format(date, "dd") === format(startDate, "dd")) {
+//           const dateStr = format(date, "yyyy-MM-dd");
+//           if (!data[tutorId][dateStr]) {
+//             data[tutorId][dateStr] = [...slots];
+//           }
+//         }
+//       });
+//     }
+//   });
+//   console.log("✅ fetchAllTutorAvailability (정상):", data);
+//   return data;
+// };
 
 // 특정 시간대 삭제 (반복 설정에 따른 시간대)
 export const deleteAvailabilityById = async (docId: string) => {

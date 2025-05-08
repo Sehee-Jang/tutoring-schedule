@@ -24,17 +24,17 @@ export default function RootLayout({
       <body>
         <AuthProvider>
           <ModalProvider>
-            <AvailabilityProvider>
-              <ReservationProvider>
-                <TutorProvider>
+            <ReservationProvider>
+              <TutorProvider>
+                <AvailabilityProvider>
                   <HolidayProvider>
                     <ToastProvider />
                     {children}
                     <Toaster />
                   </HolidayProvider>
-                </TutorProvider>
-              </ReservationProvider>
-            </AvailabilityProvider>
+                </AvailabilityProvider>
+              </TutorProvider>
+            </ReservationProvider>
           </ModalProvider>
         </AuthProvider>
       </body>

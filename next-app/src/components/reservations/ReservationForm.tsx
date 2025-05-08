@@ -83,7 +83,7 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
         const nowMinutes = now.getHours() * 60 + now.getMinutes();
         return slotStart > nowMinutes + 30;
       });
-      console.log("✅ ReservationForm 불러온 시간대:", sortedFilteredSlots);
+
       setAvailableSlots(sortedFilteredSlots);
     };
 
@@ -107,11 +107,9 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
 
     try {
       await createReservation(form as ReservationFormData);
-      console.log("✅ 예약 생성 성공:", form);
 
       // 이메일 알림 발송
       await sendEmailAlert(form as ReservationFormData);
-      console.log("✅ 이메일 전송 성공");
 
       reset();
       setSubmitted(true);
@@ -199,94 +197,6 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
           )}
         </div>
 
-        {/* 시간 선택 */}
-        {/* <div>
-          <div className='flex items-center mb-2'>
-            <h3 className='font-semibold text-gray-700'>시간 선택&nbsp;</h3>
-            <p className='text-sm text-blue-500 hover:text-blue-700'>
-              (예약 가능한 시간대만 노출됩니다.)
-            </p>
-          </div>
-
-          <div className='max-h-[100px] min-h-[100px] overflow-y-scroll pr-1 rounded'>
-            <div className='grid grid-cols-2 sm:grid-cols-3 gap-3'>
-              {(() => {
-                if (!form.tutor) {
-                  return (
-                    <div className='col-span-3 w-full bg-gray-100 text-gray-400 text-center py-8 rounded'>
-                      먼저 튜터를 선택해 주세요.
-                    </div>
-                  );
-                }
-
-                if (isTutorOnHoliday) {
-                  return (
-                    <div className='col-span-3 text-red-500 text-center text-sm py-8'>
-                      오늘은 해당 튜터의 휴무일입니다. 예약이 불가능합니다.
-                    </div>
-                  );
-                }
-
-                const todayString = format(new Date(), "yyyy-MM-dd"); // 오늘 날짜
-                const tutorAvailability =
-                  availability[tutorID]?.[todayString] || [];
-
-                // 콘솔 로그로 확인
-                console.log("✅ 선택된 튜터 이름:", form.tutor);
-                console.log("✅ 선택된 튜터 ID:", tutorID);
-                console.log("✅ 오늘 날짜:", todayString);
-                console.log("✅ 튜터의 예약 가능한 시간대:", tutorAvailability);
-                console.log(
-                  "✅ 튜터의 오늘 시간대:",
-                  availability[tutorID]?.[todayString]
-                );
-
-                // 예약 가능한 시간 필터링
-                const availableSlots = sortTimeSlots(tutorAvailability).filter(
-                  (slot) => {
-                    const [hour, min] = slot
-                      .split("-")[0]
-                      .split(":")
-                      .map(Number);
-                    const slotStart = hour * 60 + min;
-                    const now = new Date();
-                    const nowMinutes = now.getHours() * 60 + now.getMinutes();
-
-                    return slotStart > nowMinutes + 30;
-                  }
-                );
-
-                if (!isTutorOnHoliday && availableSlots.length === 0) {
-                  return (
-                    <div className='col-span-3 text-gray-400 text-center py-8'>
-                      예약 가능한 시간이 없습니다.
-                    </div>
-                  );
-                }
-
-                // 시간 버튼 렌더링
-                return availableSlots.map((slot) => {
-                  const isBooked = isTimeSlotBooked(form.tutor!, slot);
-                  const isUnavailable = isTutorOnHoliday;
-
-                  return (
-                    <TimeSlotButton
-                      key={slot}
-                      disabled={isBooked || isUnavailable}
-                      active={form.timeSlot === slot}
-                      onClick={() =>
-                        !isBooked && !isTutorOnHoliday && selectTimeSlot(slot)
-                      }
-                    >
-                      {slot}
-                      {isBooked && "(예약됨)"}
-                    </TimeSlotButton>
-                  );
-                });
-              })()}
-            </div>
-          </div>
-        </div> */}
         {/* 시간 선택 */}
         <div>
           <h3 className='font-semibold text-gray-700 mb-2'>시간 선택</h3>
