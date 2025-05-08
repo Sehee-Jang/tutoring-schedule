@@ -1,19 +1,34 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useReservations } from "@/context/ReservationContext";
-import { format, addDays, subDays } from "date-fns";
+import { format } from "date-fns";
 import { generateTimeSlots } from "@/utils/generateTimeSlots"; // 시간대 생성 함수
-import type { Reservation } from "@/types/reservation";
 import ReservationCard from "./ReservationCard";
 import DateSelector from "@/components/shared/DateSelector";
+import { fetchTutorAvailabilityByDate } from "@/services/firebase";
 
 const ReservationStatusForTutor = () => {
   const { user } = useAuth();
   const { reservations } = useReservations();
   const [date, setDate] = useState(new Date());
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const timeSlots = generateTimeSlots(9, 21); // 09:00 - 21:00 시간대 생성
+
+  // 날짜 변경 시 해당 날짜의 가능한 시간대 불러오기
+  useEffect(() => {
+    const fetchAvailability = async () => {
+      if (!user) return;
+      const slots = await fetchTutorAvailabilityByDate(
+        user.id,
+        format(date, "yyyy-MM-dd")
+      );
+      setAvailableTimeSlots(slots.length > 0 ? slots : timeSlots); // 가능 시간대가 없으면 전체 시간대
+    };
+
+    fetchAvailability();
+  }, [date, user]);
 
   // 선택된 날짜의 예약 필터링
   const filteredReservations = reservations.filter(
@@ -39,7 +54,7 @@ const ReservationStatusForTutor = () => {
               <th className='p-3 text-center'>예약</th>
             </tr>
           </thead>
-          <tbody>
+          {/* <tbody>
             {timeSlots.map((slot) => (
               <tr key={slot} className='border-t border-gray-200'>
                 <td className='w-[160px] h-[76px] p-3 text-center text-gray-700 border-r border-gray-200'>
@@ -63,6 +78,36 @@ const ReservationStatusForTutor = () => {
                 </td>
               </tr>
             ))}
+          </tbody> */}
+          <tbody>
+            {timeSlots.map((slot) => {
+              const isAvailable = availableTimeSlots.includes(slot);
+              if (!isAvailable) return null;
+
+              return (
+                <tr key={slot} className='border-t border-gray-200'>
+                  <td className='w-[160px] h-[76px] p-3 text-center text-gray-700 border-r border-gray-200'>
+                    {slot}
+                  </td>
+                  <td className='h-[76px] p-3 space-y-2'>
+                    {filteredReservations.filter((r) =>
+                      r.timeSlot.startsWith(slot)
+                    ).length === 0 ? (
+                      <p className='text-gray-400 text-center'>예약 없음</p>
+                    ) : (
+                      filteredReservations
+                        .filter((r) => r.timeSlot.startsWith(slot))
+                        .map((reservation) => (
+                          <ReservationCard
+                            key={reservation.id}
+                            reservation={reservation}
+                          />
+                        ))
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

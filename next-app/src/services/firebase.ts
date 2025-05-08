@@ -107,10 +107,38 @@ export const subscribeToTodayReservations = (
   });
 };
 
-// 튜터 가능 시간 저장
-export const saveTutorAvailability = async (tutor: string, slots: string[]) => {
-  const ref = doc(db, "availability", tutor);
-  await setDoc(ref, { tutor, slots });
+// 튜터 가능 시간 저장 (날짜별)
+// export const saveTutorAvailability = async (tutor: string, slots: string[]) => {
+//   const ref = doc(db, "availability", tutor);
+//   await setDoc(ref, { tutor, slots });
+// };
+export const saveTutorAvailability = async (
+  tutorId: string,
+  date: string,
+  slots: string[]
+) => {
+  const ref = doc(collection(db, "availability"));
+  await setDoc(ref, {
+    tutorId,
+    date,
+    slots,
+  });
+};
+
+// 날짜별 가능한 시간대 불러오기
+export const fetchTutorAvailabilityByDate = async (tutorId: string, date: string) => {
+  const availabilityRef = collection(db, "availability");
+  const q = query(
+    availabilityRef,
+    where("tutorId", "==", tutorId),
+    where("date", "==", date)
+  );
+
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.empty) return [];
+
+  const availabilityData = querySnapshot.docs[0].data();
+  return availabilityData.slots || [];
 };
 
 // 모든 튜터 가능 시간 가져오기
