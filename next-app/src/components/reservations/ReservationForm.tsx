@@ -1,22 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { ReservationFormData } from "@/types/reservation";
 import { useReservations } from "@/context/ReservationContext";
-import { createReservation } from "@/services/firebase";
-import { useAvailability } from "@/context/AvailabilityContext";
-import { sendEmailAlert } from "@/utils/sendEmailAlert";
-import useReservationForm from "@/hooks/useReservationForm";
-
-import Button from "@/components/shared/Button";
-import TimeSlotButton from "@/components/shared/TimeSlotButton";
-import TutorButton from "@/components/shared/TutorButton";
-import ReservationGuideModal from "./ReservationGuideModal";
-import sortTimeSlots from "@/utils/sortTimeSlots";
+import {
+  createReservation,
+  fetchAvailableSlotsByDate,
+} from "@/services/firebase";
 import { useTutors } from "@/context/TutorContext";
 import { useToast } from "@/hooks/use-toast";
 import { useHolidayContext } from "@/context/HolidayContext";
 import { isHoliday } from "@/utils/dateUtils";
+import { format } from "date-fns";
+import Button from "@/components/shared/Button";
+import TimeSlotButton from "@/components/shared/TimeSlotButton";
+import TutorButton from "@/components/shared/TutorButton";
+import ReservationGuideModal from "./ReservationGuideModal";
+import useReservationForm from "@/hooks/useReservationForm";
+import { sendEmailAlert } from "@/utils/sendEmailAlert";
+
+import { useAvailability } from "@/context/AvailabilityContext";
+import sortTimeSlots from "@/utils/sortTimeSlots";
 
 interface ReservationFormProps {
   onSuccess?: () => void;
@@ -24,11 +28,17 @@ interface ReservationFormProps {
 
 const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
   const { isTimeSlotBooked } = useReservations();
-  const { availability } = useAvailability();
   const { tutors } = useTutors();
   const { toast } = useToast();
   const { holidays } = useHolidayContext();
+  // const { availability } = useAvailability();
+  const [availableSlots, setAvailableSlots] = useState<string[]>([]);
+  const [selectedTutor, setSelectedTutor] = useState<string>("");
+  const [tutorID, setTutorID] = useState<string>("");
+  const [showGuide, setShowGuide] = useState(false);
+  const [isTutorOnHoliday, setIsTutorOnHoliday] = useState(false);
 
+  const todayString = format(new Date(), "yyyy-MM-dd");
   const {
     form,
     errors,
@@ -41,17 +51,56 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
     setForm,
   } = useReservationForm();
 
-  const today = new Date().toISOString().split("T")[0];
+  // const today = new Date().toISOString().split("T")[0];
 
   // 선택된 튜터의 ID 매핑
-  const selectedTutor = tutors.find((tutor) => tutor.name === form.tutor);
-  const tutorID = selectedTutor?.id || "";
-  const tutorHolidays = holidays[tutorID] || [];
+  // const selectedTutor = tutors.find((tutor) => tutor.name === form.tutor);
+  // const tutorID = selectedTutor?.id || "";
+  // const tutorHolidays = holidays[tutorID] || [];
+  // const isTutorOnHoliday = isHoliday(todayString, tutorHolidays);
 
-  const isTutorOnHoliday = isHoliday(today, tutorHolidays);
+  // 사용자가 튜터를 선택할 때마다 시간대 로드
+  useEffect(() => {
+    const loadAvailableSlots = async () => {
+      if (!tutorID) return;
 
-  const [showGuide, setShowGuide] = useState(false);
+      // 휴무일 확인
+      const tutorHolidays = holidays[tutorID] || [];
+      const isHolidayToday = isHoliday(todayString, tutorHolidays);
+      setIsTutorOnHoliday(isHolidayToday);
 
+      if (isHolidayToday) {
+        setAvailableSlots([]);
+        return;
+      }
+
+      const slots = await fetchAvailableSlotsByDate(tutorID, todayString);
+      const flatSlots = slots.flatMap((item) => item.slots);
+      const sortedFilteredSlots = sortTimeSlots(flatSlots).filter((slot) => {
+        const [hour, min] = slot.split("-")[0].split(":").map(Number);
+        const slotStart = hour * 60 + min;
+        const now = new Date();
+        const nowMinutes = now.getHours() * 60 + now.getMinutes();
+        return slotStart > nowMinutes + 30;
+      });
+      console.log("✅ ReservationForm 불러온 시간대:", sortedFilteredSlots);
+      setAvailableSlots(sortedFilteredSlots);
+    };
+
+    loadAvailableSlots();
+  }, [tutorID, holidays]);
+
+  // 튜터 선택 핸들러
+  // const handleTutorSelect = (tutorName: string) => {
+  //   setForm((prev) => ({ ...prev, tutor: tutorName, timeSlot: "" }));
+  // };
+  const handleTutorSelect = (tutorName: string) => {
+    setForm((prev) => ({ ...prev, tutor: tutorName, timeSlot: "" }));
+    const selected = tutors.find((tutor) => tutor.name === tutorName);
+    setTutorID(selected?.id || "");
+  };
+
+  // 예약 제출 핸들러
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validate()) return;
@@ -59,8 +108,11 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
     try {
       await createReservation(form as ReservationFormData);
       console.log("✅ 예약 생성 성공:", form);
-      await sendEmailAlert(form as ReservationFormData); // 이메일 전송
+
+      // 이메일 알림 발송
+      await sendEmailAlert(form as ReservationFormData);
       console.log("✅ 이메일 전송 성공");
+
       reset();
       setSubmitted(true);
       setTimeout(() => setSubmitted(false), 5000);
@@ -82,10 +134,6 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
         variant: "destructive",
       });
     }
-  };
-
-  const handleTutorSelect = (tutorName: string) => {
-    setForm((prev) => ({ ...prev, tutor: tutorName, timeSlot: "" }));
   };
 
   return (
@@ -114,9 +162,10 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
       )}
 
       <form className='flex flex-col gap-6' onSubmit={handleSubmit}>
+        {/* 튜터 선택 */}
         <div>
           <h3 className='font-semibold text-gray-700 mb-2'>튜터 선택</h3>
-          <div className='grid grid-cols-3 sm:grid-cols-3 gap-2'>
+          {/* <div className='grid grid-cols-3 sm:grid-cols-3 gap-2'>
             {tutors.length === 0
               ? [...Array(8)].map((_, idx) => (
                   <div
@@ -133,6 +182,17 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
                     {tutor.name}
                   </TutorButton>
                 ))}
+          </div> */}
+          <div className='grid grid-cols-3 sm:grid-cols-3 gap-2'>
+            {tutors.map((tutor) => (
+              <TutorButton
+                key={tutor.id}
+                selected={form.tutor === tutor.name}
+                onClick={() => handleTutorSelect(tutor.name)}
+              >
+                {tutor.name}
+              </TutorButton>
+            ))}
           </div>
           {errors.tutor && (
             <p className='text-red-500 text-sm mt-1'>{errors.tutor}</p>
@@ -140,7 +200,7 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
         </div>
 
         {/* 시간 선택 */}
-        <div>
+        {/* <div>
           <div className='flex items-center mb-2'>
             <h3 className='font-semibold text-gray-700'>시간 선택&nbsp;</h3>
             <p className='text-sm text-blue-500 hover:text-blue-700'>
@@ -167,17 +227,34 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
                   );
                 }
 
-                // 예약 가능한 시간 필터링
-                const availableSlots = sortTimeSlots(
-                  availability[form.tutor] || []
-                ).filter((slot) => {
-                  const [hour, min] = slot.split("-")[0].split(":").map(Number);
-                  const slotStart = hour * 60 + min;
-                  const now = new Date();
-                  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+                const todayString = format(new Date(), "yyyy-MM-dd"); // 오늘 날짜
+                const tutorAvailability =
+                  availability[tutorID]?.[todayString] || [];
 
-                  return slotStart > nowMinutes + 30;
-                });
+                // 콘솔 로그로 확인
+                console.log("✅ 선택된 튜터 이름:", form.tutor);
+                console.log("✅ 선택된 튜터 ID:", tutorID);
+                console.log("✅ 오늘 날짜:", todayString);
+                console.log("✅ 튜터의 예약 가능한 시간대:", tutorAvailability);
+                console.log(
+                  "✅ 튜터의 오늘 시간대:",
+                  availability[tutorID]?.[todayString]
+                );
+
+                // 예약 가능한 시간 필터링
+                const availableSlots = sortTimeSlots(tutorAvailability).filter(
+                  (slot) => {
+                    const [hour, min] = slot
+                      .split("-")[0]
+                      .split(":")
+                      .map(Number);
+                    const slotStart = hour * 60 + min;
+                    const now = new Date();
+                    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+                    return slotStart > nowMinutes + 30;
+                  }
+                );
 
                 if (!isTutorOnHoliday && availableSlots.length === 0) {
                   return (
@@ -209,6 +286,34 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
               })()}
             </div>
           </div>
+        </div> */}
+        {/* 시간 선택 */}
+        <div>
+          <h3 className='font-semibold text-gray-700 mb-2'>시간 선택</h3>
+          {isTutorOnHoliday ? (
+            <div className='text-red-500 text-center text-sm py-8'>
+              오늘은 해당 튜터의 휴무일입니다. 예약이 불가능합니다.
+            </div>
+          ) : availableSlots.length === 0 ? (
+            <p className='text-gray-400'>예약 가능한 시간이 없습니다.</p>
+          ) : (
+            <div className='grid grid-cols-3 gap-2 mt-2'>
+              {availableSlots.map((slot) => {
+                const isBooked = isTimeSlotBooked(form.tutor!, slot);
+                return (
+                  <TimeSlotButton
+                    key={slot}
+                    disabled={isBooked}
+                    active={form.timeSlot === slot}
+                    onClick={() => !isBooked && selectTimeSlot(slot)}
+                  >
+                    {slot}
+                    {isBooked && "(예약됨)"}
+                  </TimeSlotButton>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         <div>

@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { generateTimeSlots } from "@/utils/generateTimeSlots"; // 시간대 생성 함수
 import ReservationCard from "./ReservationCard";
 import DateSelector from "@/components/shared/DateSelector";
-import { fetchTutorAvailabilityByDate } from "@/services/firebase";
+import { fetchAvailableSlotsByDate } from "@/services/firebase";
 
 const ReservationStatusForTutor = () => {
   const { user } = useAuth();
@@ -20,11 +20,14 @@ const ReservationStatusForTutor = () => {
   useEffect(() => {
     const fetchAvailability = async () => {
       if (!user) return;
-      const slots = await fetchTutorAvailabilityByDate(
+      const availability = await fetchAvailableSlotsByDate(
         user.id,
         format(date, "yyyy-MM-dd")
       );
-      setAvailableTimeSlots(slots.length > 0 ? slots : timeSlots); // 가능 시간대가 없으면 전체 시간대
+
+      // 시간대만 추출하여 상태로 설정
+      const slots = availability.flatMap((item) => item.slots);
+      setAvailableTimeSlots(slots.length > 0 ? slots : []);
     };
 
     fetchAvailability();
