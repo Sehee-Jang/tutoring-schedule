@@ -58,8 +58,9 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
 
     try {
       await createReservation(form as ReservationFormData);
+      console.log("✅ 예약 생성 성공:", form);
       await sendEmailAlert(form as ReservationFormData); // 이메일 전송
-
+      console.log("✅ 이메일 전송 성공");
       reset();
       setSubmitted(true);
       setTimeout(() => setSubmitted(false), 5000);

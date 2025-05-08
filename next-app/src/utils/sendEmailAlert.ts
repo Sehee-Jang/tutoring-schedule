@@ -12,12 +12,19 @@ interface EmailParams {
 }
 
 export const sendEmailAlert = async (formData: EmailParams) => {
-  const SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
-  // const TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
+  // CRA
+  // const SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+  // const TEMPLATE_ID = formData.isUpdate
+  //   ? process.env.REACT_APP_EMAILJS_UPDATE_TEMPLATE_ID
+  //   : process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
+  // const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+
+  // Next
+  const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
   const TEMPLATE_ID = formData.isUpdate
-    ? process.env.REACT_APP_EMAILJS_UPDATE_TEMPLATE_ID
-    : process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
-  const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+    ? process.env.NEXT_PUBLIC_EMAILJS_UPDATE_TEMPLATE_ID
+    : process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+  const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
   // 테스트용: 이메일 발송 끄기
   // if (process.env.REACT_APP_DISABLE_EMAIL === "true") {

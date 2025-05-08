@@ -16,7 +16,7 @@ const TimeSlotButton = ({
   ...props
 }: TimeSlotButtonProps) => {
   const base =
-    "w-32 text-center rounded-lg border border-gray-200 px-4 py-2 text-sm transition disabled:cursor-not-allowed";
+    "text-center rounded-lg border border-gray-200 px-4 py-2 text-sm transition disabled:cursor-not-allowed";
   const activeClass = "bg-blue-600 text-white";
   const disabledClass = "bg-gray-100 text-gray-400";
   const defaultClass = "bg-white hover:bg-gray-50";
