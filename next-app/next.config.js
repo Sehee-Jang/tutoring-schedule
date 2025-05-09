@@ -7,7 +7,7 @@ const nextConfig = {
         config.resolve.fallback = {
           ...config.resolve.fallback,
           fs: false,
-          stream: false,
+          stream: require.resolve("stream-browserify"), // 스트림 모듈 폴리필
           net: false,
           tls: false,
           zlib: false,
@@ -15,23 +15,22 @@ const nextConfig = {
 
         config.resolve.alias = {
           ...(config.resolve.alias || {}),
-          "gzip-size": false,
-          "next/dist/compiled/gzip-size": false,
+          "gzip-size": false, // gzip-size 모듈 완전히 무시
+          "next/dist/compiled/gzip-size": false, // Next.js 내부 gzip-size 무시
         };
       }
     }
-
     return config;
   },
   experimental: {
-    outputFileTracingIgnores: [
-      "**/node_modules/next/dist/compiled/gzip-size/**",
-      "**/node_modules/gzip-size/**",
-    ],
+    outputFileTracingExcludes: {
+      "*": ["**/node_modules/next/dist/compiled/gzip-size/**"],
+    },
   },
 };
 
 module.exports = nextConfig;
+
 
 // next.config.ts
 // import type { NextConfig } from "next";
