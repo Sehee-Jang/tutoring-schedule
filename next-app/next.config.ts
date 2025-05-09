@@ -7,12 +7,15 @@ const nextConfig: NextConfig = {
       config.resolve = {
         ...config.resolve,
         fallback: {
-          ...config.resolve?.fallback,
-          fs: false, // 파일 시스템 모듈을 완전히 무시
-          stream: false,
+          fs: false,
+          zlib: false,
           net: false,
           tls: false,
-          zlib: false,
+          stream: false,
+          "gzip-size": false,
+        },
+        alias: {
+          "gzip-size": false,
         },
       };
     }
