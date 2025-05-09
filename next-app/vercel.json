@@ -1,7 +1,8 @@
 {
   "build": {
     "env": {
-      "NODE_VERSION": "18.x"
+      "NODE_VERSION": "18.x",
+      "NEXT_PUBLIC_NODE_ENV": "production"
     }
   }
 }
