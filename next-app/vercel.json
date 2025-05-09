@@ -1,8 +1,9 @@
 {
   "build": {
     "env": {
-      "NODE_VERSION": "18.x",
-      "NEXT_PUBLIC_NODE_ENV": "production"
+      "NODE_VERSION": "18.x"
     }
-  }
+  },
+  "installCommand": "npm install",
+  "buildCommand": "npm run build"
 }
