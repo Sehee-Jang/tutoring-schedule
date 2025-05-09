@@ -17,10 +17,15 @@ import { useRouter } from "next/navigation";
 //   }
 // };
 
-const LoginModal = () => {
-  const { modalType, closeModal, showModal } = useModal();
+interface LoginModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const LoginModal = ({ isOpen }: LoginModalProps) => {
+  const { closeModal, showModal } = useModal();
+
   const { user } = useAuth();
-  const isOpen = modalType === "login";
   const { toast } = useToast();
   const router = useRouter();
 
@@ -53,7 +58,7 @@ const LoginModal = () => {
         variant: "default",
       });
     } catch (err) {
-      setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+      console.error("이메일 또는 비밀번호가 올바르지 않습니다.", err);
     }
   };
 

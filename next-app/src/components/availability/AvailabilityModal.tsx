@@ -9,9 +9,14 @@ import ModalLayout from "@/components/shared/ModalLayout";
 import TimeSlotButton from "@/components/shared/TimeSlotButton";
 import { generateTimeSlots } from "@/utils/generateTimeSlots";
 
-const AvailabilityModal = () => {
-  const { modalType, closeModal } = useModal();
-  const isOpen = modalType === "availability";
+interface AvailabilityModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const AvailabilityModal = ({ isOpen }: AvailabilityModalProps) => {
+  const { closeModal } = useModal();
+  // const isOpen = modalType === "login";
 
   const { availability: globalAvailability, updateAvailability } =
     useAvailability();
@@ -52,7 +57,17 @@ const AvailabilityModal = () => {
   // 모달 열릴 때 global availability 복사
   useEffect(() => {
     if (isOpen) {
-      setAvailability(globalAvailability);
+      // 글로벌 availability를 단순화하여 상태에 저장
+      const simplifiedAvailability: Record<string, string[]> = {};
+      Object.keys(globalAvailability).forEach((tutorId) => {
+        const dates = Object.keys(globalAvailability[tutorId]);
+        if (dates.length > 0) {
+          // 가장 첫 번째 날짜의 슬롯을 사용 (오늘 날짜)
+          simplifiedAvailability[tutorId] =
+            globalAvailability[tutorId][dates[0]];
+        }
+      });
+      setAvailability(simplifiedAvailability);
     }
   }, [isOpen, globalAvailability]);
 
@@ -67,7 +82,12 @@ const AvailabilityModal = () => {
   };
 
   const handleSave = async () => {
-    await updateAvailability(selectedTutor, availability[selectedTutor] || []);
+    const todayString = new Date().toISOString().split("T")[0];
+    await updateAvailability(
+      selectedTutor,
+      todayString,
+      availability[selectedTutor] || []
+    );
     closeModal();
   };
 

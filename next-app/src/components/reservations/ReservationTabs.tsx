@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useAuth } from "@/context/AuthContext";
 import ReservationForm from "./ReservationForm";
 import ReservationStatus from "./ReservationStatus";
 import TabButton from "@/components/shared/TabButton";
 
 const ReservationTabs = () => {
-  const { isAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState<"form" | "status">("form");
 
   const handleReservationSuccess = () => {

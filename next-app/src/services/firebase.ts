@@ -1,6 +1,7 @@
 "use client";
 
 import { Holiday } from "@/types/tutor";
+import { Reservation } from "@/types/reservation";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import {
@@ -17,14 +18,9 @@ import {
   where,
   Timestamp,
 } from "firebase/firestore";
-import {
-  eachDayOfInterval,
-  format,
-  isSameDay,
-  isWithinInterval,
-  parseISO,
-} from "date-fns";
+import { format, parseISO } from "date-fns";
 
+// Firebase 초기화
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
@@ -35,15 +31,14 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID!,
 };
 
-// Firebase 초기화
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
 // 예약 생성
 export const createReservation = async (
-  reservationData: Record<string, any>
-) => {
+  reservationData: Omit<Reservation, "id" | "createdAt">
+): Promise<Reservation> => {
   try {
     const todayString = new Date().toISOString().slice(0, 10);
     const docRef = await addDoc(collection(db, "reservations"), {
@@ -51,7 +46,12 @@ export const createReservation = async (
       classDate: todayString,
       createdAt: Timestamp.now(),
     });
-    return { id: docRef.id, ...reservationData, classDate: todayString };
+    return {
+      id: docRef.id,
+      ...reservationData,
+      classDate: todayString,
+      createdAt: Timestamp.now().toDate().toISOString(),
+    };
   } catch (error) {
     console.error("예약 생성 오류:", error);
     throw error;
@@ -59,7 +59,9 @@ export const createReservation = async (
 };
 
 // 예약 취소
-export const cancelReservation = async (reservationId: string) => {
+export const cancelReservation = async (
+  reservationId: string
+): Promise<boolean> => {
   try {
     await deleteDoc(doc(db, "reservations", reservationId));
     return true;
@@ -72,8 +74,8 @@ export const cancelReservation = async (reservationId: string) => {
 // 예약 수정
 export const updateReservation = async (
   id: string,
-  updatedData: Record<string, any>
-) => {
+  updatedData: Partial<Omit<Reservation, "id" | "createdAt">>
+): Promise<void> => {
   try {
     const ref = doc(db, "reservations", id);
     await updateDoc(ref, updatedData);
@@ -85,7 +87,7 @@ export const updateReservation = async (
 
 // 오늘의 예약 실시간 모니터링
 export const subscribeToTodayReservations = (
-  callback: (reservations: any[]) => void
+  callback: (reservations: Reservation[]) => void
 ) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -100,9 +102,26 @@ export const subscribeToTodayReservations = (
   );
 
   return onSnapshot(reservationsQuery, (snapshot) => {
-    const reservations: any[] = [];
-    snapshot.forEach((doc) => {
-      reservations.push({ id: doc.id, ...doc.data() });
+    // const reservations: any[] = [];
+    // snapshot.forEach((doc) => {
+    //   reservations.push({ id: doc.id, ...doc.data() });
+    // });
+    const reservations: Reservation[] = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        userId: data.userId ?? "",
+        tutor: data.tutor ?? "",
+        date: data.date ?? "",
+        timeSlot: data.timeSlot ?? "",
+        status: data.status ?? "reserved",
+        teamName: data.teamName ?? "",
+        question: data.question ?? "",
+        resourceLink: data.resourceLink ?? "",
+        classDate: data.classDate ?? "",
+        editPassword: data.editPassword ?? "",
+        createdAt: data.createdAt?.toDate().toISOString() ?? "",
+      };
     });
 
     // 예약 현황 시간순 정렬
@@ -130,42 +149,43 @@ export const subscribeToTodayReservations = (
 // 반복 스케줄 기반 가능 시간 저장
 export const saveAvailability = async (
   tutorId: string,
-  repeatType: string,
+  repeatType: "none" | "daily" | "weekly" | "monthly",
   repeatDays: string[],
   startDate: string,
   endDate: string,
   slots: string[]
-) => {
+): Promise<void> => {
   const docRef = doc(collection(db, "availability")); // 모듈 방식으로 수정
 
   await setDoc(docRef, {
-    tutorId: tutorId, // 튜터의 고유 ID로 저장
-    repeatType: repeatType,
-    repeatDays: repeatDays,
-    startDate: startDate,
-    endDate: endDate,
-    slots: slots,
-    createdAt: Timestamp.now(), // 생성 시간 추가 (optional)
+    tutorId,
+    repeatType,
+    repeatDays,
+    startDate,
+    endDate,
+    slots,
+    createdAt: Timestamp.now(),
   });
 };
+
+// 날짜별 가능한 시간대 불러오기
+interface AvailableSlot {
+  id: string;
+  repeatType: "none" | "daily" | "weekly" | "monthly";
+  repeatDays: string[];
+  slots: string[];
+}
 
 // 날짜별 가능한 시간대 불러오기 (반복 스케줄 적용)
 export const fetchAvailableSlotsByDate = async (
   tutorId: string,
   date: string
-): Promise<
-  { id: string; repeatType: string; repeatDays: string[]; slots: string[] }[]
-> => {
+): Promise<AvailableSlot[]> => {
   const availabilityRef = collection(db, "availability");
   const q = query(availabilityRef, where("tutorId", "==", tutorId));
   const querySnapshot = await getDocs(q);
 
-  const results: {
-    id: string;
-    repeatType: string;
-    repeatDays: string[];
-    slots: string[];
-  }[] = [];
+  const results: AvailableSlot[] = [];
 
   querySnapshot.forEach((doc) => {
     const data = doc.data();
@@ -177,7 +197,7 @@ export const fetchAvailableSlotsByDate = async (
       if (!endDate || (date >= startDate && date <= endDate)) {
         results.push({
           id: doc.id,
-          repeatType: "매일",
+          repeatType: "daily",
           repeatDays: [],
           slots: data.slots,
         });
@@ -191,7 +211,7 @@ export const fetchAvailableSlotsByDate = async (
       if (!endDate || (date >= startDate && date <= endDate)) {
         results.push({
           id: doc.id,
-          repeatType: "매주",
+          repeatType: "weekly",
           repeatDays: data.repeatDays,
           slots: data.slots,
         });
@@ -205,7 +225,7 @@ export const fetchAvailableSlotsByDate = async (
       if (!endDate || (date >= startDate && date <= endDate)) {
         results.push({
           id: doc.id,
-          repeatType: "매월",
+          repeatType: "monthly",
           repeatDays: [],
           slots: data.slots,
         });

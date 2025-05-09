@@ -1,5 +1,5 @@
 // 좌측 사이드 + 메인 구조 레이아웃
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import Header from "@/components/tutor/shared/Header";
 import Sidebar from "@/components/tutor/shared/Sidebar";
 

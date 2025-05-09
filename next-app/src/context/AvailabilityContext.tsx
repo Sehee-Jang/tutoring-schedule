@@ -5,6 +5,7 @@ import {
   useEffect,
   useState,
   ReactNode,
+  useCallback,
 } from "react";
 import { fetchAvailableSlotsByDate } from "@/services/firebase";
 import { Tutor } from "@/types/tutor";
@@ -37,11 +38,9 @@ export const AvailabilityProvider = ({
   const [availability, setAvailability] = useState<Availability>({});
   const { tutors } = useTutors();
 
-  const loadAvailability = async () => {
-    if (!tutors || tutors.length === 0) return; // 튜터가 없는 경우 처리
+  const loadAvailability = useCallback(async () => {
+    if (!tutors || tutors.length === 0) return;
 
-
-    
     const today = new Date().toISOString().split("T")[0];
     const loadedAvailability: Record<string, Record<string, string[]>> = {};
 
@@ -55,13 +54,13 @@ export const AvailabilityProvider = ({
     );
 
     setAvailability(loadedAvailability);
-  };
+  }, [tutors]);
 
-useEffect(() => {
-  if (tutors.length > 0) {
-    loadAvailability();
-  }
-}, [tutors.length]);
+  useEffect(() => {
+    if (tutors.length > 0) {
+      loadAvailability();
+    }
+  }, [tutors, loadAvailability]);
 
   const updateAvailability = async (
     tutorId: string,

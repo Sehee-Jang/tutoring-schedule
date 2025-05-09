@@ -1,8 +1,17 @@
-// 휴무일 목록 테이블
-import React from "react";
 import { Holiday } from "@/types/tutor";
+import React from "react";
 
-const HolidayTable = ({ holidays, formatDate, deleteHoliday }: any) => {
+interface HolidayTableProps {
+  holidays: Holiday[];
+  formatDate: (date: string) => string;
+  deleteHoliday: (id: string) => void;
+}
+
+const HolidayTable: React.FC<HolidayTableProps> = ({
+  holidays,
+  formatDate,
+  deleteHoliday,
+}) => {
   return (
     <table className='w-full border text-sm border-gray-200'>
       <thead>
@@ -17,7 +26,7 @@ const HolidayTable = ({ holidays, formatDate, deleteHoliday }: any) => {
         </tr>
       </thead>
       <tbody>
-        {holidays.map((h: any) => (
+        {holidays.map((h: Holiday) => (
           <tr key={h.id}>
             <td className='p-2 border-r border-gray-200 text-gray-700'>
               {h.endDate

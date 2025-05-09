@@ -3,12 +3,8 @@
 import {
   createContext,
   useContext,
-  useEffect,
-  useState,
   ReactNode,
 } from "react";
-import { db } from "@/services/firebase";
-import { collection, onSnapshot } from "firebase/firestore";
 import { Tutor } from "@/types/tutor";
 import { useFetchTutors } from "@/hooks/useFetchTutors";
 

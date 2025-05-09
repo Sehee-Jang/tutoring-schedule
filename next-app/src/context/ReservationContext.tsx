@@ -1,4 +1,3 @@
-// ReservationContext.tsx (최적화 및 실시간 반영 버전)
 "use client";
 
 import {
@@ -36,31 +35,65 @@ export const ReservationProvider = ({ children }: ReservationProviderProps) => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
- useEffect(() => {
-   const todayString = new Date().toISOString().slice(0, 10);
+  useEffect(() => {
+    const todayString = new Date().toISOString().slice(0, 10);
 
-   const reservationsQuery = query(
-     collection(db, "reservations"),
-     orderBy("createdAt", "asc")
-   );
+    const reservationsQuery = query(
+      collection(db, "reservations"),
+      orderBy("createdAt", "asc")
+    );
 
-   const unsubscribe = onSnapshot(reservationsQuery, (snapshot) => {
-     const fetchedReservations: Reservation[] = snapshot.docs.map((doc) => ({
-       id: doc.id,
-       ...doc.data(),
-     })) as Reservation[];
+    //  const unsubscribe = onSnapshot(reservationsQuery, (snapshot) => {
+    //    const fetchedReservations: Reservation[] = snapshot.docs.map((doc) => ({
+    //      id: doc.id,
+    //      ...doc.data(),
+    //    })) as Reservation[];
 
-     const todayReservations = fetchedReservations.filter(
-       (res) => (res as any).classDate === todayString
-     );
+    //    const todayReservations = fetchedReservations.filter(
+    //      (res) => (res as any).classDate === todayString
+    //    );
 
-     setReservations(todayReservations);
-     setLoading(false);
-   });
+    //    setReservations(todayReservations);
+    //    setLoading(false);
+    //  });
+    const unsubscribe = onSnapshot(reservationsQuery, (snapshot) => {
+      const fetchedReservations: Reservation[] = snapshot.docs
+        .map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            userId: data.userId ?? "",
+            teamName: data.teamName ?? "",
+            tutor: data.tutor ?? "",
+            timeSlot: data.timeSlot ?? "",
+            classDate: data.classDate ?? "",
+            resourceLink: data.resourceLink ?? "",
+            question: data.question ?? "",
+            editPassword: data.editPassword ?? "",
+            date: data.date ?? todayString,
+            status: data.status ?? "pending",
+            createdAt: data.createdAt ?? null,
+          } as Reservation;
+        })
+        .filter((res) => isReservation(res));
 
-   return () => unsubscribe();
- }, []);
+      setReservations(fetchedReservations);
+      setLoading(false);
+    });
 
+    return () => unsubscribe();
+  }, []);
+  // 타입 가드 (Type Guard)
+  const isReservation = (data: Partial<Reservation>): data is Reservation => {
+    return (
+      typeof data.id === "string" &&
+      typeof data.userId === "string" &&
+      typeof data.tutor === "string" &&
+      typeof data.timeSlot === "string" &&
+      typeof data.classDate === "string" &&
+      typeof data.status === "string"
+    );
+  };
 
   const getTutorReservations = (tutorName: string) =>
     reservations.filter((res) => res.tutor === tutorName);

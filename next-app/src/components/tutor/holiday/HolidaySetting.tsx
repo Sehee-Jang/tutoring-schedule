@@ -121,8 +121,6 @@ const HolidaySetting = () => {
     });
   };
 
-  const isDateInvalid: boolean = !!(endDate && startDate > endDate);
-
   if (loading) return <p>휴무일 데이터를 불러오는 중입니다...</p>;
 
   return (

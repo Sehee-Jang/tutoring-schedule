@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import type { ReservationFormData } from "@/types/reservation";
+import type { Reservation, ReservationFormData } from "@/types/reservation";
 import { useReservations } from "@/context/ReservationContext";
 import {
   createReservation,
@@ -18,9 +18,8 @@ import TutorButton from "@/components/shared/TutorButton";
 import ReservationGuideModal from "./ReservationGuideModal";
 import useReservationForm from "@/hooks/useReservationForm";
 import { sendEmailAlert } from "@/utils/sendEmailAlert";
-
-import { useAvailability } from "@/context/AvailabilityContext";
 import sortTimeSlots from "@/utils/sortTimeSlots";
+import { useAuth } from "@/context/AuthContext";
 
 interface ReservationFormProps {
   onSuccess?: () => void;
@@ -33,11 +32,10 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
   const { holidays } = useHolidayContext();
   // const { availability } = useAvailability();
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
-  const [selectedTutor, setSelectedTutor] = useState<string>("");
   const [tutorID, setTutorID] = useState<string>("");
   const [showGuide, setShowGuide] = useState(false);
   const [isTutorOnHoliday, setIsTutorOnHoliday] = useState(false);
-
+  const { user } = useAuth();
   const todayString = format(new Date(), "yyyy-MM-dd");
   const {
     form,
@@ -88,7 +86,7 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
     };
 
     loadAvailableSlots();
-  }, [tutorID, holidays]);
+  }, [tutorID, holidays, todayString]);
 
   // 튜터 선택 핸들러
   // const handleTutorSelect = (tutorName: string) => {
@@ -101,12 +99,62 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
   };
 
   // 예약 제출 핸들러
+  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   if (!validate()) return;
+
+  //   try {
+  //     await createReservation(form as ReservationFormData);
+
+  //     // 이메일 알림 발송
+  //     await sendEmailAlert(form as ReservationFormData);
+
+  //     reset();
+  //     setSubmitted(true);
+  //     setTimeout(() => setSubmitted(false), 5000);
+
+  //     // 성공
+  //     toast({
+  //       title: "예약이 성공적으로 완료되었습니다!",
+  //       variant: "default",
+  //     });
+
+  //     if (onSuccess) {
+  //       onSuccess(); // 추가: 성공하면 탭 이동
+  //     }
+  //   } catch (err) {
+  //     alert("예약 중 오류가 발생했습니다.");
+  //     console.error("Error: ", err);
+  //     // 실패
+  //     toast({
+  //       title: "❌ 예약 중 오류가 발생했습니다. 다시 시도해주세요.",
+  //       variant: "destructive",
+  //     });
+  //   }
+  // };
+  // 예약 제출 핸들러
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validate()) return;
 
     try {
-      await createReservation(form as ReservationFormData);
+      // 로그인된 사용자 정보 가져오기 (유저 ID)
+
+      const userId = user?.id || "";
+
+      // 현재 날짜 (예약 날짜)
+      const todayString = new Date().toISOString().split("T")[0];
+
+      // Reservation 객체 생성 (필수 필드 추가)
+      const reservationData: Omit<Reservation, "id" | "createdAt"> = {
+        ...form,
+        userId: userId,
+        date: todayString,
+        classDate: todayString,
+        status: "reserved", // 기본값: 예약 상태
+      };
+
+      await createReservation(reservationData);
 
       // 이메일 알림 발송
       await sendEmailAlert(form as ReservationFormData);
@@ -124,8 +172,9 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
       if (onSuccess) {
         onSuccess(); // 추가: 성공하면 탭 이동
       }
-    } catch (error) {
+    } catch (err) {
       alert("예약 중 오류가 발생했습니다.");
+      console.error("Error: ", err);
       // 실패
       toast({
         title: "❌ 예약 중 오류가 발생했습니다. 다시 시도해주세요.",

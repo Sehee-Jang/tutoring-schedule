@@ -10,7 +10,7 @@ import Button from "@/components/shared/Button";
 
 const Header = () => {
   const { showModal } = useModal();
-  const { user, isAdmin, isTutor } = useAuth();
+  const { user } = useAuth();
 
   const today = format(new Date(), "yyyy년 M월 d일 EEEE", { locale: ko });
 

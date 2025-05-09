@@ -8,7 +8,6 @@ import { LogOut } from "lucide-react";
 const Footer = () => {
   const { user } = useAuth();
   const { showModal } = useModal();
-  const isAdmin = user?.role === "admin";
 
   return (
     // <footer className='flex justify-center py-6 text-sm text-gray-600'>

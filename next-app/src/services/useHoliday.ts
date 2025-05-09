@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { fetchTutorHolidays } from "@/services/firebase";
+import type { Holiday } from "@/types/tutor"; 
 
 export const useHoliday = (tutor: string) => {
-  const [holidays, setHolidays] = useState<
-    { start: string; end: string; reason: string }[]
-  >([]);
+  const [holidays, setHolidays] = useState<Holiday[]>([]);
 
   useEffect(() => {
     const load = async () => {

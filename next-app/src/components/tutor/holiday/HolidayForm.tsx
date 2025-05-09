@@ -1,6 +1,17 @@
 import React from "react";
 
-const HolidayForm = ({
+interface HolidayFormProps {
+  startDate: string;
+  setStartDate: (value: string) => void;
+  endDate: string;
+  setEndDate: (value: string) => void;
+  reason: string;
+  setReason: (value: string) => void;
+  addHoliday: () => void;
+  isDateInvalid: boolean;
+}
+
+const HolidayForm: React.FC<HolidayFormProps> = ({
   startDate,
   setStartDate,
   endDate,
@@ -9,7 +20,7 @@ const HolidayForm = ({
   setReason,
   addHoliday,
   isDateInvalid,
-}: any) => {
+}) => {
   return (
     <div className='flex items-end gap-4 min-h-[76px]'>
       {/* 시작일 */}

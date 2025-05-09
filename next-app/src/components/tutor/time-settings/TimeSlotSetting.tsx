@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import TimeSlotButton from "@/components/shared/TimeSlotButton";
 import { useTutors } from "@/context/TutorContext";
 import { useAuth } from "@/context/AuthContext";
@@ -15,7 +15,7 @@ import { format } from "date-fns";
 
 interface SlotData {
   id: string;
-  repeatType: string;
+  repeatType: "none" | "daily" | "weekly" | "monthly";
   repeatDays: string[];
   slots: string[];
 }
@@ -43,14 +43,7 @@ const TimeSlotSetting = () => {
     }
   }, [isTutor, isAdmin, user, tutors, selectedTutor]);
 
-  // 저장된 시간대 불러오기
-  useEffect(() => {
-    if (selectedTutor) {
-      loadSavedAvailability();
-    }
-  }, [selectedTutor]);
-  
-  const loadSavedAvailability = async () => {
+  const loadSavedAvailability = useCallback(async () => {
     if (!selectedTutor) return;
 
     const selectedTutorId = tutors.find(
@@ -64,8 +57,23 @@ const TimeSlotSetting = () => {
       todayString
     );
 
-    setSavedAvailability(fetchedSlots);
-  };
+    const typedSlots: SlotData[] = fetchedSlots.map((slot) => ({
+      id: slot.id,
+      repeatType:
+        (slot.repeatType as "none" | "daily" | "weekly" | "monthly") ?? "none",
+      repeatDays: slot.repeatDays || [],
+      slots: slot.slots,
+    }));
+
+    setSavedAvailability(typedSlots);
+  }, [selectedTutor, tutors]);
+
+  // 저장된 시간대 불러오기
+  useEffect(() => {
+    if (selectedTutor) {
+      loadSavedAvailability();
+    }
+  }, [selectedTutor, loadSavedAvailability]);
 
   // 시간대 토글
   const toggleSlot = (slot: string) => {
@@ -110,6 +118,7 @@ const TimeSlotSetting = () => {
       toast({ title: "✅ 가능 시간이 저장되었습니다." });
       loadSavedAvailability(); // 저장 후 새로고침
     } catch (err) {
+      console.error("Error: ", err);
       toast({ title: "❌ 저장에 실패했습니다.", variant: "destructive" });
     }
   };
@@ -127,6 +136,7 @@ const TimeSlotSetting = () => {
       setSavedAvailability(updated);
       toast({ title: "시간대가 삭제되었습니다." });
     } catch (err) {
+      console.error("Error: ", err);
       toast({
         title: "❌ 시간대 삭제에 실패했습니다.",
         variant: "destructive",
@@ -174,7 +184,11 @@ const TimeSlotSetting = () => {
         <label>반복 설정:</label>
         <select
           value={repeatType}
-          onChange={(e) => setRepeatType(e.target.value as any)}
+          onChange={(e) =>
+            setRepeatType(
+              e.target.value as "none" | "daily" | "weekly" | "monthly"
+            )
+          }
           className='border px-2 py-1 rounded'
         >
           <option value='none'>반복 없음</option>
@@ -182,6 +196,22 @@ const TimeSlotSetting = () => {
           <option value='weekly'>매주</option>
           <option value='monthly'>매월</option>
         </select>
+        {repeatType === "weekly" && (
+          <div>
+            <label>반복 요일:</label>
+            <input
+              type='text'
+              value={repeatDays.join(", ")}
+              onChange={(e) =>
+                setRepeatDays(
+                  e.target.value.split(",").map((day) => day.trim())
+                )
+              }
+              placeholder='월, 화, 수'
+              className='border px-2 py-1 rounded mt-2'
+            />
+          </div>
+        )}
       </div>
       <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3'>
         {slots.map((slot) => (

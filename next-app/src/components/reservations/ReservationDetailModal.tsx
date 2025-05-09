@@ -37,10 +37,14 @@ const ReservationDetailModal = ({
     )
     .map((r: Reservation) => r.timeSlot);
 
+  // 예약 가능 시간대 로직 수정 (타입 안전성 개선)
   const availableSlots = sortTimeSlots(
-    (availability[reservation.tutor] || []).filter(
-      (slot: string) => !bookedTimeSlots.includes(slot)
-    )
+    Object.values(availability[reservation.tutor] ?? {}) // 날짜별 슬롯 배열
+      .flat() // 중첩된 배열을 단일 배열로 변환
+      .filter(
+        (slot: string) =>
+          typeof slot === "string" && !bookedTimeSlots.includes(slot)
+      )
   );
 
   return (

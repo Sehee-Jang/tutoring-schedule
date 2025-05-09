@@ -2,14 +2,12 @@
 
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import { useModal } from "@/context/ModalContext";
 import { ShieldCheck, UserCheck } from "lucide-react";
 
 const Header = () => {
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
   const isTutor = user?.role === "tutor";
-  const { showModal } = useModal();
 
   const today = new Date().toLocaleDateString("ko-KR", {
     year: "numeric",

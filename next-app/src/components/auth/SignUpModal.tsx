@@ -10,9 +10,13 @@ import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import ModalLayout from "@/components/shared/ModalLayout";
 import { useModal } from "@/context/ModalContext";
 
-const SignUpModal = () => {
-  const { modalType, closeModal } = useModal();
-  const isOpen = modalType === "signup";
+interface SignUpModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const SignUpModal = ({ isOpen }: SignUpModalProps) => {
+  const { closeModal } = useModal();
 
   const [form, setForm] = useState({
     name: "",
@@ -58,9 +62,11 @@ const SignUpModal = () => {
       });
 
       setSuccess(true);
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message || "회원가입 중 오류가 발생했습니다.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err);
+        setError(err.message || "회원가입 중 오류가 발생했습니다.");
+      }
     } finally {
       setLoading(false);
     }

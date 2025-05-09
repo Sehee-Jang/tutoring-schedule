@@ -54,9 +54,11 @@ const SignUpForm = () => {
 
       alert("회원가입 성공! 이메일 인증 후 로그인해주세요.");
       router.push("/"); // 메인 또는 로그인 페이지로 이동
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message || "회원가입 중 오류가 발생했습니다.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err);
+        setError(err.message || "회원가입 중 오류가 발생했습니다.");
+      }
     } finally {
       setLoading(false);
     }

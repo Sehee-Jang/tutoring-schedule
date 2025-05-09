@@ -10,6 +10,7 @@ import { db } from "@/services/firebase";
 import { User, UserRole } from "@/types/user";
 import { watchAuthState } from "@/services/auth";
 import { doc, getDoc } from "firebase/firestore";
+import { User as FirebaseUser } from "firebase/auth";
 
 interface AuthContextType {
   user: User | null;
@@ -45,35 +46,37 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = watchAuthState(async (firebaseUser: any) => {
-      if (firebaseUser) {
-        const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
-        if (userDoc.exists()) {
-          const data = userDoc.data() as {
-            email: string;
-            name: string;
-            role: string;
-          };
-          const newUser: User = {
-            id: firebaseUser.uid,
-            email: data.email,
-            name: data.name,
-            role: data.role as UserRole,
-          };
-          setUser(newUser);
+    const unsubscribe = watchAuthState(
+      async (firebaseUser: FirebaseUser | null) => {
+        if (firebaseUser) {
+          const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+          if (userDoc.exists()) {
+            const data = userDoc.data() as {
+              email: string;
+              name: string;
+              role: string;
+            };
+            const newUser: User = {
+              id: firebaseUser.uid,
+              email: data.email,
+              name: data.name,
+              role: data.role as UserRole,
+            };
+            setUser(newUser);
 
-          // localStorage에 저장
-          localStorage.setItem("user", JSON.stringify(newUser));
+            // localStorage에 저장
+            localStorage.setItem("user", JSON.stringify(newUser));
+          } else {
+            setUser(null);
+            localStorage.removeItem("user");
+          }
         } else {
           setUser(null);
           localStorage.removeItem("user");
         }
-      } else {
-        setUser(null);
-        localStorage.removeItem("user");
+        setIsLoading(false);
       }
-      setIsLoading(false);
-    });
+    );
 
     return () => unsubscribe();
   }, []);
