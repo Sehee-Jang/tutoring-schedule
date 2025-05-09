@@ -7,15 +7,16 @@ const nextConfig: NextConfig = {
       config.resolve = {
         ...config.resolve,
         fallback: {
+          ...config.resolve?.fallback,
           fs: false,
-          zlib: false,
+          stream: false,
           net: false,
           tls: false,
-          stream: false,
-          "gzip-size": false,
+          zlib: false,
         },
         alias: {
-          "gzip-size": false,
+          ...config.resolve?.alias,
+          "gzip-size": false, // gzip-size 무시
         },
       };
     }
