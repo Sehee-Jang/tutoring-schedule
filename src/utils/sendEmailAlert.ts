@@ -1,4 +1,4 @@
-import emailjs from "emailjs-com";
+import emailjs from "@emailjs/browser";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../services/firebase";
 

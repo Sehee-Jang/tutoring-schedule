@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "../../context/AuthContext";
-import { useReservations } from "../../context/ReservationContext";
 import { useModal } from "../../context/ModalContext";
 import { Settings, LogOut } from "lucide-react";
 import TutorScheduleTable from "../../components/reservations/TutorScheduleTable";
@@ -14,7 +13,6 @@ import { useNavigate } from "react-router-dom";
 
 const TutorPage = () => {
   const { user, isAdmin, isTutor } = useAuth();
-  const { reservations } = useReservations();
   const { modalType, modalProps, closeModal, showModal } = useModal();
   const navigate = useNavigate();
 

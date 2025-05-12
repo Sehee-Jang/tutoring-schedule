@@ -1,20 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { db } from "../../services/firebase";
 import {
   collection,
-  onSnapshot,
   addDoc,
   updateDoc,
   doc,
-  query,
-  where,
 } from "firebase/firestore";
 import { Tutor } from "../../types/tutor";
 import { useToast } from "../../hooks/use-toast";
 import { Switch } from "../../components/ui/switch";
 import TutorFormModal from "../../components/admin/tutors/TutorFormModal";
 import { useFetchTutors } from "../../hooks/useFetchTutors";
-import { useAuth } from "../../context/AuthContext";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import { logout } from "../../services/auth";
 import { LogOut } from "lucide-react";
