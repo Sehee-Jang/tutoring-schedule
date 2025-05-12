@@ -14,7 +14,7 @@ import PastReservationTable from "./PastReservationTable";
 import ReservationTabsHeader from "./ReservationTabsHeader";
 
 const ReservationStatus = () => {
-  const { isAdmin, isTutor } = useAuth();
+  const { isAdmin } = useAuth();
   const { reservations, loading } = useReservations();
   const [activeTab, setActiveTab] = useState<string>("all");
   const [selectedReservation, setSelectedReservation] =
@@ -122,7 +122,6 @@ const ReservationStatus = () => {
         <TutorScheduleTable
           tutorName={activeTab}
           isAdmin={isAdmin}
-          isTutor={isTutor}
           onView={handleViewClick}
           onCancel={handleCancel}
         />
@@ -139,7 +138,6 @@ const ReservationStatus = () => {
             onView={handleViewClick}
             onCancel={handleCancel}
             isAdmin={isAdmin}
-
           />
 
           {/* 지난 예약 */}

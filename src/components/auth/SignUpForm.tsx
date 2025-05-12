@@ -5,12 +5,12 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { useRouter } from "next/router";
-import Button from "../shared/Button";
+import { useNavigate } from "react-router-dom";
+import PrimaryButton from "../shared/PrimaryButton";
 import { serverTimestamp } from "firebase/firestore";
 
 const SignUpForm = () => {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -53,7 +53,7 @@ const SignUpForm = () => {
       });
 
       alert("회원가입 성공! 이메일 인증 후 로그인해주세요.");
-      router.push("/"); // 메인 또는 로그인 페이지로 이동
+      navigate("/"); // 메인 또는 로그인 페이지로 이동
     } catch (err: any) {
       console.error(err);
       setError(err.message || "회원가입 중 오류가 발생했습니다.");
@@ -103,9 +103,9 @@ const SignUpForm = () => {
           <option value='tutor'>튜터</option>
           <option value='student'>수강생</option>
         </select>
-        <Button type='submit' variant='primary' disabled={loading}>
+        <PrimaryButton type='submit' disabled={loading}>
           {loading ? "가입 중..." : "회원가입"}
-        </Button>
+        </PrimaryButton>
       </form>
     </div>
   );

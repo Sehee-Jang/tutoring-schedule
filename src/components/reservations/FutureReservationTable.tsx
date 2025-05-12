@@ -36,7 +36,7 @@ const FutureReservationTable = ({
             <th className='px-4 py-2 border'>튜터명</th>
             <th className='px-4 py-2 border'>시간</th>
             <th className='px-4 py-2 border'>예약자</th>
-            {isAdmin && <th className='px-4 py-2 border'>관리</th>}
+            <th className='px-4 py-2 border'>보기</th>
           </tr>
         </thead>
         <tbody>
@@ -45,24 +45,24 @@ const FutureReservationTable = ({
               <td className='px-4 py-2 border'>{res.tutor}</td>
               <td className='px-4 py-2 border'>{res.timeSlot}</td>
               <td className='px-4 py-2 border'>{res.teamName}</td>
-              {isAdmin && (
-                <td className='px-4 py-2 border'>
-                  <div className='flex gap-2'>
-                    <button
-                      onClick={() => onView(res)}
-                      className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
-                    >
-                      보기
-                    </button>
+              <td className='px-4 py-2 border'>
+                <div className='flex gap-2'>
+                  <button
+                    onClick={() => onView(res)}
+                    className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
+                  >
+                    보기
+                  </button>
+                  {isAdmin && (
                     <button
                       onClick={() => onCancel(res.id)}
                       className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
                     >
                       삭제
                     </button>
-                  </div>
-                </td>
-              )}
+                  )}
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>

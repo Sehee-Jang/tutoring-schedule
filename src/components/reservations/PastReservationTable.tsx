@@ -20,11 +20,11 @@ const PastReservationTable = ({
   onCancel,
   isAdmin,
 }: PastReservationTableProps) => {
-  if (reservations.length === 0) {
-    return (
-      <p className='text-center text-gray-400 py-6'>지난 예약이 없습니다.</p>
-    );
-  }
+    if (reservations.length === 0) {
+      return (
+        <p className='text-center text-gray-400 py-6'>지난 예약이 없습니다.</p>
+      );
+    }
 
   return (
     <>
@@ -43,7 +43,7 @@ const PastReservationTable = ({
               <td className='px-4 py-2 border'>{res.tutor}</td>
               <td className='px-4 py-2 border'>{res.timeSlot}</td>
               <td className='px-4 py-2 border'>{res.teamName}</td>
-              {(isAdmin) && (
+              {isAdmin && (
                 <td className='px-4 py-2 border'>
                   <div className='flex gap-2'>
                     <button

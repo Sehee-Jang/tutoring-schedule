@@ -7,7 +7,6 @@ import { Reservation } from "../../types/reservation";
 interface TutorScheduleTableProps {
   tutorName: string;
   isAdmin: boolean;
-  isTutor: boolean;
   onView: (reservation: Reservation) => void;
   onCancel?: (id: string) => void;
 }
@@ -15,7 +14,6 @@ interface TutorScheduleTableProps {
 const TutorScheduleTable = ({
   tutorName,
   isAdmin,
-  isTutor,
   onView,
   onCancel,
 }: TutorScheduleTableProps) => {
@@ -53,7 +51,7 @@ const TutorScheduleTable = ({
           <tr className='bg-blue-50 text-blue-800 text-left'>
             <th className='px-4 py-2 border'>시간</th>
             <th className='px-4 py-2 border'>예약자</th>
-            <th className='px-4 py-2 border'>관리</th>
+            <th className='px-4 py-2 border'>보기</th>
           </tr>
         </thead>
         <tbody>
@@ -85,7 +83,7 @@ const TutorScheduleTable = ({
                     ) : (
                       <span className='text-gray-300'>-</span>
                     )}
-                    {isBooked && (isAdmin || isTutor) && onCancel && (
+                    {isBooked && isAdmin && onCancel && (
                       <button
                         onClick={() => onCancel(reservation!.id)}
                         className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'

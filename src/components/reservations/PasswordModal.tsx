@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ModalLayout from "../shared/ModalLayout";
-import Button from "../shared/Button";
+import PrimaryButton from "../shared/PrimaryButton";
 
 interface PasswordModalProps {
   isOpen: boolean;
@@ -27,9 +27,7 @@ const PasswordModal = ({ isOpen, onClose, onSuccess }: PasswordModalProps) => {
         <button onClick={onClose} className='text-gray-500 hover:underline'>
           취소
         </button>
-        <Button variant='primary' onClick={() => onSuccess(password)}>
-          확인
-        </Button>
+        <PrimaryButton onClick={() => onSuccess(password)}>확인</PrimaryButton>
       </div>
     </ModalLayout>
   );

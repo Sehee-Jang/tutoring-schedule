@@ -10,19 +10,13 @@ import AvailabilityModal from "../../components/availability/AvailabilityModal";
 import type { Reservation } from "../../types/reservation";
 import { logout } from "../../services/auth";
 import ProtectedRoute from "../../components/ProtectedRoute";
-import { useRouter } from "next/router";
-import { cancelReservation } from "../../services/firebase";
-import { useToast } from "../../hooks/use-toast";
-import Header from "@/components/tutor/Header";
-import TutorLayout from "./TutorLayout";
-import TimeSettingsPanel from "./TimeSettingsPanel";
+import { useNavigate } from "react-router-dom";
 
 const TutorPage = () => {
   const { user, isAdmin, isTutor } = useAuth();
   const { reservations } = useReservations();
   const { modalType, modalProps, closeModal, showModal } = useModal();
-  const router = useRouter();
-  const { toast } = useToast();
+  const navigate = useNavigate();
 
   // user === null이면 로그인 하도록 유도
   if (!user) {
@@ -48,7 +42,7 @@ const TutorPage = () => {
           </div>
           <div className='pt-4'>
             <button
-              onClick={() => router.push("/")}
+              onClick={() => navigate("/")}
               className='text-sm text-gray-500 hover:text-gray-700 underline'
             >
               ← 메인으로 돌아가기
@@ -62,7 +56,7 @@ const TutorPage = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      router.push("/");
+      navigate("/");
     } catch (error) {
       console.error("로그아웃 실패:", error);
     }
@@ -76,29 +70,58 @@ const TutorPage = () => {
     });
   };
 
-  const handleCancel = async (id: string) => {
-    if (window.confirm("예약을 취소하시겠습니까?")) {
-      try {
-        await cancelReservation(id);
-        toast({
-          title: "예약이 성공적으로 취소되었습니다!",
-          variant: "default",
-        });
-      } catch {
-        toast({
-          title: "❌ 예약 취소 중 오류가 발생했습니다.",
-          variant: "destructive",
-        });
-      }
-    }
-  };
-
   return (
-    // <ProtectedRoute requiredRole='tutor'>
-    <TutorLayout>
-      <TimeSettingsPanel />
-    </TutorLayout>
-    // </ProtectedRoute>
+    <ProtectedRoute requiredRole='tutor'>
+      <div className='p-6 max-w-3xl mx-auto'>
+        <div className='flex justify-between items-center mb-6'>
+          <h1 className='text-2xl font-bold'>
+            {user!.name} 튜터님, 안녕하세요 👋
+          </h1>
+
+          <button
+            onClick={handleLogout}
+            title='로그아웃'
+            className='text-gray-700 hover:text-black'
+          >
+            <LogOut className='w-5 h-5' />
+          </button>
+        </div>
+
+        {/* 오늘 예약 현황 */}
+        <section className='relative'>
+          <h2 className='text-xl font-semibold mb-4'>오늘 예약 현황</h2>
+
+          {/* 시간 설정 버튼 */}
+          <button
+            onClick={() => showModal("availability")}
+            title='튜터링 가능 시간 설정'
+            className='absolute right-0 top-0 text-sm text-gray-700 hover:text-black'
+          >
+            <Settings className='w-5 h-5' />
+          </button>
+
+          {/* 오늘 예약 현황 테이블 */}
+          <TutorScheduleTable
+            tutorName={user!.name}
+            isAdmin={isAdmin}
+            onView={handleView}
+          />
+        </section>
+
+        {/* 모달 렌더링 */}
+        {modalType === "reservationDetail" && (
+          <ReservationDetailModal
+            isOpen={true}
+            reservation={modalProps?.reservation || null}
+            onClose={closeModal}
+            isAdmin={false} // 튜터 페이지니까 false
+            isTutor={modalProps?.isTutor || false}
+          />
+        )}
+
+        {modalType === "availability" && <AvailabilityModal />}
+      </div>
+    </ProtectedRoute>
   );
 };
 

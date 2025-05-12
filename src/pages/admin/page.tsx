@@ -18,7 +18,7 @@ import { useAuth } from "../../context/AuthContext";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import { logout } from "../../services/auth";
 import { LogOut } from "lucide-react";
-import { useRouter } from "next/router";
+import { useNavigate } from "react-router-dom";
 
 const AdminPage = () => {
   const { tutors, loading, error } = useFetchTutors();
@@ -26,7 +26,7 @@ const AdminPage = () => {
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
   const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null);
 
-  const router = useRouter();
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   // const handleCreate = () => {
@@ -84,7 +84,7 @@ const AdminPage = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      router.push("/");
+      navigate("/");
     } catch (error) {
       console.error("로그아웃 실패:", error);
     }
@@ -105,7 +105,7 @@ const AdminPage = () => {
           <button
             onClick={handleLogout}
             title='로그아웃'
-            className='hover:text-black'
+            className='text-gray-700 hover:text-black'
           >
             <LogOut className='w-5 h-5' />
           </button>
