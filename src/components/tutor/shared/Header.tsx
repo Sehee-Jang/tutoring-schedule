@@ -1,21 +1,21 @@
 "use client";
 
-import { useAuth } from "../../context/AuthContext";
-import { useModal } from "../../context/ModalContext";
-import { logout } from "../../services/auth";
+import { useAuth } from "../../../context/AuthContext";
+import { useModal } from "../../../context/ModalContext";
+import { logout } from "../../../services/auth";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { LogOut } from "lucide-react";
-import Button from "../shared/Button";
+import Button from "../../../components/shared/Button";
 
 const Header = () => {
   const { showModal } = useModal();
-  const { user, isAdmin, isTutor } = useAuth();
+  const { user } = useAuth();
 
   const today = format(new Date(), "yyyy년 M월 d일 EEEE", { locale: ko });
 
   return (
-    <header className='flex items-end justify-between px-6 py-4'>
+    <header className='flex items-end justify-between'>
       <div>
         <h1 className='text-2xl font-bold text-gray-800'>
           {user?.name ?? "튜터"}님, 안녕하세요 👋
