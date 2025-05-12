@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import type { Reservation } from "../../types/reservation";
 import { useReservations } from "../../context/ReservationContext";
 import { useAuth } from "../../context/AuthContext";
-import { cancelReservation } from "../../services/firebase";
+import { cancelReservation } from "../../services/reservations";
 import ReservationDetailModal from "./ReservationDetailModal";
 import { useToast } from "../../hooks/use-toast";
 import PasswordModal from "./PasswordModal";

@@ -7,7 +7,7 @@ import {
   ReactNode,
   useCallback,
 } from "react";
-import { fetchAvailableSlotsByDate } from "../services/firebase";
+import { fetchAvailableSlotsByDate } from "../services/availability";
 import { Tutor } from "../types/tutor";
 import { Availability } from "../types/availability";
 import { useTutors } from "./TutorContext";

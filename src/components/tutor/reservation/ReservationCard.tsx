@@ -3,7 +3,7 @@ import type { Reservation } from "../../../types/reservation";
 import { MoreVertical } from "lucide-react";
 import ReservationDetailModal from "../../../components/reservations/ReservationDetailModal";
 import { useToast } from "../../../hooks/use-toast";
-import { cancelReservation } from "../../../services/firebase";
+import { cancelReservation } from "../../../services/reservations";
 
 const ReservationCard = ({ reservation }: { reservation: Reservation }) => {
   const [expanded, setExpanded] = useState(false);

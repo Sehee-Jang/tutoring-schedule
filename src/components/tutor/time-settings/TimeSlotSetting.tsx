@@ -10,7 +10,7 @@ import {
   deleteAvailabilityById,
   fetchAvailableSlotsByDate,
   saveAvailability,
-} from "../../../services/firebase";
+} from "../../../services/availability";
 import { format } from "date-fns";
 
 interface SlotData {

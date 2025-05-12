@@ -9,11 +9,11 @@ import {
   ReactNode,
 } from "react";
 import {
-  fetchAllTutorHolidays,
   fetchTutorHolidays,
   saveTutorHoliday,
   deleteTutorHoliday,
-} from "../services/firebase";
+} from "../services/holiday";
+import { fetchAllTutorHolidays } from "../services/availability";
 import { Holiday } from "@/types/tutor";
 
 interface HolidayContextType {

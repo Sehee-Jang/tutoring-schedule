@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { updateReservation } from "../services/firebase";
+import { updateReservation } from "../services/reservations";
 import type {
   Reservation,
   ReservationEditorFormData,

@@ -3,10 +3,8 @@
 import React, { useEffect, useState } from "react";
 import type { Reservation, ReservationFormData } from "../../types/reservation";
 import { useReservations } from "../../context/ReservationContext";
-import {
-  createReservation,
-  fetchAvailableSlotsByDate,
-} from "../../services/firebase";
+import {fetchAvailableSlotsByDate} from "../../services/firebase";
+import {createReservation} from "../../services/reservations"
 import { useTutors } from "../../context/TutorContext";
 import { useToast } from "../../hooks/use-toast";
 import { useHolidayContext } from "../../context/HolidayContext";

@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { generateTimeSlots } from "../../../utils/generateTimeSlots"; // 시간대 생성 함수
 import ReservationCard from "./ReservationCard";
 import DateSelector from "../../../components/shared/DateSelector";
-import { fetchAvailableSlotsByDate } from "../../../services/firebase";
+import { fetchAvailableSlotsByDate } from "../../../services/availability";
 
 const ReservationStatusForTutor = () => {
   const { user } = useAuth();

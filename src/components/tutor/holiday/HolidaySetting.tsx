@@ -5,7 +5,7 @@ import {
   fetchTutorHolidays,
   saveTutorHoliday,
   deleteTutorHoliday,
-} from "../../../services/firebase";
+} from "../../../services/holiday";
 import { useAuth } from "../../../context/AuthContext";
 import { toast } from "../../../hooks/use-toast";
 import { Holiday } from "../../../types/tutor";
