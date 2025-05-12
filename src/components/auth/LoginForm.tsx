@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { login } from "../../services/auth";
 import PrimaryButton from "../shared/PrimaryButton";
+import { toast } from "@/hooks/use-toast";
 
 const LoginForm = () => {
   const [email, setEmail] = useState<string>("");
@@ -15,7 +16,6 @@ const LoginForm = () => {
 
     try {
       await login(email, password);
-      // 로그인 성공 시 AuthContext에서 자동으로 상태 업데이트됨
     } catch (err) {
       setError("이메일 또는 비밀번호가 올바르지 않습니다.");
     }

@@ -1,49 +1,33 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AvailabilityProvider } from "./context/AvailabilityContext";
-import { ReservationProvider } from "./context/ReservationContext";
-import { AuthProvider } from "./context/AuthContext";
-import { ModalProvider } from "./context/ModalContext";
 import AppContent from "./components/layout/AppContent";
 import AdminPage from "./pages/admin/page";
-import { TutorProvider } from "./context/TutorContext";
 import AdminRoute from "./components/common/AdminRoute";
-import { ToastProvider } from "./components/ui/toast";
-import { Toaster } from "./components/ui/toaster";
 import TutorPage from "./pages/tutor/page";
 import ModalRenderer from "./components/shared/ModalRenderer";
+import Providers from "./Providers";
+import CreateAdminPage from "./pages/admin/createAdmin";
 
 const App: React.FC = () => {
   return (
-    <>
-      <AuthProvider>
-        <ModalProvider>
-          <AvailabilityProvider>
-            <ReservationProvider>
-              <TutorProvider>
-                <Router>
-                  <Routes>
-                    <Route path='/' element={<AppContent />} />
-                    <Route
-                      path='/admin'
-                      element={
-                        <AdminRoute>
-                          <AdminPage />
-                        </AdminRoute>
-                      }
-                    />
-                    <Route path='/tutor' element={<TutorPage />} />
-                  </Routes>
-                  <ModalRenderer />
-                </Router>
-              </TutorProvider>
-            </ReservationProvider>
-          </AvailabilityProvider>
-        </ModalProvider>
-      </AuthProvider>
-      <ToastProvider />
-      <Toaster />
-    </>
+    <Providers>
+      <Router>
+        <Routes>
+          <Route path='/' element={<AppContent />} />
+          <Route
+            path='/admin'
+            element={
+              <AdminRoute>
+                <AdminPage />
+              </AdminRoute>
+            }
+          />
+          <Route path='/tutor' element={<TutorPage />} />
+          <Route path='/admin/signup' element={<CreateAdminPage />} />
+        </Routes>
+        <ModalRenderer />
+      </Router>
+    </Providers>
   );
 };
 

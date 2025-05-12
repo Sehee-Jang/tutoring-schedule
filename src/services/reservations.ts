@@ -1,12 +1,9 @@
 import { Reservation } from "@/types/reservation";
 import {
-  getFirestore,
   collection,
   addDoc,
   deleteDoc,
   doc,
-  setDoc,
-  getDocs,
   onSnapshot,
   updateDoc,
   query,

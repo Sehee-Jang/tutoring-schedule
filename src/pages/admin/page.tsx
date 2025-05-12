@@ -1,11 +1,6 @@
 import { useState } from "react";
 import { db } from "../../services/firebase";
-import {
-  collection,
-  addDoc,
-  updateDoc,
-  doc,
-} from "firebase/firestore";
+import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
 import { Tutor } from "../../types/tutor";
 import { useToast } from "../../hooks/use-toast";
 import { Switch } from "../../components/ui/switch";
@@ -15,15 +10,19 @@ import ProtectedRoute from "../../components/ProtectedRoute";
 import { logout } from "../../services/auth";
 import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { resetDatabase } from "../../services/resetDatabase";
+import AdminOrganizationSetup from "./organizationSetup";
 
 const AdminPage = () => {
   const { tutors, loading, error } = useFetchTutors();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
   const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null);
-
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // 데이터 베이스 상태 관리
+  const [resetting, setResetting] = useState(false);
 
   // const handleCreate = () => {
   //   setModalMode("create");
@@ -55,6 +54,28 @@ const AdminPage = () => {
         title: "튜터 상태 변경에 실패했습니다.",
         variant: "destructive",
       });
+    }
+  };
+
+  // 리셋
+  const handleResetDatabase = async () => {
+    if (!window.confirm("⚠️ 모든 데이터베이스가 초기화됩니다. 진행할까요?"))
+      return;
+    setResetting(true);
+    try {
+      await resetDatabase();
+      toast({
+        title: "데이터베이스가 초기화되었습니다.",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("초기화 오류:", error);
+      toast({
+        title: "초기화에 실패했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setResetting(false);
     }
   };
 
@@ -99,6 +120,14 @@ const AdminPage = () => {
           )}
 
           <button
+            onClick={handleResetDatabase}
+            className='bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600'
+            disabled={resetting}
+          >
+            {resetting ? "리셋 중..." : "데이터베이스 리셋"}
+          </button>
+
+          <button
             onClick={handleLogout}
             title='로그아웃'
             className='text-gray-700 hover:text-black'
@@ -106,7 +135,7 @@ const AdminPage = () => {
             <LogOut className='w-5 h-5' />
           </button>
         </div>
-
+        <AdminOrganizationSetup />
         {/* <div className='flex justify-end mb-4'>
         <button
           className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'

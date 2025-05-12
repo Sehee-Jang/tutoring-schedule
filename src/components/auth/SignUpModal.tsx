@@ -1,12 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { auth, db } from "../../services/firebase";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
 } from "firebase/auth";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  serverTimestamp,
+  collection,
+  getDocs,
+} from "firebase/firestore";
 import ModalLayout from "../../components/shared/ModalLayout";
 import { useModal } from "../../context/ModalContext";
 
@@ -14,7 +20,10 @@ interface SignUpModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
+interface Organization {
+  id: string;
+  name: string;
+}
 const SignUpModal = ({ isOpen }: SignUpModalProps) => {
   const { closeModal } = useModal();
 
@@ -23,10 +32,68 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
     email: "",
     password: "",
     role: "tutor",
+    organization: "",
+    track: "",
+    batch: "",
   });
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [tracks, setTracks] = useState<string[]>([]);
+  const [batches, setBatches] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    fetchOrganizations();
+  }, []);
+
+  // 조직 및 트랙 데이터 로드
+  const fetchOrganizations = async () => {
+    const orgSnapshot = await getDocs(collection(db, "organizations"));
+    const orgList = orgSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      name: doc.data().name,
+    }));
+    setOrganizations(orgList);
+  };
+
+  const fetchTracks = async (organizationId: string) => {
+    if (!organizationId) {
+      setTracks([]);
+      setBatches([]);
+      return;
+    }
+
+    const tracksSnapshot = await getDocs(
+      collection(db, `organizations/${organizationId}/tracks`)
+    );
+
+    const trackList = tracksSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      name: doc.data().name,
+      batches: doc.data().batches || [],
+    }));
+
+    setTracks(trackList.map((track) => track.name));
+    setForm((prev) => ({ ...prev, track: "", batch: "" })); // 초기화
+  };
+
+  const fetchBatches = async (organizationId: string, trackName: string) => {
+    if (!organizationId || !trackName) {
+      setBatches([]);
+      return;
+    }
+
+    const tracksSnapshot = await getDocs(
+      collection(db, `organizations/${organizationId}/tracks`)
+    );
+
+    const selectedTrack = tracksSnapshot.docs
+      .map((doc) => ({ name: doc.data().name, batches: doc.data().batches }))
+      .find((track) => track.name === trackName);
+
+    setBatches(selectedTrack?.batches || []);
+  };
 
   if (!isOpen) return null;
 
@@ -35,6 +102,14 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
   ) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "organization") {
+      fetchTracks(value);
+    }
+
+    if (name === "track") {
+      fetchBatches(form.organization, value);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,6 +132,9 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
         name: form.name,
         email: form.email,
         role: form.role,
+        organization: form.organization,
+        track: form.track,
+        batch: form.batch,
         status: "pending",
         createdAt: serverTimestamp(),
       });
@@ -86,6 +164,7 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
         </p>
       ) : (
         <form onSubmit={handleSubmit} className='flex flex-col gap-3'>
+          {/* 이름 */}
           <input
             type='text'
             name='name'
@@ -95,6 +174,7 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
             onChange={handleChange}
             required
           />
+          {/* 이메일 */}
           <input
             type='email'
             name='email'
@@ -104,6 +184,7 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
             onChange={handleChange}
             required
           />
+          {/* 비밀번호 */}
           <input
             type='password'
             name='password'
@@ -113,6 +194,7 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
             onChange={handleChange}
             required
           />
+          {/* 역할 */}
           <select
             name='role'
             value={form.role}
@@ -122,6 +204,56 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
             <option value='tutor'>튜터</option>
             <option value='student'>수강생</option>
           </select>
+          {/* 조직 */}
+          <select
+            name='organization'
+            value={form.organization}
+            onChange={(e) => {
+              handleChange(e);
+              fetchTracks(e.target.value);
+            }}
+            className='border border-gray-300 px-3 py-2 rounded text-gray-700'
+            required
+          >
+            <option value=''>조직 선택</option>
+            {organizations.map((org) => (
+              <option key={org.id} value={org.id}>
+                {org.name}
+              </option>
+            ))}
+          </select>
+          {/* 트랙 */}
+          <select
+            name='track'
+            value={form.track}
+            onChange={handleChange}
+            className='border border-gray-300 px-3 py-2 rounded text-gray-700'
+            required
+          >
+            <option value=''>트랙 선택</option>
+            {tracks.map((track) => (
+              <option key={track} value={track}>
+                {track}
+              </option>
+            ))}
+          </select>
+
+          {/* 기수 */}
+          <select
+            name='batch'
+            value={form.batch}
+            onChange={handleChange}
+            className='border border-gray-300 px-3 py-2 rounded text-gray-700'
+            required
+          >
+            <option value=''>기수 선택</option>
+            {batches.map((batch) => (
+              <option key={batch} value={batch}>
+                {batch}
+              </option>
+            ))}
+          </select>
+
           <button
             type='submit'
             className='bg-blue-600 text-white py-2 rounded hover:bg-blue-700'
