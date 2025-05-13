@@ -7,8 +7,8 @@ import { useAuth } from "../../../context/AuthContext";
 import NotificationBox from "./NotificationBox";
 
 interface SidebarProps {
-  setViewMode: (mode: "timeSettings" | "reservations") => void;
-  viewMode: "timeSettings" | "reservations";
+  setViewMode: (mode: "reservations" | "timeSettings") => void;
+  viewMode: "reservations" | "timeSettings";
 }
 const Sidebar = ({ setViewMode, viewMode }: SidebarProps) => {
   const { reservations } = useReservations();
@@ -33,17 +33,6 @@ const Sidebar = ({ setViewMode, viewMode }: SidebarProps) => {
       {/* 메뉴 섹션 */}
       <nav className='space-y-4 border-b border-gray-200 pb-5'>
         <button
-          onClick={() => setViewMode("timeSettings")}
-          className={`w-[166px] flex items-center font-semibold justify-evenly px-4 py-2 rounded-md ${
-            viewMode === "timeSettings"
-              ? "bg-[#DBE9FE] text-blue-600"
-              : "text-gray-700 hover:text-blue-600"
-          }`}
-        >
-          <Clock className='w-4 h-4' />
-          튜터링 시간 설정
-        </button>
-        <button
           onClick={() => setViewMode("reservations")}
           className={`w-[166px] flex items-center font-semibold justify-evenly px-4 py-2 rounded-md ${
             viewMode === "reservations"
@@ -53,6 +42,17 @@ const Sidebar = ({ setViewMode, viewMode }: SidebarProps) => {
         >
           <CalendarCheck className='w-4 h-4' />
           실시간 예약 확인
+        </button>
+        <button
+          onClick={() => setViewMode("timeSettings")}
+          className={`w-[166px] flex items-center font-semibold justify-evenly px-4 py-2 rounded-md ${
+            viewMode === "timeSettings"
+              ? "bg-[#DBE9FE] text-blue-600"
+              : "text-gray-700 hover:text-blue-600"
+          }`}
+        >
+          <Clock className='w-4 h-4' />
+          튜터링 시간 설정
         </button>
       </nav>
 

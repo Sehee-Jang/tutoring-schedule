@@ -16,7 +16,7 @@ const TutorPage = () => {
   const { showModal } = useModal();
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<"timeSettings" | "reservations">(
-    "timeSettings"
+    "reservations"
   );
 
   // user === null이면 로그인 하도록 유도
@@ -74,10 +74,10 @@ const TutorPage = () => {
   return (
     <ProtectedRoute requiredRole='tutor'>
       <TutorLayout setViewMode={setViewMode} viewMode={viewMode}>
-        {viewMode === "timeSettings" ? (
-          <TimeSettingsPanel />
-        ) : (
+        {viewMode === "reservations" ? (
           <ReservationStatusForTutor />
+        ) : (
+          <TimeSettingsPanel />
         )}
       </TutorLayout>
     </ProtectedRoute>

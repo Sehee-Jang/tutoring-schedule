@@ -5,8 +5,8 @@ import Sidebar from "../../components/tutor/shared/Sidebar";
 
 interface TutorLayoutProps {
   children: ReactNode;
-  setViewMode: (mode: "timeSettings" | "reservations") => void;
-  viewMode: "timeSettings" | "reservations";
+  setViewMode: (mode: "reservations" | "timeSettings") => void;
+  viewMode: "reservations" | "timeSettings";
 }
 
 const TutorLayout = ({ children, setViewMode, viewMode }: TutorLayoutProps) => {
