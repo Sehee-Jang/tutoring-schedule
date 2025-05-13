@@ -48,7 +48,7 @@ export const AvailabilityProvider = ({
       tutors.map(async (tutor: Tutor) => {
         const slots = await fetchAvailableSlotsByDate(tutor.id, today);
         loadedAvailability[tutor.id] = {
-          [today]: slots.flatMap((item) => item.slots),
+          [today]: slots.flatMap((item) => item.activeSlots),
         };
       })
     );
