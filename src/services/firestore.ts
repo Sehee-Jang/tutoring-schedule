@@ -27,18 +27,38 @@ export async function createOrganization(
 // Tracks 생성 함수
 export async function createTrack(
   organizationId: string,
-  name: string,
-  batch: string
+  trackName: string,
 ) {
-  await addDoc(collection(db, "tracks"), {
-    organization_id: organizationId,
-    name,
-    batch,
-    created_at: serverTimestamp(),
-    updated_at: serverTimestamp(),
-  });
+  const trackRef = await addDoc(
+    collection(db, `organizations/${organizationId}/tracks`),
+    {
+      name: trackName,
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp(),
+    }
+  );
+  return trackRef.id;
 }
 
+// Batch 생성 함수 (트랙 하위에 추가)
+export async function createBatch(
+  organizationId: string,
+  trackId: string,
+  batchName: string,
+  startDate: string,
+  endDate: string
+) {
+  await addDoc(
+    collection(db, `organizations/${organizationId}/tracks/${trackId}/batches`),
+    {
+      name: batchName,
+      startDate,
+      endDate,
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp(),
+    }
+  );
+}
 // Roles 생성 함수
 export async function createRole(
   organizationId: string,

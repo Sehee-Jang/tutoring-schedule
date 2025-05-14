@@ -84,15 +84,34 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
       return;
     }
 
+    // 트랙 불러오기
     const tracksSnapshot = await getDocs(
       collection(db, `organizations/${organizationId}/tracks`)
     );
 
-    const selectedTrack = tracksSnapshot.docs
-      .map((doc) => ({ name: doc.data().name, batches: doc.data().batches }))
-      .find((track) => track.name === trackName);
+    // 선택된 트랙 찾기
+    const selectedTrack = tracksSnapshot.docs.find(
+      (doc) => doc.data().name === trackName
+    );
+    if (!selectedTrack) {
+      setBatches([]);
+      return;
+    }
 
-    setBatches(selectedTrack?.batches || []);
+    // 기수를 트랙 하위의 서브컬렉션에서 로드
+    const batchesSnapshot = await getDocs(
+      collection(
+        db,
+        `organizations/${organizationId}/tracks/${selectedTrack.id}/batches`
+      )
+    );
+
+    const batchList = batchesSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      name: doc.data().name || "",
+    }));
+
+    setBatches(batchList.map((batch) => batch.name));
   };
 
   if (!isOpen) return null;

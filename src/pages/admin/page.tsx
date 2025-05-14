@@ -10,8 +10,8 @@ import ProtectedRoute from "../../components/ProtectedRoute";
 import { logout } from "../../services/auth";
 import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { resetDatabase } from "../../services/resetDatabase";
-import AdminOrganizationSetup from "./organizationSetup";
+import { resetDatabase } from "../../services/admin/resetDatabase";
+import OrganizationManager from "./OrganizationManager";
 
 const AdminPage = () => {
   const { tutors, loading, error } = useFetchTutors();
@@ -135,7 +135,7 @@ const AdminPage = () => {
             <LogOut className='w-5 h-5' />
           </button>
         </div>
-        <AdminOrganizationSetup />
+        <OrganizationManager />
         {/* <div className='flex justify-end mb-4'>
         <button
           className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'

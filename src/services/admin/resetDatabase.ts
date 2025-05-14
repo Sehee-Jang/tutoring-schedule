@@ -1,4 +1,4 @@
-import { db } from "./firebase";
+import { db } from "../firebase";
 import {
   collection,
   getDocs,
@@ -14,14 +14,7 @@ export async function resetDatabase() {
     console.log("✅ Firestore 초기화 시작...");
 
     // 삭제할 컬렉션 목록
-    const collections = [
-      "organizations",
-      "tracks",
-      "roles",
-      "users",
-      "reservations",
-      "availability",
-    ];
+    const collections = ["organizations", "roles"];
 
     // 모든 컬렉션 삭제
     for (const collectionName of collections) {
@@ -56,7 +49,18 @@ async function deleteTracks(organizationId: string) {
   const tracksSnapshot = await getDocs(tracksRef);
 
   for (const trackDoc of tracksSnapshot.docs) {
-    await deleteDoc(trackDoc.ref);
+    const trackRef = trackDoc.ref;
+
+    // 트랙의 기수 서브컬렉션 삭제
+    const batchesRef = collection(trackRef, "batches");
+    const batchesSnapshot = await getDocs(batchesRef);
+
+    for (const batchDoc of batchesSnapshot.docs) {
+      await deleteDoc(batchDoc.ref);
+    }
+    console.log(`✅ 트랙 ${trackRef.id}의 기수 삭제 완료`);
+
+    await deleteDoc(trackRef);
   }
 
   console.log(`✅ 조직 ${organizationId}의 트랙 삭제 완료`);
@@ -76,11 +80,40 @@ async function initializeDefaultData() {
   console.log(`✅ 조직 생성 완료: 내일배움캠프 (ID: ${organizationId})`);
 
   // 트랙 생성 (UXUI)
-  await addDoc(collection(db, `organizations/${organizationId}/tracks`), {
-    name: "UXUI",
-    batches: ["6기", "7기", "8기"], // 여러 기수 저장
-  });
-  console.log(`✅ 트랙 생성 완료: UXUI (기수: 6기, 7기, 8기)`);
+  const trackRef = await addDoc(
+    collection(db, `organizations/${organizationId}/tracks`),
+    {
+      name: "UXUI",
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp(),
+    }
+  );
+  const trackId = trackRef.id;
+  console.log(`✅ 트랙 생성 완료: UXUI`);
+
+  // 기수 생성 (6기, 7기, 8기)
+  const batches = [
+    { name: "6기", startDate: "2025-01-01", endDate: "2025-05-30" },
+    { name: "7기", startDate: "2025-07-01", endDate: "2025-12-31" },
+    { name: "8기", startDate: "2026-01-01", endDate: "2026-06-30" },
+  ];
+
+  for (const batch of batches) {
+    await addDoc(
+      collection(
+        db,
+        `organizations/${organizationId}/tracks/${trackId}/batches`
+      ),
+      {
+        name: batch.name,
+        startDate: batch.startDate,
+        endDate: batch.endDate,
+        created_at: serverTimestamp(),
+        updated_at: serverTimestamp(),
+      }
+    );
+    console.log(`✅ 기수 생성 완료: ${batch.name}`);
+  }
 
   // 역할 생성 (admin, tutor, student) - 소문자로 저장
   const roles = [
