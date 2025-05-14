@@ -57,13 +57,9 @@ const ReservationDetailModal = ({
         return;
       }
 
-      console.log("📌 예약된 튜터 ID:", tutorID);
-      console.log("📌 예약된 요일:", reservationDay);
-
       // 해당 요일의 시간대 불러오기
       const slots = await fetchAvailableSlotsByDate(tutorID, reservationDay);
       const flatSlots = slots.flatMap((item) => item.activeSlots);
-      console.log("📌 불러온 시간대 (예약 수정 모달):", flatSlots);
 
       // 불러온 시간대가 존재할 경우에만 저장
       if (flatSlots.length > 0) {
@@ -86,14 +82,10 @@ const ReservationDetailModal = ({
     )
     .map((r: Reservation) => r.timeSlot);
 
-  // 예약된 시간대
-  console.log("📌 예약된 시간대 (예약 수정 모달):", bookedTimeSlots);
-
   // 예약 가능한 시간대 로직
   const filteredSlots = sortTimeSlots(
     availableSlots.filter((slot) => !bookedTimeSlots.includes(slot))
   );
-  console.log("📌 필터링된 시간대 (예약 수정 모달):", filteredSlots);
 
   return (
     <ModalLayout onClose={onClose}>

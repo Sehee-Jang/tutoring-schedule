@@ -6,12 +6,12 @@ import HolidaySetting from "../holiday/HolidaySetting";
 const TimeSettingsPanel = () => {
   return (
     <div className='space-y-12'>
+      <h2 className='text-gray-700 text-xl font-semibold mb-4'>
+        튜터링 시간 설정
+      </h2>
       <section>
-        <h2 className='text-gray-700 text-xl font-semibold mb-4'>
-          튜터링 시간 설정
-        </h2>
         <h3 className='text-gray-700 text-l font-semibold mb-4'>
-          가능한 시간 설정
+          요일별 시간 설정
         </h3>
         <TimeSlotSetting />
       </section>

@@ -37,6 +37,7 @@ export const HolidayProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const load = async () => {
       const data: Holiday[] = await fetchAllTutorHolidays();
+
       const holidaysByTutor = data.reduce<Record<string, Holiday[]>>(
         (acc, holiday) => {
           const { tutorID, ...rest } = holiday;
@@ -46,6 +47,7 @@ export const HolidayProvider = ({ children }: { children: ReactNode }) => {
         },
         {}
       );
+
       setHolidays(holidaysByTutor);
     };
     load();

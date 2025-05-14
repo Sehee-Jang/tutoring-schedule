@@ -61,8 +61,6 @@ export const fetchAvailableSlotsByDate = async (
   const docRef = doc(db, "availability", tutorId);
   const docSnap = await getDoc(docRef);
 
-  console.log("📌 tutorId: ", tutorId);
-
   if (!docSnap.exists()) {
     console.error("❌ No availability data found for tutor:", tutorId);
     return [];

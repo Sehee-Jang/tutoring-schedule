@@ -1,11 +1,10 @@
 import { Holiday } from "@/types/tutor";
 
+// 문자열로 날짜 비교
 export const isHoliday = (today: string, tutorHolidays: Holiday[]): boolean => {
-  const todayDate = new Date(today).getTime(); // 오늘 날짜를 타임스탬프로 변환
-
   return tutorHolidays.some(({ startDate, endDate }) => {
-    const start = new Date(startDate).getTime();
-    const end = endDate ? new Date(endDate).getTime() : start; // 종료일이 없으면 시작일로 사용
-    return todayDate >= start && todayDate <= end;
+    const start = startDate;
+    const end = endDate || start; // 종료일이 없으면 시작일로 사용
+    return today >= start && today <= end;
   });
 };

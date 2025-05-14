@@ -61,7 +61,6 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
         setAvailableSlots([]);
         return;
       }
-
       // 오늘의 요일 계산 (예: "월요일", "화요일")
       const today = new Date();
       const daysOfWeek = [
