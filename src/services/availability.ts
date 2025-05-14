@@ -78,6 +78,39 @@ export const fetchAvailableSlotsByDate = async (
   return [];
 };
 
+// 요일 기반 시간대 로드 함수로 변경
+export const fetchAvailableSlotsByDayOfWeek = async (
+  tutorId: string,
+  dayOfWeek: string
+): Promise<string[]> => {
+  try {
+    // 문서 ID로 직접 접근
+    const docRef = doc(collection(db, "availability"), tutorId);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.log("❌ No availability found for tutor:", tutorId);
+      return [];
+    }
+
+    const data = docSnap.data();
+    const weeklyAvailability = data?.weeklyAvailability || {};
+    const dayAvailability = weeklyAvailability[dayOfWeek];
+
+    // 지정된 요일의 시간대가 존재하는지 확인
+    if (dayAvailability && dayAvailability.activeSlots) {
+    
+      return dayAvailability.activeSlots;
+    }
+
+    return [];
+  } catch (error) {
+    console.error("❌ Error fetching slots:", error);
+    return [];
+  }
+};
+
+
 // 특정 요일의 시간대 삭제
 export const deleteAvailabilityByDay = async (
   tutorId: string,

@@ -13,13 +13,13 @@ const Providers: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <>
       <AuthProvider>
         <ModalProvider>
-          <HolidayProvider>
-            <AvailabilityProvider>
-              <ReservationProvider>
-                <TutorProvider>{children}</TutorProvider>
-              </ReservationProvider>
-            </AvailabilityProvider>
-          </HolidayProvider>
+          <TutorProvider>
+            <HolidayProvider>
+              <AvailabilityProvider>
+                <ReservationProvider>{children}</ReservationProvider>
+              </AvailabilityProvider>
+            </HolidayProvider>
+          </TutorProvider>
         </ModalProvider>
       </AuthProvider>
       <ToastProvider />

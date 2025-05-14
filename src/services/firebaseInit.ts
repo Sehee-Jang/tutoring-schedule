@@ -3,7 +3,7 @@ import {
   createTrack,
   createRole,
   defaultRoles,
-} from "./firestore"
+} from "./firestore";
 
 // 자동 초기화 함수
 export async function initializeNaeilCamp() {
