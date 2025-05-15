@@ -17,6 +17,10 @@
 1. **실시간 예약 현황 파악이 어려움**: 시간순 정렬 및 실시간 반영 문제, 중복 예약 발생
 2. **운영진 개입 비효율성**: 예약 변경·취소 요청 시 담임매니저가 직접 처리 후 튜터에게 전달
 3. **튜터별 가능 시간 파악 어려움**: 각 튜터의 예약 가능 시간 확인이 번거로움
+   ![이전시스템](./public/images/README/old_tutoring_system1.png)
+   ![이전시스템](./public/images/README/old_tutoring_system2.png)
+   ![이전시스템](./public/images/README/old_tutoring_system3.png)
+   ![이전시스템](./public/images/README/old_tutoring_system4.png)
 
 ---
 
