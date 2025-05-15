@@ -46,7 +46,6 @@ const OrganizationManager = () => {
   const loadOrganizations = async () => {
     const orgList = await fetchOrganizations();
     setOrganizations(orgList);
-    console.log("organizations ID: ", orgList);
   };
 
   const loadTracks = async (organizationId: string) => {
@@ -55,14 +54,12 @@ const OrganizationManager = () => {
     setSelectedOrg(organizationId);
     setBatches([]); // 기수 초기화
     setSelectedTrack(null);
-    console.log("organizations trackList: ", trackList);
   };
 
   const loadBatches = async (organizationId: string, trackId: string) => {
     const batchList = await fetchBatches(organizationId, trackId);
     setBatches(batchList);
     setSelectedTrack(trackId);
-    console.log("organizations Batches: ", batchList);
   };
 
   const handleCreateOrganization = async () => {

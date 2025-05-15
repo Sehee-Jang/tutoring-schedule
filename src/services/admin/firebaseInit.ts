@@ -15,6 +15,7 @@ export async function initializeNaeilCamp() {
       "국비 지원 교육 캠프",
       ""
     );
+    
     console.log(`✅ 조직 생성 완료: ${organizationId}`);
 
     // 2. 트랙 생성 (UXUI)

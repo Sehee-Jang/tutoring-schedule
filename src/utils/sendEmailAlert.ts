@@ -68,10 +68,6 @@ export const sendEmailAlert = async (formData: EmailParams) => {
         question: formData.question,
       };
 
-      console.log("📩 발송 대상 이메일:", email);
-      console.log("🧾 발송 템플릿 ID:", TEMPLATE_ID);
-      console.log("📨 템플릿 파라미터:", templateParams);
-
       await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
     }
   } catch (error) {

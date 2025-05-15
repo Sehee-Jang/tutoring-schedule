@@ -15,6 +15,7 @@ import {
 } from "firebase/firestore";
 import ModalLayout from "../../components/shared/ModalLayout";
 import { useModal } from "../../context/ModalContext";
+import { fetchOrganizations, fetchTracks } from "../../services/admin/organization";
 
 interface SignUpModalProps {
   isOpen: boolean;
@@ -24,6 +25,21 @@ interface Organization {
   id: string;
   name: string;
 }
+
+interface Track {
+  id: string;
+  name: string;
+  batches: Batch[];
+}
+
+interface Batch {
+  id: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+}
+
+
 const SignUpModal = ({ isOpen }: SignUpModalProps) => {
   const { closeModal } = useModal();
 
@@ -37,84 +53,164 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
     batch: "",
   });
   const [organizations, setOrganizations] = useState<Organization[]>([]);
-  const [tracks, setTracks] = useState<string[]>([]);
-  const [batches, setBatches] = useState<string[]>([]);
+  const [tracks, setTracks] = useState<Track[]>([]);
+  const [batches, setBatches] = useState<Batch[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    fetchOrganizations();
+    loadOrganizations();
   }, []);
 
   // 조직 및 트랙 데이터 로드
-  const fetchOrganizations = async () => {
-    const orgSnapshot = await getDocs(collection(db, "organizations"));
-    const orgList = orgSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      name: doc.data().name,
-    }));
+  // const fetchOrganizations = async () => {
+  //   const orgSnapshot = await getDocs(collection(db, "organizations"));
+  //   const orgList = orgSnapshot.docs.map((doc) => ({
+  //     id: doc.id,
+  //     name: doc.data().name,
+  //   }));
+  //   setOrganizations(orgList);
+  // };
+
+  // const fetchTracks = async (organizationId: string) => {
+  //   if (!organizationId) {
+  //     setTracks([]);
+  //     setBatches([]);
+  //     return;
+  //   }
+
+  //   const tracksSnapshot = await getDocs(
+  //     collection(db, `organizations/${organizationId}/tracks`)
+  //   );
+
+  //   const trackList = tracksSnapshot.docs.map((doc) => ({
+  //     id: doc.id,
+  //     name: doc.data().name,
+  //     batches: doc.data().batches || [],
+  //   }));
+
+  //   setTracks(trackList.map((track) => track.name));
+  //   setForm((prev) => ({ ...prev, track: "", batch: "" })); // 초기화
+  // };
+
+  // const fetchBatches = async (organizationId: string, trackName: string) => {
+  //   if (!organizationId || !trackName) {
+  //     setBatches([]);
+  //     return;
+  //   }
+
+  //   // 트랙 불러오기
+  //   const tracksSnapshot = await getDocs(
+  //     collection(db, `organizations/${organizationId}/tracks`)
+  //   );
+
+  //   // 선택된 트랙 찾기
+  //   const selectedTrack = tracksSnapshot.docs.find(
+  //     (doc) => doc.data().name === trackName
+  //   );
+  //   if (!selectedTrack) {
+  //     setBatches([]);
+  //     return;
+  //   }
+
+  //   // 기수를 트랙 하위의 서브컬렉션에서 로드
+  //   const batchesSnapshot = await getDocs(
+  //     collection(
+  //       db,
+  //       `organizations/${organizationId}/tracks/${selectedTrack.id}/batches`
+  //     )
+  //   );
+
+  //   const batchList = batchesSnapshot.docs.map((doc) => ({
+  //     id: doc.id,
+  //     name: doc.data().name || "",
+  //   }));
+
+  //   setBatches(batchList.map((batch) => batch.name));
+  // };
+
+  // if (!isOpen) return null;
+
+  // const handleChange = (
+  //   e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  // ) => {
+  //   const { name, value } = e.target;
+  //   setForm((prev) => ({ ...prev, [name]: value }));
+
+  //   if (name === "organization") {
+  //     fetchTracks(value);
+  //   }
+
+  //   if (name === "track") {
+  //     fetchBatches(form.organization, value);
+  //   }
+  // };
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   setError("");
+  //   setSuccess(false);
+
+  //   try {
+  //     const userCredential = await createUserWithEmailAndPassword(
+  //       auth,
+  //       form.email,
+  //       form.password
+  //     );
+  //     const user = userCredential.user;
+
+  //     await sendEmailVerification(user);
+
+  //     await setDoc(doc(db, "users", user.uid), {
+  //       name: form.name,
+  //       email: form.email,
+  //       role: form.role,
+  //       organization: form.organization,
+  //       track: form.track,
+  //       batch: form.batch,
+  //       status: "pending",
+  //       createdAt: serverTimestamp(),
+  //     });
+
+  //     setSuccess(true);
+  //   } catch (err: unknown) {
+  //     if (err instanceof Error) {
+  //       console.error(err);
+  //       setError(err.message || "회원가입 중 오류가 발생했습니다.");
+  //     }
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // 조직 로드
+  
+  // 조직 로드
+  const loadOrganizations = async () => {
+    const orgList = await fetchOrganizations();
     setOrganizations(orgList);
   };
 
-  const fetchTracks = async (organizationId: string) => {
+  // 트랙 로드
+  const loadTracks = async (organizationId: string) => {
     if (!organizationId) {
       setTracks([]);
       setBatches([]);
       return;
     }
 
-    const tracksSnapshot = await getDocs(
-      collection(db, `organizations/${organizationId}/tracks`)
-    );
-
-    const trackList = tracksSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      name: doc.data().name,
-      batches: doc.data().batches || [],
-    }));
-
-    setTracks(trackList.map((track) => track.name));
-    setForm((prev) => ({ ...prev, track: "", batch: "" })); // 초기화
+    const trackList = await fetchTracks(organizationId);
+    setTracks(trackList);
+    setForm((prev) => ({ ...prev, track: "", batch: "" }));
   };
 
-  const fetchBatches = async (organizationId: string, trackName: string) => {
-    if (!organizationId || !trackName) {
-      setBatches([]);
-      return;
-    }
-
-    // 트랙 불러오기
-    const tracksSnapshot = await getDocs(
-      collection(db, `organizations/${organizationId}/tracks`)
-    );
-
-    // 선택된 트랙 찾기
-    const selectedTrack = tracksSnapshot.docs.find(
-      (doc) => doc.data().name === trackName
-    );
-    if (!selectedTrack) {
-      setBatches([]);
-      return;
-    }
-
-    // 기수를 트랙 하위의 서브컬렉션에서 로드
-    const batchesSnapshot = await getDocs(
-      collection(
-        db,
-        `organizations/${organizationId}/tracks/${selectedTrack.id}/batches`
-      )
-    );
-
-    const batchList = batchesSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      name: doc.data().name || "",
-    }));
-
-    setBatches(batchList.map((batch) => batch.name));
+  // 기수 로드 (트랙의 batches에서 바로 사용)
+  const loadBatches = (trackId: string) => {
+    const selectedTrack = tracks.find((track) => track.id === trackId);
+    setBatches(selectedTrack ? selectedTrack.batches : []);
   };
-
-  if (!isOpen) return null;
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -123,11 +219,11 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
     setForm((prev) => ({ ...prev, [name]: value }));
 
     if (name === "organization") {
-      fetchTracks(value);
+      loadTracks(value);
     }
 
     if (name === "track") {
-      fetchBatches(form.organization, value);
+      loadBatches(value);
     }
   };
 
@@ -251,8 +347,8 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
           >
             <option value=''>트랙 선택</option>
             {tracks.map((track) => (
-              <option key={track} value={track}>
-                {track}
+              <option key={track.id} value={track.id}>
+                {track.name}
               </option>
             ))}
           </select>
@@ -267,8 +363,8 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
           >
             <option value=''>기수 선택</option>
             {batches.map((batch) => (
-              <option key={batch} value={batch}>
-                {batch}
+              <option key={batch.id} value={batch.name}>
+                {batch.name} ({batch.startDate} ~ {batch.endDate})
               </option>
             ))}
           </select>
