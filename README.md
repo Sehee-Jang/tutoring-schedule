@@ -59,6 +59,7 @@
    ![수정하기](./public/images/README/tutors-edit-booking.gif)
    ![튜터링시간등록하기](./public/images/README/tutors-update-available-slots.gif)
    ![휴가관리](./public/images/README/tutors-update-vacations.gif)
+   ![휴가시](./public/images/README/users_isTutorHoliday.png)
 
 ### ✅ 튜터 기능
 
