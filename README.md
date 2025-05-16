@@ -34,8 +34,8 @@
    선택한 튜터의 가능 시간 중 원하는 시간대를 선택합니다. (현재 시간 +30분 이후부터 가능)
 3. **예약 정보 입력**  
    예약자 이름, 관련 링크, 질문 내용, 비밀번호를 설정한 뒤 예약을 제출합니다.
-   ![예약하기](./public/images/README/users-register-tutoring.gif)
-   ![수정하기](./public/images/README/users-edit-registeration.gif)
+   ![예약하기](./public/images/README/users-book-tutoring.gif)
+   ![수정하기](./public/images/README/users-edit-booking.gif)
 
 ### ✅ 실시간 예약 현황
 
@@ -56,9 +56,9 @@
    특정 날짜를 휴무일로 지정하여 해당 날짜에 예약을 차단할 수 있습니다.
 4. **예약 상세 확인 및 수정**  
     예약 내용을 확인하고 수정할 수 있으며, 수강생의 예약 시간 변경 요청도 처리할 수 있습니다.
-   ![수정하기](./public/images/README/tutors-edit-registeration.gif)
-   ![튜터링시간등록하기](./public/images/README/tutors-register-tutoring-time-slots.gif)
-   ![휴가관리](./public/images/README/tutors-manage-vacations.gif)
+   ![수정하기](./public/images/README/tutors-edit-booking.gif)
+   ![튜터링시간등록하기](./public/images/README/tutors-update-available-slots.gif)
+   ![휴가관리](./public/images/README/tutors-update-vacations.gif)
 
 ### ✅ 튜터 기능
 
