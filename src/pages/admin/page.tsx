@@ -20,7 +20,6 @@ const AdminPage = () => {
   const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
-
   // 데이터 베이스 상태 관리
   const [resetting, setResetting] = useState(false);
 
