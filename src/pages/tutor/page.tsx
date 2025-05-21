@@ -2,8 +2,6 @@
 
 import { useAuth } from "../../context/AuthContext";
 import { useModal } from "../../context/ModalContext";
-import type { Reservation } from "../../types/reservation";
-import { logout } from "../../services/auth";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import { useNavigate } from "react-router-dom";
 import TutorLayout from "./TutorLayout";
@@ -12,7 +10,7 @@ import TimeSettingsPanel from "../../components/tutor/time-settings/TimeSettings
 import ReservationStatusForTutor from "../../components/tutor/reservation/ReservationStatusForTutor";
 
 const TutorPage = () => {
-  const { user, isAdmin, isTutor } = useAuth();
+  const { user} = useAuth();
   const { showModal } = useModal();
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<"timeSettings" | "reservations">(
@@ -53,23 +51,6 @@ const TutorPage = () => {
       </div>
     );
   }
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate("/");
-    } catch (error) {
-      console.error("로그아웃 실패:", error);
-    }
-  };
-
-  const handleView = (reservation: Reservation) => {
-    showModal("reservationDetail", {
-      reservation,
-      isAdmin,
-      isTutor,
-    });
-  };
 
   return (
     <ProtectedRoute requiredRole='tutor'>

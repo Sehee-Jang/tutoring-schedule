@@ -11,12 +11,12 @@ import {
 } from "../../../services/availability";
 
 const TimeSlotSetting = () => {
-  const { user, isTutor } = useAuth();
+  const { user } = useAuth();
   const [selectedDay, setSelectedDay] = useState<string>("월요일");
   const [availability, setAvailability] = useState<string[]>([]);
-  const [startTime, setStartTime] = useState<string>("09:00");
-  const [endTime, setEndTime] = useState<string>("21:00");
-  const [interval, setInterval] = useState<number>(30);
+  const [startTime] = useState<string>("09:00");
+  const [endTime] = useState<string>("21:00");
+  const [interval] = useState<number>(30);
   const { toast } = useToast();
 
   const slots = generateTimeSlots(startTime, endTime, interval);

@@ -7,7 +7,7 @@ import {
   ReactNode,
   useCallback,
 } from "react";
-import { fetchAvailableSlotsByDate, fetchAvailableSlotsByDayOfWeek } from "../services/availability";
+import { fetchAvailableSlotsByDayOfWeek } from "../services/availability";
 import { Tutor } from "../types/tutor";
 import { Availability } from "../types/availability";
 import { useTutors } from "./TutorContext";

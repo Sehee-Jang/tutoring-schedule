@@ -70,7 +70,7 @@ const ReservationDetailModal = ({
     };
 
     loadAvailableSlots();
-  }, [reservation]);
+  }, [reservation, tutors]);
 
   if (!isOpen || !reservation) return null;
 

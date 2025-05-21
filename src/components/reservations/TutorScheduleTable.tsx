@@ -24,7 +24,7 @@ const TutorScheduleTable = ({
   const { availability } = useAvailability();
   const { reservations } = useReservations();
   const { tutors } = useTutors();
-  const [selectedDate, setSelectedDate] = useState<string>(
+  const [selectedDate] = useState<string>(
     new Date().toISOString().split("T")[0]
   );
 

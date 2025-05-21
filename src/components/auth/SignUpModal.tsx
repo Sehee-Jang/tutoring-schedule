@@ -10,8 +10,6 @@ import {
   doc,
   setDoc,
   serverTimestamp,
-  collection,
-  getDocs,
 } from "firebase/firestore";
 import ModalLayout from "../../components/shared/ModalLayout";
 import { useModal } from "../../context/ModalContext";

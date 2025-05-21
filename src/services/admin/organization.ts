@@ -4,7 +4,6 @@ import {
   addDoc,
   getDocs,
   doc,
-  updateDoc,
   deleteDoc,
 } from "firebase/firestore";
 import { sortByName, sortByNumericBatch } from "../../utils/sortUtils";
