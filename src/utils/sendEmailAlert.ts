@@ -12,6 +12,8 @@ interface EmailParams {
 }
 
 export const sendEmailAlert = async (formData: EmailParams) => {
+  console.log("📦 DISABLE_EMAIL =", process.env.REACT_APP_DISABLE_EMAIL);
+  
   const SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
   // const TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
   const TEMPLATE_ID = formData.isUpdate
