@@ -22,16 +22,6 @@ const ReservationStatusForTutor = () => {
     const fetchAvailability = async () => {
       if (!user) return;
 
-      // const daysOfWeek = [
-      //   "일요일",
-      //   "월요일",
-      //   "화요일",
-      //   "수요일",
-      //   "목요일",
-      //   "금요일",
-      //   "토요일",
-      // ];
-      // const selectedDay = daysOfWeek[date.getDay()];
       const selectedDay = getDayOfWeek(date);
 
       const availability = await fetchAvailableSlotsByDate(
@@ -58,6 +48,7 @@ const ReservationStatusForTutor = () => {
       <h2 className='text-gray-700 text-xl font-semibold mb-4'>
         실시간 예약 현황
       </h2>
+
       {/* 날짜 선택 바 */}
       <DateSelector date={date} setDate={setDate} />
 
@@ -71,7 +62,7 @@ const ReservationStatusForTutor = () => {
               <th className='p-3 text-center'>예약</th>
             </tr>
           </thead>
-        
+
           <tbody>
             {timeSlots.map((slot) => {
               const isAvailable = availableTimeSlots.includes(slot);
