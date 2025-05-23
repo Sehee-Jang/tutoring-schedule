@@ -6,6 +6,7 @@ import { Reservation } from "../../types/reservation";
 import { useTutors } from "../../context/TutorContext";
 import { useMemo, useState } from "react";
 import Button from "../shared/Button";
+import { getDayOfWeek } from "../../utils/getDayOfWeek"
 
 interface TutorScheduleTableProps {
   tutorName: string;
@@ -30,19 +31,19 @@ const TutorScheduleTable = ({
   );
 
   // 요일 자동 추출 함수
-  const getDayOfWeek = (date: string): string => {
-    const days = [
-      "일요일",
-      "월요일",
-      "화요일",
-      "수요일",
-      "목요일",
-      "금요일",
-      "토요일",
-    ];
-    const parsedDate = new Date(date);
-    return days[parsedDate.getDay()];
-  };
+  // const getDayOfWeek = (date: string): string => {
+  //   const days = [
+  //     "일요일",
+  //     "월요일",
+  //     "화요일",
+  //     "수요일",
+  //     "목요일",
+  //     "금요일",
+  //     "토요일",
+  //   ];
+  //   const parsedDate = new Date(date);
+  //   return days[parsedDate.getDay()];
+  // };
 
   // 선택된 날짜의 요일
   const selectedDayOfWeek = useMemo(

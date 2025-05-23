@@ -18,6 +18,7 @@ import useReservationForm from "../../hooks/useReservationForm";
 import { sendEmailAlert } from "../../utils/sendEmailAlert";
 import sortTimeSlots from "../../utils/sortTimeSlots";
 import { useAuth } from "../../context/AuthContext";
+import { getDayOfWeek } from "../../utils/getDayOfWeek"
 
 interface ReservationFormProps {
   onSuccess?: () => void;
@@ -63,16 +64,17 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
       }
       // 오늘의 요일 계산 (예: "월요일", "화요일")
       const today = new Date();
-      const daysOfWeek = [
-        "일요일",
-        "월요일",
-        "화요일",
-        "수요일",
-        "목요일",
-        "금요일",
-        "토요일",
-      ];
-      const todayDayOfWeek = daysOfWeek[today.getDay()];
+      // const daysOfWeek = [
+      //   "일요일",
+      //   "월요일",
+      //   "화요일",
+      //   "수요일",
+      //   "목요일",
+      //   "금요일",
+      //   "토요일",
+      // ];
+      // const todayDayOfWeek = daysOfWeek[today.getDay()];
+      const todayDayOfWeek = getDayOfWeek(today);
 
       // 선택된 튜터의 가능한 시간 불러오기
       const slots = await fetchAvailableSlotsByDate(tutorID, todayDayOfWeek);

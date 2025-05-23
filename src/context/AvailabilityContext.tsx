@@ -11,6 +11,7 @@ import { fetchAvailableSlotsByDayOfWeek } from "../services/availability";
 import { Tutor } from "../types/tutor";
 import { Availability } from "../types/availability";
 import { useTutors } from "./TutorContext";
+import { getDayOfWeek } from "../utils/getDayOfWeek";
 
 interface AvailabilityContextType {
   availability: Record<string, Record<string, string[]>>;
@@ -38,18 +39,19 @@ export const AvailabilityProvider = ({
   const [availability, setAvailability] = useState<Availability>({});
   const { tutors } = useTutors();
 
-  const getDayOfWeek = (date: Date): string => {
-    const days = [
-      "일요일",
-      "월요일",
-      "화요일",
-      "수요일",
-      "목요일",
-      "금요일",
-      "토요일",
-    ];
-    return days[date.getDay()];
-  };
+  // const getDayOfWeek = (date: Date): string => {
+  //   const days = [
+  //     "일요일",
+  //     "월요일",
+  //     "화요일",
+  //     "수요일",
+  //     "목요일",
+  //     "금요일",
+  //     "토요일",
+  //   ];
+  //   return days[date.getDay()];
+  // };
+
   const loadAvailability = useCallback(async () => {
     if (!tutors || tutors.length === 0) {
       return;

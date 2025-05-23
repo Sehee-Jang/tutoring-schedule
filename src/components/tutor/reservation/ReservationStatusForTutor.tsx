@@ -8,6 +8,7 @@ import { generateTimeSlots } from "../../../utils/generateTimeSlots"; // 시간�
 import ReservationCard from "./ReservationCard";
 import DateSelector from "../../../components/shared/DateSelector";
 import { fetchAvailableSlotsByDate } from "../../../services/availability";
+import { getDayOfWeek } from "../../../utils/getDayOfWeek";
 
 const ReservationStatusForTutor = () => {
   const { user } = useAuth();
@@ -21,16 +22,17 @@ const ReservationStatusForTutor = () => {
     const fetchAvailability = async () => {
       if (!user) return;
 
-      const daysOfWeek = [
-        "일요일",
-        "월요일",
-        "화요일",
-        "수요일",
-        "목요일",
-        "금요일",
-        "토요일",
-      ];
-      const selectedDay = daysOfWeek[date.getDay()];
+      // const daysOfWeek = [
+      //   "일요일",
+      //   "월요일",
+      //   "화요일",
+      //   "수요일",
+      //   "목요일",
+      //   "금요일",
+      //   "토요일",
+      // ];
+      // const selectedDay = daysOfWeek[date.getDay()];
+      const selectedDay = getDayOfWeek(date);
 
       const availability = await fetchAvailableSlotsByDate(
         user.id,

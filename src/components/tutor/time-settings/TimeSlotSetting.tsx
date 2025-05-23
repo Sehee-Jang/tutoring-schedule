@@ -11,6 +11,7 @@ import {
 } from "../../../services/availability";
 import { ChevronDown } from "lucide-react";
 import Button from "../../shared/Button";
+import { DAYS_OF_WEEK } from "../../../constants/days";
 
 const TimeSlotSetting = () => {
   const { user } = useAuth();
@@ -71,15 +72,7 @@ const TimeSlotSetting = () => {
   const handleApplyToAll = () => {
     if (!user) return;
 
-    const otherDays = [
-      "화요일",
-      "수요일",
-      "목요일",
-      "금요일",
-      "토요일",
-      "일요일",
-    ];
-    otherDays.forEach(async (day) => {
+    DAYS_OF_WEEK.forEach(async (day) => {
       await saveAvailability(
         user.id,
         day,
