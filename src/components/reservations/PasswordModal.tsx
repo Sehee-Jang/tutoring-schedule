@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ModalLayout from "../shared/ModalLayout";
-import PrimaryButton from "../shared/PrimaryButton";
+import Button from "../shared/Button";
 
 interface PasswordModalProps {
   isOpen: boolean;
@@ -24,10 +24,15 @@ const PasswordModal = ({ isOpen, onClose, onSuccess }: PasswordModalProps) => {
         placeholder='비밀번호를 입력하세요'
       />
       <div className='flex justify-end gap-2'>
-        <button onClick={onClose} className='text-gray-500 hover:underline'>
+        <Button
+          variant='outline'
+          onClick={onClose}
+        >
           취소
-        </button>
-        <PrimaryButton onClick={() => onSuccess(password)}>확인</PrimaryButton>
+        </Button>
+        <Button variant='primary' onClick={() => onSuccess(password)}>
+          확인
+        </Button>
       </div>
     </ModalLayout>
   );

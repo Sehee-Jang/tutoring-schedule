@@ -10,12 +10,14 @@ import {
   doc,
   setDoc,
   serverTimestamp,
-  collection,
-  getDocs,
 } from "firebase/firestore";
 import ModalLayout from "../../components/shared/ModalLayout";
 import { useModal } from "../../context/ModalContext";
-import { fetchOrganizations, fetchTracks } from "../../services/admin/organization";
+import {
+  fetchOrganizations,
+  fetchTracks,
+} from "../../services/admin/organization";
+import Button from "../shared/Button";
 
 interface SignUpModalProps {
   isOpen: boolean;
@@ -38,7 +40,6 @@ interface Batch {
   startDate: string;
   endDate: string;
 }
-
 
 const SignUpModal = ({ isOpen }: SignUpModalProps) => {
   const { closeModal } = useModal();
@@ -63,130 +64,6 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
     loadOrganizations();
   }, []);
 
-  // 조직 및 트랙 데이터 로드
-  // const fetchOrganizations = async () => {
-  //   const orgSnapshot = await getDocs(collection(db, "organizations"));
-  //   const orgList = orgSnapshot.docs.map((doc) => ({
-  //     id: doc.id,
-  //     name: doc.data().name,
-  //   }));
-  //   setOrganizations(orgList);
-  // };
-
-  // const fetchTracks = async (organizationId: string) => {
-  //   if (!organizationId) {
-  //     setTracks([]);
-  //     setBatches([]);
-  //     return;
-  //   }
-
-  //   const tracksSnapshot = await getDocs(
-  //     collection(db, `organizations/${organizationId}/tracks`)
-  //   );
-
-  //   const trackList = tracksSnapshot.docs.map((doc) => ({
-  //     id: doc.id,
-  //     name: doc.data().name,
-  //     batches: doc.data().batches || [],
-  //   }));
-
-  //   setTracks(trackList.map((track) => track.name));
-  //   setForm((prev) => ({ ...prev, track: "", batch: "" })); // 초기화
-  // };
-
-  // const fetchBatches = async (organizationId: string, trackName: string) => {
-  //   if (!organizationId || !trackName) {
-  //     setBatches([]);
-  //     return;
-  //   }
-
-  //   // 트랙 불러오기
-  //   const tracksSnapshot = await getDocs(
-  //     collection(db, `organizations/${organizationId}/tracks`)
-  //   );
-
-  //   // 선택된 트랙 찾기
-  //   const selectedTrack = tracksSnapshot.docs.find(
-  //     (doc) => doc.data().name === trackName
-  //   );
-  //   if (!selectedTrack) {
-  //     setBatches([]);
-  //     return;
-  //   }
-
-  //   // 기수를 트랙 하위의 서브컬렉션에서 로드
-  //   const batchesSnapshot = await getDocs(
-  //     collection(
-  //       db,
-  //       `organizations/${organizationId}/tracks/${selectedTrack.id}/batches`
-  //     )
-  //   );
-
-  //   const batchList = batchesSnapshot.docs.map((doc) => ({
-  //     id: doc.id,
-  //     name: doc.data().name || "",
-  //   }));
-
-  //   setBatches(batchList.map((batch) => batch.name));
-  // };
-
-  // if (!isOpen) return null;
-
-  // const handleChange = (
-  //   e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  // ) => {
-  //   const { name, value } = e.target;
-  //   setForm((prev) => ({ ...prev, [name]: value }));
-
-  //   if (name === "organization") {
-  //     fetchTracks(value);
-  //   }
-
-  //   if (name === "track") {
-  //     fetchBatches(form.organization, value);
-  //   }
-  // };
-
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   setError("");
-  //   setSuccess(false);
-
-  //   try {
-  //     const userCredential = await createUserWithEmailAndPassword(
-  //       auth,
-  //       form.email,
-  //       form.password
-  //     );
-  //     const user = userCredential.user;
-
-  //     await sendEmailVerification(user);
-
-  //     await setDoc(doc(db, "users", user.uid), {
-  //       name: form.name,
-  //       email: form.email,
-  //       role: form.role,
-  //       organization: form.organization,
-  //       track: form.track,
-  //       batch: form.batch,
-  //       status: "pending",
-  //       createdAt: serverTimestamp(),
-  //     });
-
-  //     setSuccess(true);
-  //   } catch (err: unknown) {
-  //     if (err instanceof Error) {
-  //       console.error(err);
-  //       setError(err.message || "회원가입 중 오류가 발생했습니다.");
-  //     }
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // 조직 로드
-  
   // 조직 로드
   const loadOrganizations = async () => {
     const orgList = await fetchOrganizations();
@@ -368,14 +245,9 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
               </option>
             ))}
           </select>
-
-          <button
-            type='submit'
-            className='bg-blue-600 text-white py-2 rounded hover:bg-blue-700'
-            disabled={loading}
-          >
+          <Button variant='primary' type='submit' disabled={loading}>
             {loading ? "가입 중..." : "회원가입"}
-          </button>
+          </Button>
         </form>
       )}
     </ModalLayout>

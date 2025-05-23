@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import TimeSlotButton from "../../../components/shared/TimeSlotButton";
+import TimeSlotButton from "../../shared/TimeSlotButton";
 import { useAuth } from "../../../context/AuthContext";
 import { useToast } from "../../../hooks/use-toast";
 import { generateTimeSlots } from "../../../utils/generateTimeSlots";
@@ -9,14 +9,17 @@ import {
   fetchAvailableSlotsByDate,
   saveAvailability,
 } from "../../../services/availability";
+import { ChevronDown } from "lucide-react";
+import Button from "../../shared/Button";
 
 const TimeSlotSetting = () => {
-  const { user, isTutor } = useAuth();
+  const { user } = useAuth();
   const [selectedDay, setSelectedDay] = useState<string>("월요일");
   const [availability, setAvailability] = useState<string[]>([]);
-  const [startTime, setStartTime] = useState<string>("09:00");
-  const [endTime, setEndTime] = useState<string>("21:00");
-  const [interval, setInterval] = useState<number>(30);
+  const [startTime] = useState<string>("09:00");
+  const [endTime] = useState<string>("21:00");
+  const [interval] = useState<number>(30);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const { toast } = useToast();
 
   const slots = generateTimeSlots(startTime, endTime, interval);
@@ -43,7 +46,7 @@ const TimeSlotSetting = () => {
     );
   };
 
-  // 저장 함수
+  // 저장 버튼 핸들러
   const handleSave = async () => {
     if (!user || availability.length === 0) return;
 
@@ -62,6 +65,35 @@ const TimeSlotSetting = () => {
       variant: "default",
     });
     loadSavedAvailability(); // 저장 후 다시 로드하여 활성화 반영
+  };
+
+  // 일괄 저장 버튼 핸들러
+  const handleApplyToAll = () => {
+    if (!user) return;
+
+    const otherDays = [
+      "화요일",
+      "수요일",
+      "목요일",
+      "금요일",
+      "토요일",
+      "일요일",
+    ];
+    otherDays.forEach(async (day) => {
+      await saveAvailability(
+        user.id,
+        day,
+        startTime,
+        endTime,
+        interval,
+        availability
+      );
+    });
+
+    toast({
+      title: "다른 요일에도 동일하게 적용되었습니다",
+      variant: "default",
+    });
   };
 
   return (
@@ -138,14 +170,45 @@ const TimeSlotSetting = () => {
       </div>
 
       {/* 저장 버튼 */}
-      <div className='flex justify-end'>
+      <div className='flex justify-end relative inline-block text-left'>
+        <Button
+          variant='primary'
+          className='text-sm flex items-center'
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+        >
+          <ChevronDown className="w-4 h-4" /> 저장 옵션
+        </Button>
+        {/* <button
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+          className='bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 text-sm'
+        >
+        <ChevronDown className="w-4 h-4" />저장 옵션
+        </button> */}
+        {dropdownOpen && (
+          <div className='absolute right-0 mt-10 w-40 bg-white shadow-md rounded border'>
+            <button
+              className='block w-full text-left px-4 py-2 hover:bg-gray-100'
+              onClick={handleSave}
+            >
+              현재 요일 저장
+            </button>
+            <button
+              className='block w-full text-left px-4 py-2 hover:bg-gray-100'
+              onClick={handleApplyToAll}
+            >
+              모든 요일에 저장
+            </button>
+          </div>
+        )}
+      </div>
+      {/* <div className='flex justify-end'>
         <button
           onClick={handleSave}
           className='bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 text-sm'
         >
           설정 저장
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

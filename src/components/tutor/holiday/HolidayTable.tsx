@@ -1,4 +1,5 @@
 // 휴무일 목록 테이블
+import { DeleteAlertDialog } from "../../shared/DeleteAlertDialog";
 import { Holiday } from "../../../types/tutor";
 import React from "react";
 
@@ -38,12 +39,16 @@ const HolidayTable: React.FC<HolidayTableProps> = ({
               {h.reason}
             </td>
             <td className='p-2 text-red-500 text-center'>
-              <button
+              {/* <button
                 onClick={() => deleteHoliday(h.id)}
                 className='hover:underline'
               >
                 삭제
-              </button>
+              </button> */}
+              <DeleteAlertDialog
+                onConfirm={async() => {await deleteHoliday(h.id)}}
+                triggerLabel='삭제'
+              />
             </td>
           </tr>
         ))}

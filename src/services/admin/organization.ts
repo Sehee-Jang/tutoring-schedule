@@ -4,7 +4,6 @@ import {
   addDoc,
   getDocs,
   doc,
-  updateDoc,
   deleteDoc,
 } from "firebase/firestore";
 import { sortByName, sortByNumericBatch } from "../../utils/sortUtils";
@@ -27,11 +26,10 @@ interface Batch {
 // 조직 목록 불러오기
 export const fetchOrganizations = async () => {
   const snapshot = await getDocs(collection(db, "organizations"));
-  const organizations = snapshot.docs
-    .map((doc) => ({
+  const organizations = snapshot.docs.map((doc) => ({
     id: doc.id,
     name: doc.data().name,
-  }))
+  }));
   return sortByName(organizations);
 };
 
@@ -56,7 +54,10 @@ export const fetchTracks = async (organizationId: string): Promise<Track[]> => {
   const tracks = await Promise.all(
     snapshot.docs.map(async (doc) => {
       const batchesSnapshot = await getDocs(
-        collection(db, `organizations/${organizationId}/tracks/${doc.id}/batches`)
+        collection(
+          db,
+          `organizations/${organizationId}/tracks/${doc.id}/batches`
+        )
       );
 
       const batches = batchesSnapshot.docs.map((batchDoc) => ({
@@ -85,14 +86,13 @@ export const fetchBatches = async (
   const snapshot = await getDocs(
     collection(db, `organizations/${organizationId}/tracks/${trackId}/batches`)
   );
-  const batches = snapshot.docs
-    .map((doc) => ({
-      id: doc.id,
-      name: doc.data().name || "",
-      startDate: doc.data().startDate || "",
-      endDate: doc.data().endDate || "",
-    }))
-  return sortByNumericBatch(batches);;
+  const batches = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    name: doc.data().name || "",
+    startDate: doc.data().startDate || "",
+    endDate: doc.data().endDate || "",
+  }));
+  return sortByNumericBatch(batches);
 };
 
 // 새로운 조직 생성

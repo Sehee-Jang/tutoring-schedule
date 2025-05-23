@@ -2,6 +2,7 @@
 
 import { Reservation } from "../../types/reservation";
 import { ChevronDown } from "lucide-react";
+import Button from "../shared/Button";
 
 interface PastReservationTableProps {
   reservations: Reservation[];
@@ -20,11 +21,11 @@ const PastReservationTable = ({
   onCancel,
   isAdmin,
 }: PastReservationTableProps) => {
-    if (reservations.length === 0) {
-      return (
-        <p className='text-center text-gray-400 py-6'>지난 예약이 없습니다.</p>
-      );
-    }
+  if (reservations.length === 0) {
+    return (
+      <p className='text-center text-gray-400 py-6'>지난 예약이 없습니다.</p>
+    );
+  }
 
   return (
     <>
@@ -46,18 +47,20 @@ const PastReservationTable = ({
               {isAdmin && (
                 <td className='px-4 py-2 border'>
                   <div className='flex gap-2'>
-                    <button
+                    <Button
+                      className='text-xs'
+                      variant='primary'
                       onClick={() => onView(res)}
-                      className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
                     >
                       보기
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      className='text-xs'
+                      variant='warning'
                       onClick={() => onCancel(res.id)}
-                      className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
                     >
                       삭제
-                    </button>
+                    </Button>
                   </div>
                 </td>
               )}

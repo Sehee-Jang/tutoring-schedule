@@ -70,7 +70,7 @@ const ReservationDetailModal = ({
     };
 
     loadAvailableSlots();
-  }, [reservation]);
+  }, [reservation, tutors]);
 
   if (!isOpen || !reservation) return null;
 
@@ -179,18 +179,15 @@ const ReservationDetailModal = ({
         </div>
       </div>
 
-      <div className='flex justify-center gap-4 mt-6'>
+      <div className='flex justify-center gap-2 mt-6'>
         {editMode ? (
           <>
             <Button variant='primary' onClick={update}>
               저장
             </Button>
-            <button
-              onClick={() => setEditMode(false)}
-              className='text-sm text-gray-500 hover:underline'
-            >
+            <Button variant='outline' onClick={() => setEditMode(false)}>
               취소
-            </button>
+            </Button>
           </>
         ) : (
           <Button variant='primary' onClick={() => setEditMode(true)}>

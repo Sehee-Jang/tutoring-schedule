@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useModal } from "../../context/ModalContext";
 import { useNavigate } from "react-router-dom";
+import Button from "../shared/Button";
 
 interface AdminRouteProps {
   children: React.ReactNode;
@@ -30,21 +31,14 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
             로그인 후 이용 가능한 서비스입니다.
           </h2>
           <div className='flex justify-center gap-4'>
-            <button
-              onClick={() => showModal("login")}
-              className='bg-blue-600 text-white px-5 py-2 rounded-md text-sm hover:bg-blue-700'
-            >
+            <Button variant='primary' onClick={() => showModal("login")}>
               로그인
-            </button>
+            </Button>
+            <Button variant='outline' onClick={() => navigate("/")}>
+              돌아가기
+            </Button>
           </div>
-          <div className='pt-4'>
-            <button
-              onClick={() => navigate("/")}
-              className='text-sm text-gray-500 hover:text-gray-700 underline'
-            >
-              ← 메인으로 돌아가기
-            </button>
-          </div>
+          <div></div>
         </div>
       </div>
     );

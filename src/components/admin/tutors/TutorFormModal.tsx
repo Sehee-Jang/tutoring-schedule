@@ -1,3 +1,4 @@
+import Button from "../../shared/Button";
 import React from "react";
 
 interface TutorFormModalProps {
@@ -56,19 +57,12 @@ const TutorFormModal: React.FC<TutorFormModalProps> = ({
             onChange={(e) => setEmail(e.target.value)}
           />
           <div className='flex justify-end space-x-2 pt-4'>
-            <button
-              type='button'
-              onClick={onClose}
-              className='px-4 py-2 bg-gray-300 rounded hover:bg-gray-400'
-            >
+            <Button variant='outline' onClick={onClose}>
               취소
-            </button>
-            <button
-              type='submit'
-              className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
-            >
+            </Button>
+            <Button variant='primary' type='submit'>
               {mode === "create" ? "추가하기" : "수정하기"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

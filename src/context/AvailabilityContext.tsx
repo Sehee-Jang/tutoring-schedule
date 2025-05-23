@@ -7,7 +7,7 @@ import {
   ReactNode,
   useCallback,
 } from "react";
-import { fetchAvailableSlotsByDate, fetchAvailableSlotsByDayOfWeek } from "../services/availability";
+import { fetchAvailableSlotsByDayOfWeek } from "../services/availability";
 import { Tutor } from "../types/tutor";
 import { Availability } from "../types/availability";
 import { useTutors } from "./TutorContext";
@@ -62,9 +62,7 @@ export const AvailabilityProvider = ({
 
     await Promise.all(
       tutors.map(async (tutor: Tutor) => {
-       
         const slots = await fetchAvailableSlotsByDayOfWeek(tutor.id, dayOfWeek);
-        
 
         if (slots.length > 0) {
           loadedAvailability[tutor.id] = {
@@ -78,7 +76,6 @@ export const AvailabilityProvider = ({
 
   useEffect(() => {
     if (tutors.length > 0) {
-
       loadAvailability();
     }
   }, [tutors, loadAvailability]);

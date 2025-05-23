@@ -7,6 +7,7 @@ import { useModal } from "../../context/ModalContext";
 import ModalLayout from "../../components/shared/ModalLayout";
 import { useToast } from "../../hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import Button from "../shared/Button";
 // import { loginWithGoogle } from "@/services/auth";
 
 // const handleGoogleLogin = async () => {
@@ -101,12 +102,7 @@ const LoginModal = ({ isOpen }: LoginModalProps) => {
         />
 
         {/* 일반 로그인 버튼 */}
-        <button
-          type='submit'
-          className='bg-[#262626] text-white py-2 rounded hover:bg-[#404040]'
-        >
-          로그인
-        </button>
+        <Button variant='primary' type="submit">로그인</Button>
 
         {/* 구글 로그인 버튼 */}
         {/* <button
@@ -118,12 +114,9 @@ const LoginModal = ({ isOpen }: LoginModalProps) => {
         </button> */}
 
         {/* 회원가입 버튼 */}
-        <button
-          onClick={handleSignupClick}
-          className='mt-4 text-sm text-blue-500 hover:underline'
-        >
-          아직 계정이 없으신가요? 회원가입
-        </button>
+        <Button variant='outline' onClick={handleSignupClick}>
+          회원가입
+        </Button>
       </form>
     </ModalLayout>
   );

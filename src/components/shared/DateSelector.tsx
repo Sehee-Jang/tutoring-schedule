@@ -2,6 +2,7 @@
 import { addDays, format, subDays } from "date-fns";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { ko } from "date-fns/locale";
+import Button from "./Button";
 
 interface DateSelectorProps {
   date: Date;
@@ -15,12 +16,9 @@ const DateSelector = ({ date, setDate }: DateSelectorProps) => {
 
   return (
     <div className='flex items-center justify-between bg-gray-50 rounded-md p-5 px-16'>
-      <button
-        onClick={handlePrevDay}
-        className='text-gray-700 hover:text-black'
-      >
+      <Button variant='icon' onClick={handlePrevDay}>
         <ChevronLeft className='w-5 h-5' />
-      </button>
+      </Button>
 
       <div className='flex items-center gap-2 text-gray-900'>
         <Calendar className='w-5 h-5' />
@@ -28,12 +26,10 @@ const DateSelector = ({ date, setDate }: DateSelectorProps) => {
           {format(date, "yyyy년 MM월 dd일 (EEEE)", { locale: ko })}
         </span>
       </div>
-      <button
-        onClick={handleNextDay}
-        className='text-gray-700 hover:text-black'
-      >
+
+      <Button variant='icon' onClick={handleNextDay}>
         <ChevronRight className='w-5 h-5' />
-      </button>
+      </Button>
     </div>
   );
 };

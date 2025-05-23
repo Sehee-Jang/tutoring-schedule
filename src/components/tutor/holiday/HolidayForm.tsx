@@ -1,3 +1,4 @@
+import Button from "../../shared/Button";
 import React from "react";
 
 interface HolidayFormProps {
@@ -61,17 +62,18 @@ const HolidayForm: React.FC<HolidayFormProps> = ({
 
       {/* 휴무일 추가 버튼 */}
       <div className='flex items-end'>
-        <button
-          onClick={addHoliday}
-          disabled={isDateInvalid}
-          className={`text-sm px-4 py-2 w-28 rounded ${
+        <Button
+          className={`text-sm  ${
             isDateInvalid
               ? "bg-gray-200 text-white cursor-not-allowed"
               : "bg-gray-400 text-white hover:bg-[#1f1f1f]"
           }`}
+          variant='primary'
+          disabled={isDateInvalid}
+          onClick={addHoliday}
         >
-          휴무일 추가
-        </button>
+          설정 저장
+        </Button>
       </div>
     </div>
   );

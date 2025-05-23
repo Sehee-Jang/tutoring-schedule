@@ -1,11 +1,5 @@
 import { db, auth } from "./firebase";
-import {
-  doc,
-  setDoc,
-  collection,
-  addDoc,
-  serverTimestamp,
-} from "firebase/firestore";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
 // 새 관리자 계정 생성 함수 (Firebase v9+)

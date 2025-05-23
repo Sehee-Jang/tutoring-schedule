@@ -2,6 +2,7 @@
 
 import { Reservation } from "../../types/reservation";
 import { ChevronDown } from "lucide-react";
+import Button from "../shared/Button";
 
 interface FutureReservationTableProps {
   reservations: Reservation[];
@@ -47,19 +48,21 @@ const FutureReservationTable = ({
               <td className='px-4 py-2 border'>{res.teamName}</td>
               <td className='px-4 py-2 border'>
                 <div className='flex gap-2'>
-                  <button
+                  <Button
+                    className='text-xs'
+                    variant='primary'
                     onClick={() => onView(res)}
-                    className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
                   >
                     보기
-                  </button>
+                  </Button>
                   {isAdmin && (
-                    <button
-                      onClick={() => onCancel(res.id)}
-                      className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
+                    <Button
+                      className='text-xs'
+                      variant='warning'
+                      onClick={() => onView(res)}
                     >
                       삭제
-                    </button>
+                    </Button>
                   )}
                 </div>
               </td>

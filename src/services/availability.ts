@@ -3,8 +3,6 @@ import {
   doc,
   setDoc,
   getDocs,
-  query,
-  where,
   Timestamp,
   getDoc,
 } from "firebase/firestore";
@@ -42,15 +40,6 @@ export const saveAvailability = async (
     console.error("❌ Error saving availability:", error);
   }
 };
-
-// 날짜별 가능한 시간대 불러오기 (요일 기반)
-interface AvailableSlot {
-  dayOfWeek: string;
-  startTime: string;
-  endTime: string;
-  interval: number;
-  activeSlots: string[];
-}
 
 // 날짜별 가능한 시간대 불러오기 (요일 기반)
 export const fetchAvailableSlotsByDate = async (
@@ -99,7 +88,6 @@ export const fetchAvailableSlotsByDayOfWeek = async (
 
     // 지정된 요일의 시간대가 존재하는지 확인
     if (dayAvailability && dayAvailability.activeSlots) {
-    
       return dayAvailability.activeSlots;
     }
 
@@ -109,7 +97,6 @@ export const fetchAvailableSlotsByDayOfWeek = async (
     return [];
   }
 };
-
 
 // 특정 요일의 시간대 삭제
 export const deleteAvailabilityByDay = async (

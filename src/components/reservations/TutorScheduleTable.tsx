@@ -5,6 +5,7 @@ import { useAvailability } from "../../context/AvailabilityContext";
 import { Reservation } from "../../types/reservation";
 import { useTutors } from "../../context/TutorContext";
 import { useMemo, useState } from "react";
+import Button from "../shared/Button";
 
 interface TutorScheduleTableProps {
   tutorName: string;
@@ -24,7 +25,7 @@ const TutorScheduleTable = ({
   const { availability } = useAvailability();
   const { reservations } = useReservations();
   const { tutors } = useTutors();
-  const [selectedDate, setSelectedDate] = useState<string>(
+  const [selectedDate] = useState<string>(
     new Date().toISOString().split("T")[0]
   );
 
@@ -49,15 +50,12 @@ const TutorScheduleTable = ({
     [selectedDate]
   );
 
-
   // 튜터 ID 찾기 (튜터 이름 기반)
   const selectedTutor = tutors.find((tutor) => tutor.name === tutorName);
   const tutorID = selectedTutor?.id || "";
 
-
   // 해당 튜터의 시간대 로드 (요일 기반)
   const rawTimeSlots = availability[tutorID]?.[selectedDayOfWeek] || [];
-
 
   const timeSlots = [...rawTimeSlots].sort((a, b) => {
     const getStartMinutes = (time: string) => {
@@ -112,22 +110,24 @@ const TutorScheduleTable = ({
                 <td className='px-4 py-2 border'>
                   <div className='flex gap-2'>
                     {isBooked ? (
-                      <button
+                      <Button
+                        variant='primary'
+                        className='text-xs'
                         onClick={() => reservation && onView(reservation)}
-                        className='bg-blue-500 text-white px-3 py-1 rounded text-xs'
                       >
                         보기
-                      </button>
+                      </Button>
                     ) : (
                       <span className='text-gray-300'>-</span>
                     )}
                     {isBooked && (isAdmin || isTutor) && onCancel && (
-                      <button
+                      <Button
+                        variant='warning'
+                        className='text-xs'
                         onClick={() => onCancel(reservation!.id)}
-                        className='bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-xs'
                       >
                         삭제
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </td>

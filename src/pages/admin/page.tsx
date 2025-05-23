@@ -12,6 +12,7 @@ import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { resetDatabase } from "../../services/admin/resetDatabase";
 import OrganizationManager from "./OrganizationManager";
+import Button from "../../components/shared/Button";
 
 const AdminPage = () => {
   const { tutors, loading, error } = useFetchTutors();
@@ -118,21 +119,17 @@ const AdminPage = () => {
             </div>
           )}
 
-          <button
+          <Button
+            variant='warning'
             onClick={handleResetDatabase}
-            className='bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600'
             disabled={resetting}
           >
             {resetting ? "리셋 중..." : "데이터베이스 리셋"}
-          </button>
+          </Button>
 
-          <button
-            onClick={handleLogout}
-            title='로그아웃'
-            className='text-gray-700 hover:text-black'
-          >
+          <Button variant='icon' onClick={handleLogout} title='로그아웃'>
             <LogOut className='w-5 h-5' />
-          </button>
+          </Button>
         </div>
         <OrganizationManager />
         {/* <div className='flex justify-end mb-4'>

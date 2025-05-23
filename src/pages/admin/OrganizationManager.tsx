@@ -1,5 +1,3 @@
-// OrganizationManager.tsx
-
 import React, { useState, useEffect } from "react";
 import {
   fetchOrganizations,
@@ -10,6 +8,7 @@ import {
   createBatch,
 } from "../../services/admin/organization";
 import { useToast } from "../../hooks/use-toast";
+import Button from "../../components/shared/Button";
 
 interface Organization {
   id: string;
@@ -105,20 +104,17 @@ const OrganizationManager = () => {
           onChange={(e) => setNewOrganization(e.target.value)}
           className='border p-2 rounded mr-2'
         />
-        <button
-          onClick={handleCreateOrganization}
-          className='bg-blue-500 text-white px-4 py-2 rounded'
-        >
+        <Button variant='primary' onClick={handleCreateOrganization}>
           조직 생성
-        </button>
+        </Button>
       </div>
 
       {/* 조직 목록 */}
       <h2 className='text-xl font-semibold mb-2'>조직 목록</h2>
       {organizations.map((org) => (
-       
         <div key={org.id} className='mb-2'>
           <span>{org.name}</span>
+
           <button
             onClick={() => loadTracks(org.id)}
             className='ml-2 text-blue-500 underline'
@@ -139,12 +135,9 @@ const OrganizationManager = () => {
             onChange={(e) => setNewTrack(e.target.value)}
             className='border p-2 rounded mr-2'
           />
-          <button
-            onClick={handleCreateTrack}
-            className='bg-green-500 text-white px-4 py-2 rounded'
-          >
+          <Button variant='primary' onClick={handleCreateTrack}>
             트랙 생성
-          </button>
+          </Button>
 
           {tracks.map((track) => (
             <div key={track.id} className='ml-4'>
@@ -171,12 +164,9 @@ const OrganizationManager = () => {
             onChange={(e) => setNewBatch(e.target.value)}
             className='border p-2 rounded mr-2'
           />
-          <button
-            onClick={handleCreateBatch}
-            className='bg-blue-500 text-white px-4 py-2 rounded'
-          >
+          <Button variant='primary' onClick={handleCreateBatch}>
             기수 생성
-          </button>
+          </Button>
 
           {batches.map((batch) => (
             <div key={batch.id} className='ml-4'>
