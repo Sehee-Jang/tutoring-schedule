@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from "react";
 import type { Reservation, ReservationFormData } from "../../types/reservation";
 import { useReservations } from "../../context/ReservationContext";
-import {fetchAvailableSlotsByDate} from "../../services/availability";
-import {createReservation} from "../../services/reservations"
+import { fetchAvailableSlotsByDate } from "../../services/availability";
+import { createReservation } from "../../services/reservations";
 import { useTutors } from "../../context/TutorContext";
 import { useToast } from "../../hooks/use-toast";
 import { useHolidayContext } from "../../context/HolidayContext";
@@ -18,7 +18,7 @@ import useReservationForm from "../../hooks/useReservationForm";
 import { sendEmailAlert } from "../../utils/sendEmailAlert";
 import sortTimeSlots from "../../utils/sortTimeSlots";
 import { useAuth } from "../../context/AuthContext";
-import { getDayOfWeek } from "../../utils/getDayOfWeek"
+import { getDayOfWeek } from "../../utils/getDayOfWeek";
 
 interface ReservationFormProps {
   onSuccess?: () => void;
@@ -34,6 +34,7 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
   const [tutorID, setTutorID] = useState<string>("");
   const [showGuide, setShowGuide] = useState(false);
   const [isTutorOnHoliday, setIsTutorOnHoliday] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useAuth();
   const todayString = format(new Date(), "yyyy-MM-dd");
   const {
@@ -78,7 +79,7 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
 
       // 선택된 튜터의 가능한 시간 불러오기
       const slots = await fetchAvailableSlotsByDate(tutorID, todayDayOfWeek);
-    
+
       const flatSlots = slots.flatMap((item) => item.activeSlots);
       const sortedFilteredSlots = sortTimeSlots(flatSlots).filter((slot) => {
         const [hour, min] = slot.split("-")[0].split(":").map(Number);
@@ -105,6 +106,8 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validate()) return;
+
+    setIsSubmitting(true);
 
     try {
       // 로그인된 사용자 정보 가져오기 (유저 ID)
@@ -149,6 +152,8 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
         title: "❌ 예약 중 오류가 발생했습니다. 다시 시도해주세요.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false); // 예약 끝
     }
   };
 
@@ -290,8 +295,8 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
           />
         </div>
 
-        <Button type='submit' variant='primary'>
-          예약하기
+        <Button type='submit' variant='primary' disabled={isSubmitting}>
+          {isSubmitting ? "예약 중..." : "예약하기"}
         </Button>
       </form>
 
