@@ -59,7 +59,7 @@ const FutureReservationTable = ({
                     <Button
                       className='text-xs'
                       variant='warning'
-                      onClick={() => onView(res)}
+                      onClick={() => onCancel(res.id)}
                     >
                       삭제
                     </Button>
