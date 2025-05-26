@@ -49,8 +49,9 @@ export const sendEmailAlert = async (formData: EmailParams) => {
 
     // 2. formData.tutor 이름으로 이메일 찾기
     const tutorEmail = tutors[formData.tutor];
-    const recipients = ["seheejang.korea@gmail.com"];
-
+    // const recipients = ["seheejang.korea@gmail.com"];
+    const recipients: string[] = [];
+    
     if (tutorEmail) {
       recipients.push(tutorEmail);
     }
