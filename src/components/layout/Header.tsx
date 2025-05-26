@@ -3,10 +3,11 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { ShieldCheck, UserCheck } from "lucide-react";
+import { isAdminRole } from "../../utils/roleUtils";
 
 const Header = () => {
   const { user } = useAuth();
-  const isAdmin = user?.role === "admin";
+  const isAdmin = isAdminRole(user?.role);
   const isTutor = user?.role === "tutor";
 
   const today = new Date().toLocaleDateString("ko-KR", {

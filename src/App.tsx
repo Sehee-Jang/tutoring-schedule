@@ -7,6 +7,7 @@ import TutorPage from "./pages/tutor/page";
 import ModalRenderer from "./components/shared/ModalRenderer";
 import Providers from "./Providers";
 import CreateAdminPage from "./pages/admin/createAdmin";
+import LoginPage from "./components/auth/LoginPage";
 
 const App: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ const App: React.FC = () => {
       <Router>
         <Routes>
           <Route path='/' element={<AppContent />} />
+          <Route path='/login' element={<LoginPage />} />
           <Route
             path='/admin'
             element={

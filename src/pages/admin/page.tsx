@@ -6,6 +6,7 @@ import { useToast } from "../../hooks/use-toast";
 import { Switch } from "../../components/ui/switch";
 import TutorFormModal from "../../components/admin/tutors/TutorFormModal";
 import { useFetchTutors } from "../../hooks/useFetchTutors";
+import { useModal } from "../../context/ModalContext";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import { logout } from "../../services/auth";
 import { LogOut } from "lucide-react";
@@ -13,15 +14,20 @@ import { useNavigate } from "react-router-dom";
 import { resetDatabase } from "../../services/admin/resetDatabase";
 import OrganizationManager from "./OrganizationManager";
 import Button from "../../components/shared/Button";
+import AvailabilityModal from "../../components/availability/AvailabilityModal";
 
 const AdminPage = () => {
+  const { showModal } = useModal();
   const { tutors, loading, error } = useFetchTutors();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
   const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null);
+  const [isAvailabilityModalOpen, setIsAvailabilityModalOpen] = useState(false);
+  const [availabilityModalTutor, setAvailabilityModalTutor] =
+    useState<string>("");
+
   const navigate = useNavigate();
   const { toast } = useToast();
-  // 데이터 베이스 상태 관리
   const [resetting, setResetting] = useState(false);
 
   // const handleCreate = () => {
@@ -108,7 +114,14 @@ const AdminPage = () => {
   };
 
   return (
-    <ProtectedRoute requiredRole='admin'>
+    <ProtectedRoute
+      allowedRoles={[
+        "super_admin",
+        "organization_admin",
+        "track_admin",
+        "batch_admin",
+      ]}
+    >
       <div className='max-w-3xl mx-auto p-8'>
         <div className='flex justify-between items-center mb-6'>
           <h1 className='text-2xl font-bold'>튜터 관리</h1>
@@ -199,6 +212,15 @@ const AdminPage = () => {
                   >
                     수정
                   </button>
+                  <Button
+                    variant='primary'
+                    className='text-sm'
+                    onClick={() =>
+                      showModal("availability", { selectedTutorId: tutor.id })
+                    }
+                  >
+                    가능 시간 보기
+                  </Button>
                 </div>
               </li>
             ))}
@@ -212,6 +234,12 @@ const AdminPage = () => {
           initialName={selectedTutor?.name}
           initialEmail={selectedTutor?.email}
           mode={modalMode}
+        />
+
+        <AvailabilityModal
+          isOpen={isAvailabilityModalOpen}
+          onClose={() => setIsAvailabilityModalOpen(false)}
+          selectedTutorId={availabilityModalTutor}
         />
       </div>
     </ProtectedRoute>

@@ -8,6 +8,7 @@ import ModalLayout from "../../components/shared/ModalLayout";
 import { useToast } from "../../hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import Button from "../shared/Button";
+import { isAdminRole } from "../../utils/roleUtils";
 // import { loginWithGoogle } from "@/services/auth";
 
 // const handleGoogleLogin = async () => {
@@ -39,7 +40,7 @@ const LoginModal = ({ isOpen }: LoginModalProps) => {
       closeModal(); // 로그인 성공 시 모달 닫기
 
       // 로그인 후 역할에 따라 리디렉션
-      if (user.role === "admin") {
+      if (isAdminRole(user.role)) {
         navigate("/admin");
       } else if (user.role === "tutor") {
         navigate("/tutor");

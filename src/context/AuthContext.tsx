@@ -10,6 +10,7 @@ import { db } from "../services/firebase";
 import { User, UserRole } from "../types/user";
 import { watchAuthState } from "../services/auth";
 import { doc, getDoc } from "firebase/firestore";
+import { isAdminRole } from "../utils/roleUtils";
 
 interface AuthContextType {
   user: User | null;
@@ -78,7 +79,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return () => unsubscribe();
   }, []);
 
-  const isAdmin = user?.role === "admin";
+  const isAdmin = isAdminRole(user?.role);
   const isTutor = user?.role === "tutor";
 
   return (
