@@ -6,9 +6,9 @@ import {
   createOrganization,
   createTrack,
   createBatch,
-} from "../../../services/admin/organization";
-import { useToast } from "../../../hooks/use-toast";
-import Button from "../../../components/shared/Button";
+} from "../../services/admin/organization";
+import { useToast } from "../../hooks/use-toast";
+import Button from "../../components/shared/Button";
 
 interface Organization {
   id: string;
@@ -27,7 +27,7 @@ interface Batch {
   endDate: string;
 }
 
-const OrganizationManager = () => {
+const ManageOrganizations = () => {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [batches, setBatches] = useState<Batch[]>([]);
@@ -86,14 +86,14 @@ const OrganizationManager = () => {
       "2025-01-01",
       "2025-12-31"
     );
-    toast({ title: "✅ 기수 생성 완료" });
+    toast({ title: "기수 생성 완료" });
     setNewBatch("");
     loadBatches(selectedOrg, selectedTrack);
   };
 
   return (
-    <div className='p-8'>
-      <h1 className='text-2xl font-bold mb-4'>조직 관리</h1>
+    <div className='space-y-4'>
+      <h2 className='text-gray-700 text-xl font-semibold mb-4'>조직 관리</h2>
 
       {/* 조직 생성 */}
       <div className='mb-4'>
@@ -179,4 +179,4 @@ const OrganizationManager = () => {
   );
 };
 
-export default OrganizationManager;
+export default ManageOrganizations;

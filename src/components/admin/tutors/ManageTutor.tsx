@@ -15,7 +15,6 @@ import AvailabilityModal from "../../../components/availability/AvailabilityModa
 import { useAuth } from "../../../context/AuthContext";
 import { useModal } from "../../../context/ModalContext";
 
-
 const ManageTutor = () => {
   const { user } = useAuth();
   const { showModal } = useModal();
@@ -43,14 +42,12 @@ const ManageTutor = () => {
   const [availabilityModalTutor, setAvailabilityModalTutor] =
     useState<string>("");
 
-
+  // 수정 핸들러
   const handleEdit = (tutor: Tutor) => {
     setModalMode("edit");
     setSelectedTutor(tutor);
     setIsModalOpen(true);
   };
-
-  
 
   // 등록 핸들러
   const handleSubmit = async (name: string, email: string) => {
@@ -111,68 +108,62 @@ const ManageTutor = () => {
   });
 
   return (
-    <div className='flex-1 p-8'>
-      <div className='max-w-3xl mx-auto p-8'>
-        <div className='flex justify-between items-center mb-6'>
-          <h1 className='text-2xl font-bold'>튜터 관리</h1>
+    <div className='space-y-4'>
+      <h2 className='text-gray-700 text-xl font-semibold mb-4'>튜터 관리</h2>
 
-          {error && (
-            <div className='bg-red-100 text-red-700 p-4 mb-4 rounded'>
-              {error}
-            </div>
-          )}
-
-         
-        </div>
-
-        {user && (
-          <TutorFilterPanel
-            userRole={user.role}
-            organizations={organizations}
-            tracks={tracks}
-            batches={batches}
-            onFilterChange={(filters) => {
-              setFilters(filters);
-              setSelectedOrgId(filters.organization);
-              setSelectedTrackId(filters.track);
-            }}
-          />
-        )}
-
+      <div className='flex justify-between items-center mb-6'>
         {error && (
           <div className='bg-red-100 text-red-700 p-4 mb-4 rounded'>
             {error}
           </div>
         )}
-
-        {loading ? (
-          <div className='text-center py-10'>Loading...</div>
-        ) : (
-          <TutorTable
-            tutors={filteredTutors}
-            onEdit={handleEdit}
-            onChangeStatus={handleStatusChange}
-            onShowAvailability={(id) =>
-              showModal("availability", { selectedTutorId: id })
-            }
-          />
-        )}
-
-        <TutorFormModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onSubmit={handleSubmit}
-          initialName={selectedTutor?.name}
-          initialEmail={selectedTutor?.email}
-          mode={modalMode}
-        />
-
-        <AvailabilityModal
-          isOpen={isAvailabilityModalOpen}
-          onClose={() => setIsAvailabilityModalOpen(false)}
-          selectedTutorId={availabilityModalTutor}
-        />
       </div>
+
+      {user && (
+        <TutorFilterPanel
+          userRole={user.role}
+          organizations={organizations}
+          tracks={tracks}
+          batches={batches}
+          onFilterChange={(filters) => {
+            setFilters(filters);
+            setSelectedOrgId(filters.organization);
+            setSelectedTrackId(filters.track);
+          }}
+        />
+      )}
+
+      {error && (
+        <div className='bg-red-100 text-red-700 p-4 mb-4 rounded'>{error}</div>
+      )}
+
+      {loading ? (
+        <div className='text-center py-10'>Loading...</div>
+      ) : (
+        <TutorTable
+          tutors={filteredTutors}
+          onEdit={handleEdit}
+          onChangeStatus={handleStatusChange}
+          onShowAvailability={(id) =>
+            showModal("availability", { selectedTutorId: id })
+          }
+        />
+      )}
+
+      <TutorFormModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleSubmit}
+        initialName={selectedTutor?.name}
+        initialEmail={selectedTutor?.email}
+        mode={modalMode}
+      />
+
+      <AvailabilityModal
+        isOpen={isAvailabilityModalOpen}
+        onClose={() => setIsAvailabilityModalOpen(false)}
+        selectedTutorId={availabilityModalTutor}
+      />
     </div>
   );
 };

@@ -13,12 +13,15 @@ import LoginPage from "./components/auth/LoginPage";
 import CreateAdminPage from "./pages/admin/createAdmin";
 
 import ManageTutor from "./components/admin/tutors/ManageTutor";
-import OrganizationManager from "./components/admin/organizations/OrganizationManager";
+import ManageOrganizations from "./pages/admin/ManageOrganizations";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ReservationStatusForTutor from "./components/tutor/reservation/ReservationStatusForTutor";
 import TimeSettingsPanel from "./components/tutor/time-settings/TimeSettingsPanel";
 import AdminLayout from "./pages/admin/AdminLayout";
 import TutorLayout from "./pages/tutor/TutorLayout";
+import ManageTracks from "./pages/admin/ManageTracks";
+import ManageBatches from "./pages/admin/ManageBatches";
+import ManageReservations from "./pages/admin/ManageReservations";
 
 const App: React.FC = () => {
   return (
@@ -40,10 +43,10 @@ const App: React.FC = () => {
           >
             <Route index element={<Navigate to='tutors' replace />} />
             <Route path='tutors' element={<ManageTutor />} />
-            <Route path='organizations' element={<OrganizationManager />} />
-            {/* <Route path="tracks" element={<ManageTracks />} /> */}
-            {/* <Route path="batches" element={<ManageBatches />} /> */}
-            {/* <Route path="reservations" element={<ManageReservations />} /> */}
+            <Route path='organizations' element={<ManageOrganizations />} />
+            <Route path='tracks' element={<ManageTracks />} />
+            <Route path='batches' element={<ManageBatches />} />
+            <Route path='reservations' element={<ManageReservations />} />
           </Route>
 
           {/* 튜터 라우터 */}

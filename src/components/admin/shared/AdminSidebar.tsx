@@ -1,7 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AdminSidebarItem } from "../../../types/navigation";
-import { Users, Building, Layers, BookOpen, CalendarCheck } from "lucide-react";
+import {
+  Users,
+  Building,
+  Layers,
+  BookOpen,
+  CalendarCheck,
+  OctagonAlert,
+} from "lucide-react";
+import Button from "../../../components/shared/Button";
+import { resetDatabase } from "../../../services/admin/resetDatabase";
+import { useToast } from "../../../hooks/use-toast";
 
 const menuItems: AdminSidebarItem[] = [
   {
@@ -36,7 +46,30 @@ const AdminSidebar: React.FC = () => {
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname.startsWith(path);
+  const [resetting, setResetting] = useState(false);
+  const { toast } = useToast();
 
+  // 리셋 핸들러
+  const handleResetDatabase = async () => {
+    if (!window.confirm("⚠️ 모든 데이터베이스가 초기화됩니다. 진행할까요?"))
+      return;
+    setResetting(true);
+    try {
+      await resetDatabase();
+      toast({
+        title: "데이터베이스가 초기화되었습니다.",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("초기화 오류:", error);
+      toast({
+        title: "초기화에 실패했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setResetting(false);
+    }
+  };
   return (
     <div className='py-5 px-3 text-sm space-y-5'>
       {/* 메뉴 섹션 */}
@@ -56,6 +89,16 @@ const AdminSidebar: React.FC = () => {
           </button>
         ))}
       </nav>
+      <Button
+        variant='warning'
+        size='sm'
+        onClick={handleResetDatabase}
+        disabled={resetting}
+        className='w-full flex items-center font-semibold justify-evenly px-4 py-2 rounded-md'
+      >
+        <OctagonAlert className='w-4 h-4' />
+        {resetting ? "리셋 중..." : "데이터베이스 리셋"}
+      </Button>
     </div>
   );
 };
