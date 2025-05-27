@@ -16,8 +16,12 @@ const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
     return <div>로딩 중...</div>;
   }
 
-  if (!user || !allowedRoles.includes(user.role)) {
+  if (!user) {
     return <Navigate to='/login' state={{ from: location }} replace />;
+  }
+
+  if (!allowedRoles.includes(user.role)) {
+    return <Navigate to='/' replace />;
   }
 
   return <>{children}</>;

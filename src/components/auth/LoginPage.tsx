@@ -17,7 +17,8 @@ const LoginPage = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const from = location.state?.from?.pathname || "/";
+  const from = location.state?.from?.pathname;
+  const target = from && from !== "/login" ? from : "/";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,7 +31,13 @@ const LoginPage = () => {
         title: "로그인 성공",
         description: "환영합니다!",
       });
-      navigate(from, { replace: true }); // 원래 가려던 페이지로 이동
+
+      // 짧은 대기
+      setTimeout(() => {
+        const from = location.state?.from?.pathname;
+        const target = from && from !== "/login" ? from : "/";
+        navigate(target, { replace: true });
+      }, 300);
     } catch (err) {
       console.error(err);
       setError("이메일 또는 비밀번호가 올바르지 않습니다.");
