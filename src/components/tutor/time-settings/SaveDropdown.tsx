@@ -6,6 +6,7 @@ interface SaveDropdownProps {
   onToggle: () => void;
   onSaveCurrent: () => void;
   onSaveAll: () => void;
+  isSaving: boolean;
 }
 
 const SaveDropdown = ({
@@ -13,6 +14,7 @@ const SaveDropdown = ({
   onToggle,
   onSaveCurrent,
   onSaveAll,
+  isSaving,
 }: SaveDropdownProps) => {
   return (
     <div className='flex justify-end relative inline-block text-left'>
@@ -30,12 +32,14 @@ const SaveDropdown = ({
           <button
             className='block w-full text-left px-4 py-2 hover:bg-gray-100'
             onClick={onSaveCurrent}
+            disabled={isSaving}
           >
             현재 요일 저장
           </button>
           <button
             className='block w-full text-left px-4 py-2 hover:bg-gray-100'
             onClick={onSaveAll}
+            disabled={isSaving}
           >
             모든 요일에 저장
           </button>

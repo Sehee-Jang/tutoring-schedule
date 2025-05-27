@@ -1,5 +1,5 @@
 // AvailabilityModal.tsx (업데이트된 전체 코드)
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAvailability } from "../../context/AvailabilityContext";
 import { useTutors } from "../../context/TutorContext";
 import { useAuth } from "../../context/AuthContext";
@@ -11,6 +11,12 @@ import DayTabs from "../tutor/time-settings/DayTabs";
 import { generateTimeSlots } from "../../utils/generateTimeSlots";
 import { DAYS_OF_WEEK } from "../../constants/days";
 import { isAdminRole } from "../../utils/roleUtils";
+import {
+  fetchAvailableSlotsByDayOfWeek,
+  saveAvailability,
+} from "../../services/availability";
+import { useToast } from "../../hooks/use-toast";
+import Button from "../shared/Button";
 
 interface AvailabilityModalProps {
   isOpen: boolean;
@@ -27,6 +33,8 @@ const AvailabilityModal = ({
     useAvailability();
   const { tutors } = useTutors();
   const { user } = useAuth();
+  const [isSaving, setIsSaving] = useState(false);
+
   const isAdmin = isAdminRole(user?.role);
   const isTutor = user?.role === "tutor";
 
@@ -38,6 +46,10 @@ const AvailabilityModal = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const slots = generateTimeSlots();
+  const { toast } = useToast();
+  const [startTime] = useState<string>("09:00");
+  const [endTime] = useState<string>("21:00");
+  const [interval] = useState<number>(30);
 
   useEffect(() => {
     if (selectedTutorId) {
@@ -73,23 +85,78 @@ const AvailabilityModal = ({
   };
 
   const handleSaveCurrent = async () => {
-    await updateAvailability(
-      selectedTutor,
-      selectedDay,
-      availability[selectedTutor]?.[selectedDay] || []
-    );
-    closeModal();
+    if (isSaving) return;
+    setIsSaving(true);
+
+    try {
+      await saveAvailability(
+        selectedTutor,
+        selectedDay,
+        startTime,
+        endTime,
+        interval,
+        availability[selectedTutor]?.[selectedDay] || []
+      );
+
+      // 저장 후 최신 데이터 다시 불러오기
+      const updatedSlots = await fetchAvailableSlotsByDayOfWeek(
+        selectedTutor,
+        selectedDay
+      );
+
+      await updateAvailability(selectedTutor, selectedDay, updatedSlots);
+
+      // 성공
+      toast({
+        title: "튜터링 시간 설정이 저장되었습니다.",
+        variant: "default",
+      });
+    } catch (error) {
+      toast({
+        title: "저장 중 오류가 발생했습니다",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleSaveAll = async () => {
-    for (const day of DAYS_OF_WEEK) {
-      await updateAvailability(
-        selectedTutor,
-        day,
-        availability[selectedTutor]?.[selectedDay] || []
-      );
+    if (isSaving) return;
+    setIsSaving(true);
+    try {
+      for (const day of DAYS_OF_WEEK) {
+        await saveAvailability(
+          selectedTutor,
+          day,
+          startTime,
+          endTime,
+          interval,
+          availability[selectedTutor]?.[selectedDay] || []
+        );
+
+        // 저장 후 최신 데이터 다시 불러오기
+        const updatedSlots = await fetchAvailableSlotsByDayOfWeek(
+          selectedTutor,
+          day
+        );
+
+        await updateAvailability(selectedTutor, day, updatedSlots);
+      }
+
+      // 성공
+      toast({
+        title: "튜터링 시간이 모든 요일에 저장되었습니다.",
+        variant: "default",
+      });
+    } catch (error) {
+      toast({
+        title: "저장 중 오류가 발생했습니다",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
     }
-    closeModal();
   };
 
   const tutorName = tutors.find((t) => t.id === selectedTutor)?.name || "";
@@ -138,20 +205,17 @@ const AvailabilityModal = ({
         ))}
       </div>
 
-      <SaveDropdown
-        open={dropdownOpen}
-        onToggle={() => setDropdownOpen(!dropdownOpen)}
-        onSaveCurrent={handleSaveCurrent}
-        onSaveAll={handleSaveAll}
-      />
-
       <div className='flex justify-end gap-2 mt-2'>
-        <button
-          onClick={closeModal}
-          className='text-gray-600 hover:underline text-sm'
-        >
+        <SaveDropdown
+          open={dropdownOpen}
+          onToggle={() => setDropdownOpen(!dropdownOpen)}
+          onSaveCurrent={handleSaveCurrent}
+          onSaveAll={handleSaveAll}
+          isSaving={isSaving}
+        />
+        <Button variant='outline' size='md' onClick={closeModal}>
           닫기
-        </button>
+        </Button>
       </div>
     </ModalLayout>
   );

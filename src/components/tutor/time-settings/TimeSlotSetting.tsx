@@ -23,6 +23,7 @@ const TimeSlotSetting = () => {
   const [interval, setInterval] = useState<number>(30);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { toast } = useToast();
+  const [isSaving, setIsSaving] = useState(false);
 
   const slots = generateTimeSlots(startTime, endTime, interval);
 
@@ -51,43 +52,66 @@ const TimeSlotSetting = () => {
   // 저장 버튼 핸들러
   const handleSave = async () => {
     if (!user || availability.length === 0) return;
-
-    await saveAvailability(
-      user.id,
-      selectedDay,
-      startTime,
-      endTime,
-      interval,
-      availability
-    );
-
-    // 성공
-    toast({
-      title: "튜터링 시간 설정 성공",
-      variant: "default",
-    });
-    loadSavedAvailability(); // 저장 후 다시 로드하여 활성화 반영
-  };
-
-  // 일괄 저장 버튼 핸들러
-  const handleApplyToAll = () => {
-    if (!user) return;
-
-    DAYS_OF_WEEK.forEach(async (day) => {
+    setIsSaving(true);
+    try {
       await saveAvailability(
         user.id,
-        day,
+        selectedDay,
         startTime,
         endTime,
         interval,
         availability
       );
-    });
 
-    toast({
-      title: "다른 요일에도 동일하게 적용되었습니다",
-      variant: "default",
-    });
+      // 성공
+      toast({
+        title: "튜터링 시간 설정 성공",
+        variant: "default",
+      });
+
+      await loadSavedAvailability(); // 저장 후 다시 로드하여 활성화 반영
+    } catch (error) {
+      console.error("❌ 저장 오류:", error);
+      toast({
+        title: "저장 중 오류가 발생했습니다",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // 일괄 저장 버튼 핸들러
+  const handleApplyToAll = async () => {
+    if (!user || isSaving) return;
+    setIsSaving(true);
+    try {
+      for (const day of DAYS_OF_WEEK) {
+        await saveAvailability(
+          user.id,
+          day,
+          startTime,
+          endTime,
+          interval,
+          availability
+        );
+      }
+
+      toast({
+        title: "다른 요일에도 동일하게 적용되었습니다",
+        variant: "default",
+      });
+
+      await loadSavedAvailability();
+    } catch (error) {
+      console.error("❌ 일괄 저장 오류:", error);
+      toast({
+        title: "일괄 저장 중 오류가 발생했습니다",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -104,7 +128,7 @@ const TimeSlotSetting = () => {
         onEndTimeChange={setEndTime}
         onIntervalChange={setInterval}
       /> */}
-     
+
       {/* 시간 버튼 */}
       <div className='grid grid-cols-6 gap-2 mt-4'>
         {slots.map((slot) => (
@@ -125,6 +149,7 @@ const TimeSlotSetting = () => {
         onToggle={() => setDropdownOpen(!dropdownOpen)}
         onSaveCurrent={handleSave}
         onSaveAll={handleApplyToAll}
+        isSaving={isSaving}
       />
     </div>
   );

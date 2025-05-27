@@ -12,6 +12,7 @@ import { Tutor } from "../types/tutor";
 import { Availability } from "../types/availability";
 import { useTutors } from "./TutorContext";
 import { getDayOfWeek } from "../utils/getDayOfWeek";
+import { DAYS_OF_WEEK } from "../constants/days";
 
 interface AvailabilityContextType {
   availability: Record<string, Record<string, string[]>>;
@@ -57,22 +58,21 @@ export const AvailabilityProvider = ({
       return;
     }
 
-    const today = new Date();
-    const dayOfWeek = getDayOfWeek(today);
-
     const loadedAvailability: Record<string, Record<string, string[]>> = {};
 
     await Promise.all(
       tutors.map(async (tutor: Tutor) => {
-        const slots = await fetchAvailableSlotsByDayOfWeek(tutor.id, dayOfWeek);
+        const tutorAvailability: Record<string, string[]> = {};
 
-        if (slots.length > 0) {
-          loadedAvailability[tutor.id] = {
-            [dayOfWeek]: slots, // 직접 slots 배열을 저장
-          };
+        for (const day of DAYS_OF_WEEK) {
+          const slots = await fetchAvailableSlotsByDayOfWeek(tutor.id, day);
+          tutorAvailability[day] = slots;
         }
+
+        loadedAvailability[tutor.id] = tutorAvailability;
       })
     );
+
     setAvailability(loadedAvailability);
   }, [tutors]);
 
