@@ -24,10 +24,7 @@ const PasswordModal = ({ isOpen, onClose, onSuccess }: PasswordModalProps) => {
         placeholder='비밀번호를 입력하세요'
       />
       <div className='flex justify-end gap-2'>
-        <Button
-          variant='outline'
-          onClick={onClose}
-        >
+        <Button variant='outline' size='sm' onClick={onClose}>
           취소
         </Button>
         <Button variant='primary' onClick={() => onSuccess(password)}>

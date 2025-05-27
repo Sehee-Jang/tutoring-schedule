@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { db } from "../../services/firebase";
 import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
-import { Tutor } from "../../types/tutor";
+import { Tutor, TutorStatus } from "../../types/tutor";
 import { useToast } from "../../hooks/use-toast";
-import { Switch } from "../../components/ui/switch";
 import TutorFormModal from "../../components/admin/tutors/TutorFormModal";
 import { useFetchTutors } from "../../hooks/useFetchTutors";
 import { useModal } from "../../context/ModalContext";
@@ -15,6 +14,7 @@ import { resetDatabase } from "../../services/admin/resetDatabase";
 import OrganizationManager from "./OrganizationManager";
 import Button from "../../components/shared/Button";
 import AvailabilityModal from "../../components/availability/AvailabilityModal";
+import TutorTable from "../../components/admin/tutors/TutorTable";
 
 const AdminPage = () => {
   const { showModal } = useModal();
@@ -25,42 +25,14 @@ const AdminPage = () => {
   const [isAvailabilityModalOpen, setIsAvailabilityModalOpen] = useState(false);
   const [availabilityModalTutor, setAvailabilityModalTutor] =
     useState<string>("");
-
-  const navigate = useNavigate();
-  const { toast } = useToast();
   const [resetting, setResetting] = useState(false);
-
-  // const handleCreate = () => {
-  //   setModalMode("create");
-  //   setSelectedTutor(null);
-  //   setIsModalOpen(true);
-  // };
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleEdit = (tutor: Tutor) => {
     setModalMode("edit");
     setSelectedTutor(tutor);
     setIsModalOpen(true);
-  };
-
-  const toggleTutorStatus = async (tutor: Tutor) => {
-    try {
-      const tutorRef = doc(db, "users", tutor.id);
-      const currentStatus = tutor.status || "inactive";
-      const newStatus = currentStatus === "active" ? "inactive" : "active";
-      await updateDoc(tutorRef, { status: newStatus });
-      toast({
-        title: `튜터가 ${
-          newStatus === "active" ? "활성화" : "비활성화"
-        }되었습니다.`,
-        variant: "default",
-      });
-    } catch (error) {
-      console.error("튜터 상태 변경 오류:", error);
-      toast({
-        title: "튜터 상태 변경에 실패했습니다.",
-        variant: "destructive",
-      });
-    }
   };
 
   // 리셋
@@ -113,6 +85,29 @@ const AdminPage = () => {
     }
   };
 
+  const handleStatusChange = async (tutor: Tutor, newStatus: TutorStatus) => {
+    try {
+      const tutorRef = doc(db, "users", tutor.id);
+      await updateDoc(tutorRef, { status: newStatus });
+      toast({
+        title: `상태가 ${
+          newStatus === "active"
+            ? "활성"
+            : newStatus === "inactive"
+            ? "비활성"
+            : "승인 대기"
+        }로 변경되었습니다.`,
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("상태 변경 오류:", error);
+      toast({
+        title: "상태 변경에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <ProtectedRoute
       allowedRoles={[
@@ -145,86 +140,18 @@ const AdminPage = () => {
           </Button>
         </div>
         <OrganizationManager />
-        {/* <div className='flex justify-end mb-4'>
-        <button
-          className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'
-          onClick={handleCreate}
-        >
-          튜터 추가
-        </button>
-      </div> */}
 
         {loading ? (
           <div className='text-center py-10'>Loading...</div>
         ) : (
-          // <ul className='space-y-4'>
-          //   {tutors.map((tutor) => (
-          //     <li
-          //       key={tutor.id}
-          //       className='flex justify-between items-center border p-4 rounded'
-          //     >
-          //       <div>
-          //         <div className='font-semibold'>{tutor.name}</div>
-          //         <div className='text-gray-600 text-sm'>{tutor.email}</div>
-          //       </div>
-          //       <div className='flex items-center space-x-4'>
-          //         {/* 토글 스위치 */}
-          //         <Switch
-          //           checked={tutor.status === "active"}
-          //           onCheckedChange={() => toggleTutorStatus(tutor)}
-          //         />
-          //         {/* 수정 버튼 그대로 */}
-          //         <button
-          //           className='px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm'
-          //           onClick={() => handleEdit(tutor)}
-          //         >
-          //           수정
-          //         </button>
-          //       </div>
-          //     </li>
-          //   ))}
-          // </ul>
-          <ul className='space-y-4'>
-            {tutors.map((tutor) => (
-              <li
-                key={tutor.id}
-                className='flex justify-between items-center border p-4 rounded'
-              >
-                <div>
-                  <div className='font-semibold flex items-center'>
-                    {tutor.name}
-                    {tutor.status === "pending" && (
-                      <span className='ml-2 text-yellow-500 text-sm'>
-                        (승인 대기)
-                      </span>
-                    )}
-                  </div>
-                  <div className='text-gray-600 text-sm'>{tutor.email}</div>
-                </div>
-                <div className='flex items-center space-x-4'>
-                  <Switch
-                    checked={tutor.status === "active"}
-                    onCheckedChange={() => toggleTutorStatus(tutor)}
-                  />
-                  <button
-                    className='px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm'
-                    onClick={() => handleEdit(tutor)}
-                  >
-                    수정
-                  </button>
-                  <Button
-                    variant='primary'
-                    className='text-sm'
-                    onClick={() =>
-                      showModal("availability", { selectedTutorId: tutor.id })
-                    }
-                  >
-                    가능 시간 보기
-                  </Button>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <TutorTable
+            tutors={tutors}
+            onEdit={handleEdit}
+            onChangeStatus={handleStatusChange}
+            onShowAvailability={(id) =>
+              showModal("availability", { selectedTutorId: id })
+            }
+          />
         )}
 
         <TutorFormModal

@@ -32,6 +32,7 @@ const Header = () => {
         {user && (
           <Button
             variant='outline'
+            size='sm'
             onClick={logout}
             className='flex items-center gap-1'
           >

@@ -85,7 +85,11 @@ const LoginPage = () => {
           <PrimaryButton type='submit' disabled={loading}>
             로그인
           </PrimaryButton>
-          <Button variant='outline' onClick={() => showModal("signup")}>
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={() => showModal("signup")}
+          >
             회원가입
           </Button>
         </form>

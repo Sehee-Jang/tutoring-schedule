@@ -57,7 +57,7 @@ const TutorFormModal: React.FC<TutorFormModalProps> = ({
             onChange={(e) => setEmail(e.target.value)}
           />
           <div className='flex justify-end space-x-2 pt-4'>
-            <Button variant='outline' onClick={onClose}>
+            <Button variant='outline' size='sm' onClick={onClose}>
               취소
             </Button>
             <Button variant='primary' type='submit'>

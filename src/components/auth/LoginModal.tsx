@@ -103,7 +103,9 @@ const LoginModal = ({ isOpen }: LoginModalProps) => {
         />
 
         {/* 일반 로그인 버튼 */}
-        <Button variant='primary' type="submit">로그인</Button>
+        <Button variant='primary' type='submit'>
+          로그인
+        </Button>
 
         {/* 구글 로그인 버튼 */}
         {/* <button
@@ -115,7 +117,7 @@ const LoginModal = ({ isOpen }: LoginModalProps) => {
         </button> */}
 
         {/* 회원가입 버튼 */}
-        <Button variant='outline' onClick={handleSignupClick}>
+        <Button variant='outline' size='sm' onClick={handleSignupClick}>
           회원가입
         </Button>
       </form>

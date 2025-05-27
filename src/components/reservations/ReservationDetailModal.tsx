@@ -185,7 +185,11 @@ const ReservationDetailModal = ({
             <Button variant='primary' onClick={update}>
               저장
             </Button>
-            <Button variant='outline' onClick={() => setEditMode(false)}>
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={() => setEditMode(false)}
+            >
               취소
             </Button>
           </>
