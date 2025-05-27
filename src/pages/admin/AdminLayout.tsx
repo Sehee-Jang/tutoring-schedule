@@ -1,14 +1,14 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "../../components/tutor/shared/Sidebar";
-import TutorHeader from "../../components/tutor/shared/TutorHeader";
+import AdminSidebar from "../../components/admin/shared/AdminSidebar";
+import AdminHeader from "../../components/admin/shared/AdminHeader";
 
-const TutorLayout = () => {
+const AdminLayout = () => {
   return (
     <div className='flex flex-col h-screen bg-gray-50 px-8 py-6 gap-10'>
-      <TutorHeader />
+      <AdminHeader />
       <div className='flex flex-1 bg-gray-50 gap-5'>
         <aside className='w-[190px] border border-gray-200 bg-white rounded-xl'>
-          <Sidebar />
+          <AdminSidebar />
         </aside>
         <main className='flex-1 overflow-y-auto p-6 border border-gray-200 bg-white rounded-xl'>
           <Outlet />
@@ -18,4 +18,4 @@ const TutorLayout = () => {
   );
 };
 
-export default TutorLayout;
+export default AdminLayout;

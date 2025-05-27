@@ -1,13 +1,24 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import AppContent from "./components/layout/AppContent";
-import AdminPage from "./pages/admin/page";
 import AdminRoute from "./components/common/AdminRoute";
-import TutorPage from "./pages/tutor/page";
 import ModalRenderer from "./components/shared/ModalRenderer";
 import Providers from "./Providers";
-import CreateAdminPage from "./pages/admin/createAdmin";
 import LoginPage from "./components/auth/LoginPage";
+import CreateAdminPage from "./pages/admin/createAdmin";
+
+import ManageTutor from "./components/admin/tutors/ManageTutor";
+import OrganizationManager from "./components/admin/organizations/OrganizationManager";
+import ProtectedRoute from "./components/ProtectedRoute";
+import ReservationStatusForTutor from "./components/tutor/reservation/ReservationStatusForTutor";
+import TimeSettingsPanel from "./components/tutor/time-settings/TimeSettingsPanel";
+import AdminLayout from "./pages/admin/AdminLayout";
+import TutorLayout from "./pages/tutor/TutorLayout";
 
 const App: React.FC = () => {
   return (
@@ -16,16 +27,41 @@ const App: React.FC = () => {
         <Routes>
           <Route path='/' element={<AppContent />} />
           <Route path='/login' element={<LoginPage />} />
+          <Route path='/admin/signup' element={<CreateAdminPage />} />
+
+          {/* 관리자 라우터 */}
           <Route
             path='/admin'
             element={
               <AdminRoute>
-                <AdminPage />
+                <AdminLayout />
               </AdminRoute>
             }
-          />
-          <Route path='/tutor' element={<TutorPage />} />
-          <Route path='/admin/signup' element={<CreateAdminPage />} />
+          >
+            <Route index element={<Navigate to='tutors' replace />} />
+            <Route path='tutors' element={<ManageTutor />} />
+            <Route path='organizations' element={<OrganizationManager />} />
+            {/* <Route path="tracks" element={<ManageTracks />} /> */}
+            {/* <Route path="batches" element={<ManageBatches />} /> */}
+            {/* <Route path="reservations" element={<ManageReservations />} /> */}
+          </Route>
+
+          {/* 튜터 라우터 */}
+          <Route
+            path='/tutor/*'
+            element={
+              <ProtectedRoute allowedRoles={["tutor"]}>
+                <TutorLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Navigate to='reservations' replace />} />
+            <Route
+              path='reservations'
+              element={<ReservationStatusForTutor />}
+            />
+            <Route path='time-settings' element={<TimeSettingsPanel />} />
+          </Route>
         </Routes>
         <ModalRenderer />
       </Router>

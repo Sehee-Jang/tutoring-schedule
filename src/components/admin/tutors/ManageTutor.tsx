@@ -1,28 +1,22 @@
-import { useEffect, useState } from "react";
-import { db } from "../../services/firebase";
+import { useState } from "react";
+import { db } from "../../../services/firebase";
 import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
-import { Tutor, TutorStatus } from "../../types/tutor";
-import { useToast } from "../../hooks/use-toast";
-import TutorFormModal from "../../components/admin/tutors/TutorFormModal";
-import { useFetchTutors } from "../../hooks/useFetchTutors";
-import { useModal } from "../../context/ModalContext";
-import ProtectedRoute from "../../components/ProtectedRoute";
-import { logout } from "../../services/auth";
-import { LogOut } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { resetDatabase } from "../../services/admin/resetDatabase";
-import OrganizationManager from "./OrganizationManager";
-import Button from "../../components/shared/Button";
-import AvailabilityModal from "../../components/availability/AvailabilityModal";
-import TutorTable from "../../components/admin/tutors/TutorTable";
-import TutorFilterPanel from "../../components/admin/tutors/TutorFilterPanel";
-import { useAuth } from "../../context/AuthContext";
-import { useOrganizations } from "../../hooks/useOrganizations";
-import { useTracks } from "../../hooks/useTracks";
-import { useBatches } from "../../hooks/useBatches";
+import { Tutor, TutorStatus } from "../../../types/tutor";
+import { useToast } from "../../../hooks/use-toast";
+import { useFetchTutors } from "../../../hooks/useFetchTutors";
+import { useOrganizations } from "../../../hooks/useOrganizations";
+import { useTracks } from "../../../hooks/useTracks";
+import { useBatches } from "../../../hooks/useBatches";
+import TutorTable from "../../../components/admin/tutors/TutorTable";
+import TutorFormModal from "../../../components/admin/tutors/TutorFormModal";
+import TutorFilterPanel from "../../../components/admin/tutors/TutorFilterPanel";
 
-const AdminPage = () => {
-  const navigate = useNavigate();
+import AvailabilityModal from "../../../components/availability/AvailabilityModal";
+import { useAuth } from "../../../context/AuthContext";
+import { useModal } from "../../../context/ModalContext";
+
+
+const ManageTutor = () => {
   const { user } = useAuth();
   const { showModal } = useModal();
   const { toast } = useToast();
@@ -48,11 +42,7 @@ const AdminPage = () => {
   const [isAvailabilityModalOpen, setIsAvailabilityModalOpen] = useState(false);
   const [availabilityModalTutor, setAvailabilityModalTutor] =
     useState<string>("");
-  const [resetting, setResetting] = useState(false);
 
-  useEffect(() => {
-    console.log("필터 값 변경됨:", filters);
-  }, [filters]);
 
   const handleEdit = (tutor: Tutor) => {
     setModalMode("edit");
@@ -60,27 +50,7 @@ const AdminPage = () => {
     setIsModalOpen(true);
   };
 
-  // 리셋
-  const handleResetDatabase = async () => {
-    if (!window.confirm("⚠️ 모든 데이터베이스가 초기화됩니다. 진행할까요?"))
-      return;
-    setResetting(true);
-    try {
-      await resetDatabase();
-      toast({
-        title: "데이터베이스가 초기화되었습니다.",
-        variant: "default",
-      });
-    } catch (error) {
-      console.error("초기화 오류:", error);
-      toast({
-        title: "초기화에 실패했습니다.",
-        variant: "destructive",
-      });
-    } finally {
-      setResetting(false);
-    }
-  };
+  
 
   // 등록 핸들러
   const handleSubmit = async (name: string, email: string) => {
@@ -140,25 +110,8 @@ const AdminPage = () => {
     return matchOrg && matchTrack && matchBatch && matchSearch;
   });
 
-  // 로그아웃 핸들러
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate("/");
-    } catch (error) {
-      console.error("로그아웃 실패:", error);
-    }
-  };
-
   return (
-    <ProtectedRoute
-      allowedRoles={[
-        "super_admin",
-        "organization_admin",
-        "track_admin",
-        "batch_admin",
-      ]}
-    >
+    <div className='flex-1 p-8'>
       <div className='max-w-3xl mx-auto p-8'>
         <div className='flex justify-between items-center mb-6'>
           <h1 className='text-2xl font-bold'>튜터 관리</h1>
@@ -169,19 +122,8 @@ const AdminPage = () => {
             </div>
           )}
 
-          <Button
-            variant='warning'
-            onClick={handleResetDatabase}
-            disabled={resetting}
-          >
-            {resetting ? "리셋 중..." : "데이터베이스 리셋"}
-          </Button>
-
-          <Button variant='icon' onClick={handleLogout} title='로그아웃'>
-            <LogOut className='w-5 h-5' />
-          </Button>
+         
         </div>
-        <OrganizationManager />
 
         {user && (
           <TutorFilterPanel
@@ -231,8 +173,8 @@ const AdminPage = () => {
           selectedTutorId={availabilityModalTutor}
         />
       </div>
-    </ProtectedRoute>
+    </div>
   );
 };
 
-export default AdminPage;
+export default ManageTutor;

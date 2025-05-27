@@ -6,9 +6,9 @@ import {
   createOrganization,
   createTrack,
   createBatch,
-} from "../../services/admin/organization";
-import { useToast } from "../../hooks/use-toast";
-import Button from "../../components/shared/Button";
+} from "../../../services/admin/organization";
+import { useToast } from "../../../hooks/use-toast";
+import Button from "../../../components/shared/Button";
 
 interface Organization {
   id: string;
