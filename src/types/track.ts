@@ -2,5 +2,5 @@
 export interface Track {
   id: string;
   name: string;
-  batches: string[]; // 여러 기수
+  // batches: string[]; // 여러 기수
 }

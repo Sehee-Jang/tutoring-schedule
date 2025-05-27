@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { db } from "../../services/firebase";
 import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
 import { Tutor, TutorStatus } from "../../types/tutor";
@@ -15,10 +15,33 @@ import OrganizationManager from "./OrganizationManager";
 import Button from "../../components/shared/Button";
 import AvailabilityModal from "../../components/availability/AvailabilityModal";
 import TutorTable from "../../components/admin/tutors/TutorTable";
+import TutorFilterPanel from "../../components/admin/tutors/TutorFilterPanel";
+import { useAuth } from "../../context/AuthContext";
+import { useOrganizations } from "../../hooks/useOrganizations";
+import { useTracks } from "../../hooks/useTracks";
+import { useBatches } from "../../hooks/useBatches";
 
 const AdminPage = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const { showModal } = useModal();
+  const { toast } = useToast();
+
   const { tutors, loading, error } = useFetchTutors();
+  const [filters, setFilters] = useState({
+    organization: "",
+    track: "",
+    batch: "",
+    searchText: "",
+  });
+
+  const [selectedOrgId, setSelectedOrgId] = useState("");
+  const [selectedTrackId, setSelectedTrackId] = useState("");
+
+  const { organizations } = useOrganizations();
+  const { tracks } = useTracks(selectedOrgId);
+  const { batches } = useBatches(selectedOrgId, selectedTrackId);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
   const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null);
@@ -26,8 +49,10 @@ const AdminPage = () => {
   const [availabilityModalTutor, setAvailabilityModalTutor] =
     useState<string>("");
   const [resetting, setResetting] = useState(false);
-  const { toast } = useToast();
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("필터 값 변경됨:", filters);
+  }, [filters]);
 
   const handleEdit = (tutor: Tutor) => {
     setModalMode("edit");
@@ -57,6 +82,7 @@ const AdminPage = () => {
     }
   };
 
+  // 등록 핸들러
   const handleSubmit = async (name: string, email: string) => {
     try {
       if (modalMode === "create") {
@@ -76,15 +102,7 @@ const AdminPage = () => {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate("/");
-    } catch (error) {
-      console.error("로그아웃 실패:", error);
-    }
-  };
-
+  // 상태 관리 핸들러
   const handleStatusChange = async (tutor: Tutor, newStatus: TutorStatus) => {
     try {
       const tutorRef = doc(db, "users", tutor.id);
@@ -105,6 +123,30 @@ const AdminPage = () => {
         title: "상태 변경에 실패했습니다.",
         variant: "destructive",
       });
+    }
+  };
+
+  // 튜터 필터 핸들러
+  const filteredTutors = tutors.filter((tutor) => {
+    const matchOrg =
+      !filters.organization || tutor.organization === filters.organization;
+    const matchTrack = !filters.track || tutor.track === filters.track;
+    const matchBatch = !filters.batch || tutor.batch === filters.batch; // 여기 batch.id 비교
+    const matchSearch =
+      !filters.searchText ||
+      tutor.name.includes(filters.searchText) ||
+      tutor.email.includes(filters.searchText);
+
+    return matchOrg && matchTrack && matchBatch && matchSearch;
+  });
+
+  // 로그아웃 핸들러
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
     }
   };
 
@@ -141,11 +183,31 @@ const AdminPage = () => {
         </div>
         <OrganizationManager />
 
+        {user && (
+          <TutorFilterPanel
+            userRole={user.role}
+            organizations={organizations}
+            tracks={tracks}
+            batches={batches}
+            onFilterChange={(filters) => {
+              setFilters(filters);
+              setSelectedOrgId(filters.organization);
+              setSelectedTrackId(filters.track);
+            }}
+          />
+        )}
+
+        {error && (
+          <div className='bg-red-100 text-red-700 p-4 mb-4 rounded'>
+            {error}
+          </div>
+        )}
+
         {loading ? (
           <div className='text-center py-10'>Loading...</div>
         ) : (
           <TutorTable
-            tutors={tutors}
+            tutors={filteredTutors}
             onEdit={handleEdit}
             onChangeStatus={handleStatusChange}
             onShowAvailability={(id) =>
