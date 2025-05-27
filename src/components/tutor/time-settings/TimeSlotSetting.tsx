@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 import DayTabs from "./DayTabs";
-import TimeRangeControls from "./TimeRangeControls";
 import SaveDropdown from "./SaveDropdown";
 import TimeSlotButton from "../../shared/TimeSlotButton";
 import { useAuth } from "../../../context/AuthContext";

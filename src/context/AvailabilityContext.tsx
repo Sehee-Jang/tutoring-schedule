@@ -11,7 +11,6 @@ import { fetchAvailableSlotsByDayOfWeek } from "../services/availability";
 import { Tutor } from "../types/tutor";
 import { Availability } from "../types/availability";
 import { useTutors } from "./TutorContext";
-import { getDayOfWeek } from "../utils/getDayOfWeek";
 import { DAYS_OF_WEEK } from "../constants/days";
 
 interface AvailabilityContextType {

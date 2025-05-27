@@ -1,5 +1,4 @@
-// AvailabilityModal.tsx (업데이트된 전체 코드)
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAvailability } from "../../context/AvailabilityContext";
 import { useTutors } from "../../context/TutorContext";
 import { useAuth } from "../../context/AuthContext";

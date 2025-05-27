@@ -17,8 +17,6 @@ const LoginPage = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const from = location.state?.from?.pathname;
-  const target = from && from !== "/login" ? from : "/";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
