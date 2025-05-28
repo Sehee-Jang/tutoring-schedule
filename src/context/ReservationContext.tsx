@@ -36,31 +36,31 @@ export const ReservationProvider = ({ children }: ReservationProviderProps) => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
- useEffect(() => {
-   const todayString = new Date().toISOString().slice(0, 10);
+  useEffect(() => {
+    //  const todayString = new Date().toISOString().slice(0, 10);
 
-   const reservationsQuery = query(
-     collection(db, "reservations"),
-     orderBy("createdAt", "asc")
-   );
+    const reservationsQuery = query(
+      collection(db, "reservations"),
+      orderBy("createdAt", "asc")
+    );
 
-   const unsubscribe = onSnapshot(reservationsQuery, (snapshot) => {
-     const fetchedReservations: Reservation[] = snapshot.docs.map((doc) => ({
-       id: doc.id,
-       ...doc.data(),
-     })) as Reservation[];
+    const unsubscribe = onSnapshot(reservationsQuery, (snapshot) => {
+      const fetchedReservations: Reservation[] = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Reservation[];
 
-     const todayReservations = fetchedReservations.filter(
-       (res) => (res as any).classDate === todayString
-     );
+      //  const todayReservations = fetchedReservations.filter(
+      //    (res) => (res as any).classDate === todayString
+      //  );
 
-     setReservations(todayReservations);
-     setLoading(false);
-   });
+      //  setReservations(todayReservations);
+      setReservations(fetchedReservations);
+      setLoading(false);
+    });
 
-   return () => unsubscribe();
- }, []);
-
+    return () => unsubscribe();
+  }, []);
 
   const getTutorReservations = (tutorName: string) =>
     reservations.filter((res) => res.tutor === tutorName);
