@@ -1,6 +1,6 @@
 import React from "react";
 import { AvailabilityProvider } from "./context/AvailabilityContext";
-import { ReservationProvider } from "./context/ReservationContext";
+import { StudentReservationProvider } from "./context/ReservationContext";
 import { AuthProvider } from "./context/AuthContext";
 import { ModalProvider } from "./context/ModalContext";
 import { ToastProvider } from "./components/ui/toast";
@@ -16,7 +16,9 @@ const Providers: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <TutorProvider>
             <HolidayProvider>
               <AvailabilityProvider>
-                <ReservationProvider>{children}</ReservationProvider>
+                <StudentReservationProvider>
+                  {children}
+                </StudentReservationProvider>
               </AvailabilityProvider>
             </HolidayProvider>
           </TutorProvider>
