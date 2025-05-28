@@ -18,28 +18,31 @@ import {
   fetchTracks,
 } from "../../services/admin/organization";
 import Button from "../shared/Button";
+import { Organization } from "../../types/organization";
+import { Track } from "../../types/track";
+import { Batch } from "../../types/batch";
 
 interface SignUpModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-interface Organization {
-  id: string;
-  name: string;
-}
+// interface Organization {
+//   id: string;
+//   name: string;
+// }
 
-interface Track {
-  id: string;
-  name: string;
-  batches: Batch[];
-}
+// interface Track {
+//   id: string;
+//   name: string;
+//   batches: Batch[];
+// }
 
-interface Batch {
-  id: string;
-  name: string;
-  startDate: string;
-  endDate: string;
-}
+// interface Batch {
+//   id: string;
+//   name: string;
+//   startDate: string;
+//   endDate: string;
+// }
 
 const SignUpModal = ({ isOpen }: SignUpModalProps) => {
   const { closeModal } = useModal();

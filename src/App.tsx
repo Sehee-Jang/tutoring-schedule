@@ -12,7 +12,7 @@ import Providers from "./Providers";
 import LoginPage from "./components/auth/LoginPage";
 import CreateAdminPage from "./pages/admin/createAdmin";
 
-import ManageTutor from "./components/admin/tutors/ManageTutor";
+import ManageTutor from "./pages/admin/ManageTutor";
 import ManageOrganizations from "./pages/admin/ManageOrganizations";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ReservationStatusForTutor from "./components/tutor/reservation/ReservationStatusForTutor";
@@ -22,6 +22,8 @@ import TutorLayout from "./pages/tutor/TutorLayout";
 import ManageTracks from "./pages/admin/ManageTracks";
 import ManageBatches from "./pages/admin/ManageBatches";
 import ManageReservations from "./pages/admin/ManageReservations";
+import OrganizationDashboardPage from "./pages/admin/organization-manage";
+import OrganizationsManagePage from "./pages/admin/organization-manage";
 
 const App: React.FC = () => {
   return (
@@ -43,7 +45,7 @@ const App: React.FC = () => {
           >
             <Route index element={<Navigate to='tutors' replace />} />
             <Route path='tutors' element={<ManageTutor />} />
-            <Route path='organizations' element={<ManageOrganizations />} />
+            <Route path='organizations' element={<OrganizationsManagePage />} />
             <Route path='tracks' element={<ManageTracks />} />
             <Route path='batches' element={<ManageBatches />} />
             <Route path='reservations' element={<ManageReservations />} />

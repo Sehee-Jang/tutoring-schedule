@@ -1,19 +1,19 @@
 import { useState } from "react";
-import { db } from "../../../services/firebase";
+import { db } from "../../services/firebase";
 import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
-import { Tutor, TutorStatus } from "../../../types/tutor";
-import { useToast } from "../../../hooks/use-toast";
-import { useFetchTutors } from "../../../hooks/useFetchTutors";
-import { useOrganizations } from "../../../hooks/useOrganizations";
-import { useTracks } from "../../../hooks/useTracks";
-import { useBatches } from "../../../hooks/useBatches";
-import TutorTable from "../../../components/admin/tutors/TutorTable";
-import TutorFormModal from "../../../components/admin/tutors/TutorFormModal";
-import TutorFilterPanel from "../../../components/admin/tutors/TutorFilterPanel";
+import { Tutor, TutorStatus } from "../../types/tutor";
+import { useToast } from "../../hooks/use-toast";
+import { useFetchTutors } from "../../hooks/useFetchTutors";
+import { useOrganizations } from "../../hooks/useOrganizations";
+import { useTracks } from "../../hooks/useTracks";
+import { useBatches } from "../../hooks/useBatches";
+import TutorTable from "../../components/admin/tutors/TutorTable";
+import TutorFormModal from "../../components/admin/tutors/TutorFormModal";
+import TutorFilterPanel from "../../components/admin/tutors/TutorFilterPanel";
 
-import AvailabilityModal from "../../../components/availability/AvailabilityModal";
-import { useAuth } from "../../../context/AuthContext";
-import { useModal } from "../../../context/ModalContext";
+import AvailabilityModal from "../../components/availability/AvailabilityModal";
+import { useAuth } from "../../context/AuthContext";
+import { useModal } from "../../context/ModalContext";
 
 const ManageTutor = () => {
   const { user } = useAuth();
