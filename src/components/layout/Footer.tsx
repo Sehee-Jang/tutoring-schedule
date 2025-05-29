@@ -27,7 +27,7 @@ const Footer = () => {
           rel='noopener noreferrer'
           className='underline text-blue-600 hover:text-blue-800'
         >
-          불편사항 접수
+          의견 보내기
         </a>
         {/* 로그인 */}
         {/* <div className='flex justify-center items-center py-6 gap-2'>
