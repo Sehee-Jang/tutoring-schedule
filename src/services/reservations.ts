@@ -11,17 +11,17 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { db } from "./firebase";
-import { format } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 
 // 예약 생성
 export const createReservation = async (
   reservationData: Omit<Reservation, "id" | "createdAt">
 ): Promise<Reservation> => {
   try {
+    const timeZone = "Asia/Seoul";
     const now = new Date();
-    const kstOffset = 9 * 60 * 60 * 1000;
-    const kstNow = new Date(now.getTime() + kstOffset);
-    const todayString = format(kstNow, "yyyy-MM-dd");
+    const todayString = formatInTimeZone(now, timeZone, "yyyy-MM-dd");
+    console.log("🔥 한국 시간 기준 todayString:", todayString);
 
     const docRef = await addDoc(collection(db, "reservations"), {
       ...reservationData,
