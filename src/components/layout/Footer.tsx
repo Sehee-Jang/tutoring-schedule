@@ -20,6 +20,15 @@ const Footer = () => {
         >
           seheejang.korea@gmail.com
         </a>
+        <span> | </span>
+        <a
+          href='https://docs.google.com/forms/d/e/1FAIpQLSdrZp1kfFmAxmII-WnbOcIZCNgflJ6jeXEq9l9kU-m7mSzGYQ/viewform?usp=sharing&ouid=106656150304534125803'
+          target='_blank'
+          rel='noopener noreferrer'
+          className='underline text-blue-600 hover:text-blue-800'
+        >
+          불편사항 접수
+        </a>
         {/* 로그인 */}
         {/* <div className='flex justify-center items-center py-6 gap-2'>
           {!user && (
