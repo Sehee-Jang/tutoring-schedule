@@ -70,6 +70,7 @@ const AdminSidebar: React.FC = () => {
       setResetting(false);
     }
   };
+  
   return (
     <div className='py-5 px-3 text-sm space-y-5'>
       {/* 메뉴 섹션 */}
