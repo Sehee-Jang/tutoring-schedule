@@ -6,7 +6,8 @@ import { Reservation } from "../../types/reservation";
 import { useTutors } from "../../context/TutorContext";
 import { useMemo, useState } from "react";
 import Button from "../shared/Button";
-import { getDayOfWeek } from "../../utils/getDayOfWeek"
+import { getDayOfWeek } from "../../utils/getDayOfWeek";
+import { format } from "date-fns";
 
 interface TutorScheduleTableProps {
   tutorName: string;
@@ -26,9 +27,7 @@ const TutorScheduleTable = ({
   const { availability } = useAvailability();
   const { reservations } = useReservations();
   const { tutors } = useTutors();
-  const [selectedDate] = useState<string>(
-    new Date().toISOString().split("T")[0]
-  );
+  const [selectedDate] = useState<string>(format(new Date(), "yyyy-MM-dd"));
 
   // 요일 자동 추출 함수
   // const getDayOfWeek = (date: string): string => {

@@ -16,6 +16,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import { format } from "date-fns";
 
 interface ReservationContextType {
   reservations: Reservation[];
@@ -45,7 +46,7 @@ export const ReservationProvider = ({ children }: ReservationProviderProps) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const todayString = new Date().toISOString().slice(0, 10);
+    const todayString = format(new Date(), "yyyy-MM-dd");
 
     const reservationsQuery = query(
       collection(db, "reservations"),
@@ -96,7 +97,7 @@ export const StudentReservationProvider = ({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const todayString = new Date().toISOString().slice(0, 10);
+    const todayString = format(new Date(), "yyyy-MM-dd");
 
     const reservationsQuery = query(
       collection(db, "reservations"),
@@ -146,7 +147,6 @@ export const TutorReservationProvider = ({
 
   useEffect(() => {
     if (!selectedDate) return;
-    console.log("selectedDate for query:", selectedDate);
 
     const reservationsQuery = query(
       collection(db, "reservations"),

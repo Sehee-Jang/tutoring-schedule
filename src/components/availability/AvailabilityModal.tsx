@@ -8,6 +8,7 @@ import { useModal } from "../../context/ModalContext";
 import ModalLayout from "../../components/shared/ModalLayout";
 import TimeSlotButton from "../../components/shared/TimeSlotButton";
 import { generateTimeSlots } from "../../utils/generateTimeSlots";
+import { format } from "date-fns";
 
 interface AvailabilityModalProps {
   isOpen: boolean;
@@ -82,7 +83,7 @@ const AvailabilityModal = ({ isOpen }: AvailabilityModalProps) => {
   };
 
   const handleSave = async () => {
-    const todayString = new Date().toISOString().split("T")[0];
+    const todayString = format(new Date(), "yyyy-MM-dd");
     await updateAvailability(
       selectedTutor,
       todayString,

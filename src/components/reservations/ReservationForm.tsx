@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from "react";
 import type { Reservation, ReservationFormData } from "../../types/reservation";
 import { useReservations } from "../../context/ReservationContext";
-import {fetchAvailableSlotsByDate} from "../../services/availability";
-import {createReservation} from "../../services/reservations"
+import { fetchAvailableSlotsByDate } from "../../services/availability";
+import { createReservation } from "../../services/reservations";
 import { useTutors } from "../../context/TutorContext";
 import { useToast } from "../../hooks/use-toast";
 import { useHolidayContext } from "../../context/HolidayContext";
@@ -18,7 +18,7 @@ import useReservationForm from "../../hooks/useReservationForm";
 import { sendEmailAlert } from "../../utils/sendEmailAlert";
 import sortTimeSlots from "../../utils/sortTimeSlots";
 import { useAuth } from "../../context/AuthContext";
-import { getDayOfWeek } from "../../utils/getDayOfWeek"
+import { getDayOfWeek } from "../../utils/getDayOfWeek";
 
 interface ReservationFormProps {
   onSuccess?: () => void;
@@ -78,7 +78,7 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
 
       // 선택된 튜터의 가능한 시간 불러오기
       const slots = await fetchAvailableSlotsByDate(tutorID, todayDayOfWeek);
-    
+
       const flatSlots = slots.flatMap((item) => item.activeSlots);
       const sortedFilteredSlots = sortTimeSlots(flatSlots).filter((slot) => {
         const [hour, min] = slot.split("-")[0].split(":").map(Number);
@@ -112,7 +112,7 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
       const userId = user?.id || "";
 
       // 현재 날짜 (예약 날짜)
-      const todayString = new Date().toISOString().split("T")[0];
+      // const todayString = new Date().toISOString().split("T")[0];
 
       // Reservation 객체 생성 (필수 필드 추가)
       const reservationData: Omit<Reservation, "id" | "createdAt"> = {
@@ -167,8 +167,7 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
       </div>
 
       <p className='text-sm text-gray-500 mb-6'>
-        ※ 당일에만 예약 가능합니다. (오늘:{" "}
-        {new Date().toISOString().split("T")[0]})
+        ※ 당일에만 예약 가능합니다. (오늘: {todayString})
       </p>
 
       {submitted && (
