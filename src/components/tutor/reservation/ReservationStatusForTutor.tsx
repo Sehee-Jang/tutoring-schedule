@@ -9,11 +9,18 @@ import ReservationCard from "./ReservationCard";
 import DateSelector from "../../../components/shared/DateSelector";
 import { fetchAvailableSlotsByDate } from "../../../services/availability";
 import { getDayOfWeek } from "../../../utils/getDayOfWeek";
+import { Dispatch, SetStateAction } from "react";
 
-const ReservationStatusForTutor = () => {
+interface ReservationStatusForTutorProps {
+  date: Date;
+  setDate: Dispatch<SetStateAction<Date>>;
+}
+const ReservationStatusForTutor = ({
+  date,
+  setDate,
+}: ReservationStatusForTutorProps) => {
   const { user } = useAuth();
   const { reservations } = useReservations();
-  const [date, setDate] = useState(new Date());
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const timeSlots = generateTimeSlots("09:00", "21:00", 30); // 09:00 - 21:00 시간대 생성
 

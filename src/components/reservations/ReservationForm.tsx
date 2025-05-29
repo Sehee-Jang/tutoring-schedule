@@ -115,7 +115,7 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
       const userId = user?.id || "";
 
       // 현재 날짜 (예약 날짜)
-      const todayString = new Date().toISOString().split("T")[0];
+      // const todayString = new Date().toISOString().split("T")[0];
 
       // Reservation 객체 생성 (필수 필드 추가)
       const reservationData: Omit<Reservation, "id" | "createdAt"> = {
@@ -172,8 +172,7 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
       </div>
 
       <p className='text-sm text-gray-500 mb-6'>
-        ※ 당일에만 예약 가능합니다. (오늘:{" "}
-        {new Date().toISOString().split("T")[0]})
+        ※ 당일에만 예약 가능합니다. (오늘: {todayString})
       </p>
 
       {submitted && (

@@ -11,18 +11,24 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { db } from "./firebase";
+import { format } from "date-fns";
 
 // 예약 생성
 export const createReservation = async (
   reservationData: Omit<Reservation, "id" | "createdAt">
 ): Promise<Reservation> => {
   try {
-    const todayString = new Date().toISOString().slice(0, 10);
+    const now = new Date();
+    const kstOffset = 9 * 60 * 60 * 1000;
+    const kstNow = new Date(now.getTime() + kstOffset);
+    const todayString = format(kstNow, "yyyy-MM-dd");
+
     const docRef = await addDoc(collection(db, "reservations"), {
       ...reservationData,
       classDate: todayString,
       createdAt: Timestamp.now(),
     });
+
     return {
       id: docRef.id,
       ...reservationData,
@@ -66,7 +72,12 @@ export const updateReservation = async (
 export const subscribeToTodayReservations = (
   callback: (reservations: Reservation[]) => void
 ) => {
-  const today = new Date();
+  const now = new Date();
+  const kstOffset = 9 * 60 * 60 * 1000;
+  const kstNow = new Date(now.getTime() + kstOffset);
+
+  const today = new Date(kstNow);
+
   today.setHours(0, 0, 0, 0);
 
   const tomorrow = new Date(today);

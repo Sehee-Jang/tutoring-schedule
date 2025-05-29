@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
+import { format } from "date-fns";
+import { TutorReservationProvider } from "../../context/ReservationContext";
 import { useAuth } from "../../context/AuthContext";
 import { useModal } from "../../context/ModalContext";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import { useNavigate } from "react-router-dom";
 import TutorLayout from "./TutorLayout";
-import { useState } from "react";
 import TimeSettingsPanel from "../../components/tutor/time-settings/TimeSettingsPanel";
 import ReservationStatusForTutor from "../../components/tutor/reservation/ReservationStatusForTutor";
 
@@ -16,6 +18,9 @@ const TutorPage = () => {
   const [viewMode, setViewMode] = useState<"timeSettings" | "reservations">(
     "reservations"
   );
+  const [date, setDate] = useState(new Date());
+  const selectedDateString = format(date, "yyyy-MM-dd");
+
 
   // user === null이면 로그인 하도록 유도
   if (!user) {
@@ -54,13 +59,15 @@ const TutorPage = () => {
 
   return (
     <ProtectedRoute requiredRole='tutor'>
-      <TutorLayout setViewMode={setViewMode} viewMode={viewMode}>
-        {viewMode === "reservations" ? (
-          <ReservationStatusForTutor />
-        ) : (
-          <TimeSettingsPanel />
-        )}
-      </TutorLayout>
+      <TutorReservationProvider selectedDate={selectedDateString}>
+        <TutorLayout setViewMode={setViewMode} viewMode={viewMode}>
+          {viewMode === "reservations" ? (
+            <ReservationStatusForTutor date={date} setDate={setDate} />
+          ) : (
+            <TimeSettingsPanel />
+          )}
+        </TutorLayout>
+      </TutorReservationProvider>
     </ProtectedRoute>
   );
 };
