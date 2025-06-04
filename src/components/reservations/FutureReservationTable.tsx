@@ -3,6 +3,7 @@
 import { Reservation } from "../../types/reservation";
 import { ChevronDown } from "lucide-react";
 import Button from "../shared/Button";
+import { DeleteAlertDialog } from "../shared/DeleteAlertDialog";
 
 interface FutureReservationTableProps {
   reservations: Reservation[];
@@ -50,19 +51,18 @@ const FutureReservationTable = ({
                 <div className='flex gap-2'>
                   <Button
                     className='text-xs'
-                    variant='primary'
+                    variant='outline'
                     onClick={() => onView(res)}
                   >
                     보기
                   </Button>
                   {isAdmin && (
-                    <Button
-                      className='text-xs'
-                      variant='warning'
-                      onClick={() => onCancel(res.id)}
-                    >
-                      삭제
-                    </Button>
+                    <DeleteAlertDialog
+                      onConfirm={async () => onCancel(res.id)}
+                      triggerLabel='삭제'
+                      triggerSize='md'
+                      triggerClassName='text-xs'
+                    />
                   )}
                 </div>
               </td>

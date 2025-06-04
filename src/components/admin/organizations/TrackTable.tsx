@@ -9,6 +9,7 @@ import { Track } from "../../../types/track";
 import Button from "../../../components/shared/Button";
 import TrackFormModal from "./TrackFormModal";
 import { useToast } from "../../../hooks/use-toast";
+import { DeleteAlertDialog } from "../../../components/shared/DeleteAlertDialog";
 
 interface TrackTableProps {
   organizationId: string;
@@ -106,16 +107,13 @@ const TrackTable: React.FC<TrackTableProps> = ({
                 >
                   수정
                 </Button>
-                <Button
-                  size='sm'
-                  variant='warning'
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(track.id)
+                <DeleteAlertDialog
+                  onConfirm={async () => {
+                    handleDelete(track.id);
                   }}
-                >
-                  삭제
-                </Button>
+                  triggerLabel='삭제'
+                  triggerClassName='text-xs'
+                />
               </div>
             </div>
           </li>

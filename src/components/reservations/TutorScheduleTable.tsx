@@ -8,6 +8,7 @@ import { useMemo, useState } from "react";
 import Button from "../shared/Button";
 import { getDayOfWeek } from "../../utils/getDayOfWeek";
 import { format } from "date-fns";
+import { DeleteAlertDialog } from "../shared/DeleteAlertDialog";
 
 interface TutorScheduleTableProps {
   tutorName: string;
@@ -111,7 +112,7 @@ const TutorScheduleTable = ({
                   <div className='flex gap-2'>
                     {isBooked ? (
                       <Button
-                        variant='primary'
+                        variant='outline'
                         className='text-xs'
                         onClick={() => reservation && onView(reservation)}
                       >
@@ -121,13 +122,12 @@ const TutorScheduleTable = ({
                       <span className='text-gray-300'>-</span>
                     )}
                     {isBooked && (isAdmin || isTutor) && onCancel && (
-                      <Button
-                        variant='warning'
-                        className='text-xs'
-                        onClick={() => onCancel(reservation!.id)}
-                      >
-                        삭제
-                      </Button>
+                      <DeleteAlertDialog
+                        onConfirm={async () => onCancel(reservation!.id)}
+                        triggerLabel='삭제'
+                        triggerSize='md'
+                        triggerClassName='text-xs'
+                      />
                     )}
                   </div>
                 </td>

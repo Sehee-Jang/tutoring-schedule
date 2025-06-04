@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "../ui/button";
+// import { Button } from "../ui/button";
+import Button from "../../components/shared/Button";
+
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -17,11 +19,15 @@ import {
 type DeleteAlertDialogProps = {
   onConfirm: () => Promise<void>;
   triggerLabel?: React.ReactNode;
+  triggerClassName?: string;
+  triggerSize?: "sm" | "md" | "lg";
 };
 
 export function DeleteAlertDialog({
   onConfirm,
   triggerLabel = "삭제",
+  triggerClassName = "",
+  triggerSize = "sm",
 }: DeleteAlertDialogProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,7 +42,12 @@ export function DeleteAlertDialog({
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant='destructive' disabled={isLoading}>
+        <Button
+          variant='warning'
+          size={triggerSize ?? "sm"}
+          className={triggerClassName}
+          disabled={isLoading}
+        >
           {triggerLabel}
         </Button>
       </AlertDialogTrigger>
@@ -48,13 +59,20 @@ export function DeleteAlertDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>취소</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleDelete}
-            disabled={isLoading}
-            className='bg-red-500 hover:bg-red-600 text-white'
-          >
-            {isLoading ? "삭제 중..." : "삭제"}
+          <AlertDialogCancel asChild>
+            <Button variant='outline' disabled={isLoading}>
+              취소
+            </Button>
+          </AlertDialogCancel>
+          <AlertDialogAction asChild>
+            <Button
+              onClick={handleDelete}
+              size={triggerSize ?? "sm"}
+              variant='warning'
+              disabled={isLoading}
+            >
+              {isLoading ? "삭제 중..." : "삭제"}
+            </Button>
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
