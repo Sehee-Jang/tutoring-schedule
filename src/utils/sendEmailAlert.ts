@@ -22,13 +22,13 @@ export const sendEmailAlert = async (formData: EmailParams) => {
   const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 
   // 테스트용: 이메일 발송 끄기
-  // if (process.env.REACT_APP_DISABLE_EMAIL === "true") {
-  //   console.log(
-  //     "📢 [테스트 모드] 이메일 발송이 비활성화되었습니다. 대신 예약 정보 출력:"
-  //   );
-  //   console.log(formData);
-  //   return;
-  // }
+  if (process.env.REACT_APP_DISABLE_EMAIL === "true") {
+    console.log(
+      "📢 [테스트 모드] 이메일 발송이 비활성화되었습니다. 대신 예약 정보 출력:"
+    );
+    console.log(formData);
+    return;
+  }
 
   if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
     throw new Error("EmailJS 환경변수가 설정되지 않았습니다.");
