@@ -1,5 +1,12 @@
 import emailjs from "@emailjs/browser";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "../services/firebase";
 
 interface EmailParams {
@@ -12,7 +19,20 @@ interface EmailParams {
 }
 
 export const sendEmailAlert = async (formData: EmailParams) => {
-  console.log("📦 DISABLE_EMAIL =", process.env.REACT_APP_DISABLE_EMAIL);
+  // console.log("📦 DISABLE_EMAIL =", process.env.REACT_APP_DISABLE_EMAIL);
+
+  // 이메일 설정 가져오기
+  const settingsRef = doc(db, "email_settings", "production");
+  const settingsSnap = await getDoc(settingsRef);
+  const isDisabled = settingsSnap.exists()
+    ? !settingsSnap.data().isEmailEnabled
+    : false;
+
+  if (isDisabled) {
+    console.log("📢 [설정] 이메일 발송이 비활성화되었습니다.");
+    console.log(formData);
+    return;
+  }
 
   const SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
   // const TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
@@ -22,13 +42,11 @@ export const sendEmailAlert = async (formData: EmailParams) => {
   const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 
   // 테스트용: 이메일 발송 끄기
-  if (process.env.REACT_APP_DISABLE_EMAIL === "true") {
-    console.log(
-      "📢 [테스트 모드] 이메일 발송이 비활성화되었습니다. 대신 예약 정보 출력:"
-    );
-    console.log(formData);
-    return;
-  }
+  // if (process.env.REACT_APP_DISABLE_EMAIL === "true") {
+  //   console.log("📢 이메일 발송이 비활성화되었습니다. 대신 예약 정보 출력:");
+  //   console.log(formData);
+  //   return;
+  // }
 
   if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
     throw new Error("EmailJS 환경변수가 설정되지 않았습니다.");

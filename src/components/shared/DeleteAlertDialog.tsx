@@ -16,7 +16,7 @@ import {
 
 type DeleteAlertDialogProps = {
   onConfirm: () => Promise<void>;
-  triggerLabel?: string;
+  triggerLabel?: React.ReactNode;
 };
 
 export function DeleteAlertDialog({

@@ -24,6 +24,7 @@ import ManageBatches from "./pages/admin/ManageBatches";
 import ManageReservations from "./pages/admin/ManageReservations";
 import OrganizationDashboardPage from "./pages/admin/organization-manage";
 import OrganizationsManagePage from "./pages/admin/organization-manage";
+import AdminSettingsPage from "./pages/admin/settings/AdminSettingsPage";
 
 const App: React.FC = () => {
   return (
@@ -49,6 +50,7 @@ const App: React.FC = () => {
             <Route path='tracks' element={<ManageTracks />} />
             <Route path='batches' element={<ManageBatches />} />
             <Route path='reservations' element={<ManageReservations />} />
+            <Route path='/admin/settings' element={<AdminSettingsPage />} />
           </Route>
 
           {/* 튜터 라우터 */}
