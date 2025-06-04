@@ -1,4 +1,3 @@
-// 오늘 예약 알림 박스
 import React from "react";
 
 interface NotificationBoxProps {

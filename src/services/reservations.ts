@@ -21,8 +21,7 @@ export const createReservation = async (
     const timeZone = "Asia/Seoul";
     const now = new Date();
     const todayString = formatInTimeZone(now, timeZone, "yyyy-MM-dd");
-    console.log("🔥 한국 시간 기준 todayString:", todayString);
-
+   
     const docRef = await addDoc(collection(db, "reservations"), {
       ...reservationData,
       classDate: todayString,

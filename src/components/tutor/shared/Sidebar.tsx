@@ -3,7 +3,7 @@ import { CalendarCheck, Clock } from "lucide-react";
 import { useReservations } from "../../../context/ReservationContext";
 import { useAuth } from "../../../context/AuthContext";
 import NotificationBox from "./NotificationBox";
-import { format } from "date-fns";
+import { getKSTTodayString } from "../../../utils/getKSTToday";
 
 const TutorSidebar = () => {
   const navigate = useNavigate();
@@ -11,11 +11,11 @@ const TutorSidebar = () => {
   const { reservations } = useReservations();
   const { user } = useAuth();
 
-  // 오늘 날짜 형식 (로컬 시간, 한국 시간 UTC+9)
-  const localToday = format(new Date(), "yyyy-MM-dd");
+  // 한국 시간 기준 오늘 날짜
+  const todayKST = getKSTTodayString();
 
   const todayReservations = reservations.filter(
-    (r) => r.tutor === user?.name && r.classDate === localToday
+    (r) => r.tutor === user?.name && r.classDate === todayKST
   );
 
   const menuItems = [
