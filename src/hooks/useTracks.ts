@@ -25,6 +25,7 @@ export const useTracks = (organizationId: string) => {
         .sort((a, b) => a.name.localeCompare(b.name, "ko-KR")); // 가나다순 정렬
       setTracks(trackList);
       setLoading(false);
+      console.log("🎯 fetched tracks:", trackList);
     };
 
     fetchTracks();

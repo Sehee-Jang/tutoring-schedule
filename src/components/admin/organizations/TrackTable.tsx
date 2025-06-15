@@ -15,12 +15,14 @@ interface TrackTableProps {
   organizationId: string;
   selectedTrackId: string | null;
   onSelectTrack: (trackId: string) => void;
+  autoSelectFirstTrack?: boolean;
 }
 
 const TrackTable: React.FC<TrackTableProps> = ({
   organizationId,
   selectedTrackId,
   onSelectTrack,
+  autoSelectFirstTrack = true,
 }) => {
   const { toast } = useToast();
 
@@ -30,7 +32,18 @@ const TrackTable: React.FC<TrackTableProps> = ({
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
 
   useEffect(() => {
-    loadTracks();
+    const loadTracksAndMaybeSelect = async () => {
+      const trackList = await fetchTracks(organizationId);
+      setTracks(trackList);
+
+      const shouldAutoSelect =
+        autoSelectFirstTrack && trackList.length > 0 && !selectedTrackId;
+      if (shouldAutoSelect) {
+        onSelectTrack(trackList[0].id);
+      }
+    };
+
+    loadTracksAndMaybeSelect();
   }, [organizationId]);
 
   const loadTracks = async () => {
@@ -112,7 +125,6 @@ const TrackTable: React.FC<TrackTableProps> = ({
                     handleDelete(track.id);
                   }}
                   triggerLabel='삭제'
-                  triggerClassName='text-xs'
                 />
               </div>
             </div>
@@ -120,7 +132,7 @@ const TrackTable: React.FC<TrackTableProps> = ({
         ))}
       </ul>
 
-      <Button variant='primary' onClick={handleCreate} className='mt-4'>
+      <Button variant='outline' onClick={handleCreate} className='mt-4'>
         트랙 추가
       </Button>
 

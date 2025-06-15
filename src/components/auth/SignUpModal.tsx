@@ -6,11 +6,7 @@ import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
 } from "firebase/auth";
-import {
-  doc,
-  setDoc,
-  serverTimestamp,
-} from "firebase/firestore";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import ModalLayout from "../../components/shared/ModalLayout";
 import { useModal } from "../../context/ModalContext";
 import {
@@ -243,7 +239,7 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
           >
             <option value=''>기수 선택</option>
             {batches.map((batch) => (
-              <option key={batch.id} value={batch.name}>
+              <option key={batch.id} value={batch.id}>
                 {batch.name} ({batch.startDate} ~ {batch.endDate})
               </option>
             ))}

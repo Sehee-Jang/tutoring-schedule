@@ -20,7 +20,12 @@ const ManageTutor = () => {
   const { showModal } = useModal();
   const { toast } = useToast();
 
-  const { tutors, loading, error } = useFetchTutors();
+  const { tutors, loading, error } = useFetchTutors({
+    role: user?.role ?? "",
+    organizationId: user?.organization ?? undefined,
+    trackId: user?.track ?? undefined,
+    batchId: user?.batch ?? undefined,
+  });
   const [filters, setFilters] = useState({
     organization: "",
     track: "",

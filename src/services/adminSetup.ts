@@ -27,8 +27,8 @@ export async function createAdminAccount(
     email: user.email,
     role,
     status: "active",
-    created_at: serverTimestamp(),
-    updated_at: serverTimestamp(),
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
   };
 
   if (organizationId) userData.organization = organizationId;

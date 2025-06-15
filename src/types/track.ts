@@ -5,14 +5,14 @@ export interface Track {
   id: string;
   name: string;
   batches: Batch[]; // 여러 기수
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface TrackWithBatches extends Track {
   batches: Batch[]; // 여러 기수
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // Track 타입 - 트랙 정보

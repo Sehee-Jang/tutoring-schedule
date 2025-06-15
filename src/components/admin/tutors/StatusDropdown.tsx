@@ -5,7 +5,6 @@ interface StatusDropdownProps {
   currentStatus: TutorStatus;
   onChange: (newStatus: TutorStatus) => void;
 }
-  
 
 const StatusDropdown: React.FC<StatusDropdownProps> = ({
   currentStatus,

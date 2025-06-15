@@ -1,0 +1,189 @@
+import { useEffect, useState } from "react";
+import { fetchManagersByRole } from "../../../services/admin/user";
+import { useAuth } from "../../../context/AuthContext";
+import { User } from "../../../types/user";
+import Button from "../../../components/shared/Button";
+import ManagerFormModal from "./ManagerFormModal";
+import { db } from "../../../services/firebase";
+import { updateDoc, doc } from "firebase/firestore";
+import { useToast } from "../../../hooks/use-toast";
+import ManagerStatusDropdown, { UserStatus } from "./ManagerStatusDropdown";
+
+interface ManagerTableProps {
+  roleScope: ("organization" | "track" | "batch")[];
+}
+
+const ManagerTable: React.FC<ManagerTableProps> = ({ roleScope }) => {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [orgManagers, setOrgManagers] = useState<User[]>([]);
+  const [trackManagers, setTrackManagers] = useState<User[]>([]);
+  const [batchManagers, setBatchManagers] = useState<User[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    loadTrackManagers();
+    loadOrgManagers();
+    loadBatchManagers();
+  }, [user?.organization]);
+
+  const loadOrgManagers = async () => {
+    const orgManagerList = await fetchManagersByRole(
+      "organization_admin",
+      user!.organization ?? undefined
+    );
+    setOrgManagers(orgManagerList);
+  };
+
+  const loadTrackManagers = async () => {
+    const trackManagerList = await fetchManagersByRole(
+      "track_admin",
+      user!.organization ?? undefined
+    );
+    setTrackManagers(trackManagerList);
+  };
+
+  const loadBatchManagers = async () => {
+    const batchManagerList = await fetchManagersByRole(
+      "batch_admin",
+      user!.organization ?? undefined
+    );
+    setBatchManagers(batchManagerList);
+  };
+
+  const onChangeStatus = async (manager: User, newStatus: UserStatus) => {
+    try {
+      const userRef = doc(db, "users", manager.id);
+      await updateDoc(userRef, { status: newStatus });
+      toast({
+        title: `상태가 ${
+          newStatus === "active" ? "활성" : "비활성"
+        }으로 변경되었습니다.`,
+      });
+      // 변경 후 다시 목록 불러오기
+      if (manager.role === "organization_admin") loadOrgManagers();
+      if (manager.role === "track_admin") loadTrackManagers();
+      if (manager.role === "batch_admin") loadBatchManagers();
+    } catch (error) {
+      console.error("상태 변경 오류:", error);
+      toast({ title: "상태 변경 실패", variant: "destructive" });
+    }
+  };
+
+  return (
+    <div className='space-y-6'>
+      <Button variant='primary' size='sm' onClick={() => setIsModalOpen(true)}>
+        관리자 추가
+      </Button>
+
+      {roleScope.includes("organization") && (
+        <div className='overflow-x-auto'>
+          <h3 className='text-lg mb-2'>조직 관리자</h3>
+          {/* 조직 관리자 테이블 + 버튼 */}
+          <table className='min-w-full bg-white border rounded'>
+            <thead>
+              <tr className='bg-gray-100 text-left text-sm font-semibold'>
+                <td className='p-3 border'>이름</td>
+                <td className='p-3 border'>이메일</td>
+                <td className='p-3 border'>상태</td>
+                <td className='p-3 border'>관리</td>
+              </tr>
+            </thead>
+            <tbody>
+              {orgManagers.map((orgManager) => (
+                <tr key={orgManager.id} className='text-sm hover:bg-gray-50'>
+                  <td className='p-3 border'>{orgManager.name}</td>
+                  <td className='p-3 border'>{orgManager.email}</td>
+                  <td className='p-3 border'>
+                    <ManagerStatusDropdown
+                      currentStatus={orgManager.status ?? "active"}
+                      onChange={(newStatus: UserStatus) =>
+                        onChangeStatus(orgManager, newStatus)
+                      }
+                    />
+                  </td>
+                  <td className='p-3 border'></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {roleScope.includes("track") && (
+        <div>
+          <h3 className='text-lg mb-2'>트랙 관리자</h3>
+
+          {/* 트랙 관리자 테이블 + 버튼 */}
+          <table className='min-w-full bg-white border rounded'>
+            <thead>
+              <tr className='bg-gray-100 text-left text-sm font-semibold'>
+                <td className='p-3 border'>이름</td>
+                <td className='p-3 border'>이메일</td>
+                <td className='p-3 border'>상태</td>
+                <td className='p-3 border'>관리</td>
+              </tr>
+            </thead>
+            <tbody>
+              {trackManagers.map((trackManager) => (
+                <tr key={trackManager.id} className='text-sm hover:bg-gray-50'>
+                  <td className='p-3 border'>{trackManager.name}</td>
+                  <td className='p-3 border'>{trackManager.email}</td>
+                  <td className='p-3 border'>
+                    <ManagerStatusDropdown
+                      currentStatus={trackManager.status ?? "active"}
+                      onChange={(newStatus: UserStatus) =>
+                        onChangeStatus(trackManager, newStatus)
+                      }
+                    />
+                  </td>
+
+                  <td className='p-3 border'></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <ManagerFormModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+          />
+        </div>
+      )}
+      {roleScope.includes("batch") && (
+        <div>
+          <h3 className='text-lg mb-2'>기수 관리자</h3>
+          {/* 기수 관리자 테이블 + 버튼 */}
+          <table className='min-w-full bg-white border rounded'>
+            <thead>
+              <tr className='bg-gray-100 text-left text-sm font-semibold'>
+                <td className='p-3 border'>이름</td>
+                <td className='p-3 border'>이메일</td>
+                <td className='p-3 border'>상태</td>
+                <td className='p-3 border'>관리</td>
+              </tr>
+            </thead>
+            <tbody>
+              {batchManagers.map((batchManager) => (
+                <tr key={batchManager.id} className='text-sm hover:bg-gray-50'>
+                  <td className='p-3 border'>{batchManager.name}</td>
+                  <td className='p-3 border'>{batchManager.email}</td>
+                  <td className='p-3 border'>
+                    <ManagerStatusDropdown
+                      currentStatus={batchManager.status ?? "active"}
+                      onChange={(newStatus: UserStatus) =>
+                        onChangeStatus(batchManager, newStatus)
+                      }
+                    />
+                  </td>
+                  <td className='p-3 border'></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ManagerTable;

@@ -9,15 +9,15 @@ import { useToast } from "../../hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import Button from "../shared/Button";
 import { isAdminRole } from "../../utils/roleUtils";
-// import { loginWithGoogle } from "@/services/auth";
+import { loginWithGoogle } from "../../services/auth";
 
-// const handleGoogleLogin = async () => {
-//   try {
-//     await loginWithGoogle();
-//   } catch (err) {
-//     console.error("Google 로그인 실패:", err);
-//   }
-// };
+const handleGoogleLogin = async () => {
+  try {
+    await loginWithGoogle();
+  } catch (err) {
+    console.error("Google 로그인 실패:", err);
+  }
+};
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -108,13 +108,13 @@ const LoginModal = ({ isOpen }: LoginModalProps) => {
         </Button>
 
         {/* 구글 로그인 버튼 */}
-        {/* <button
+        <button
           type='button'
           onClick={handleGoogleLogin}
           className='border px-3 py-2 rounded bg-red-500 text-white hover:bg-red-600'
         >
           Google로 로그인
-        </button> */}
+        </button>
 
         {/* 회원가입 버튼 */}
         <Button variant='outline' size='sm' onClick={handleSignupClick}>

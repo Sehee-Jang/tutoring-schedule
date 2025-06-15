@@ -20,7 +20,6 @@ const CreateAdminPage = () => {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [batches, setBatches] = useState<Batch[]>([]);
 
-
   const [selectedOrg, setSelectedOrg] = useState("");
   const [selectedTrack, setSelectedTrack] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");

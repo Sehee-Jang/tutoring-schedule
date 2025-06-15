@@ -8,11 +8,14 @@ export const useBatches = (organizationId: string, trackId: string) => {
 
   useEffect(() => {
     if (!organizationId || !trackId) {
+      console.log("🚫 조직 ID 또는 트랙 ID가 없음");
       setBatches([]);
       setLoading(false);
       return;
     }
 
+    console.log("📥 기수 목록 가져오는 중:", organizationId, trackId);
+    
     const fetchBatches = async () => {
       const snapshot = await getDocs(
         collection(

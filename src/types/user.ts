@@ -13,8 +13,11 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
-  organization?: string; // 조직 ID
-  track?: string; // 트랙 이름
-  batch?: string; // 기수 (ex: 6기)
+  status?: UserStatus;
+  organization?: string | null;
+  track?: string | null;
+  batch?: string | null;
   createdAt?: string;
 }
+
+export type UserStatus = "active" | "inactive" | "pending";

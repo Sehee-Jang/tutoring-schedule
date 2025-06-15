@@ -18,11 +18,11 @@ export const fetchOrganizations = async () => {
   const organizations = snapshot.docs.map((doc) => ({
     id: doc.id,
     name: doc.data().name,
-    created_at: doc.data().created_at
-      ? doc.data().created_at.toDate()
+    createdAt: doc.data().createdAt
+      ? doc.data().createdAt.toDate()
       : new Date(),
-    updated_at: doc.data().updated_at
-      ? doc.data().updated_at.toDate()
+    updatedAt: doc.data().updatedAt
+      ? doc.data().updatedAt.toDate()
       : new Date(),
   }));
   return sortByName(organizations);
@@ -60,11 +60,11 @@ export const fetchTracks = async (organizationId: string): Promise<Track[]> => {
         name: batchDoc.data().name || "",
         startDate: batchDoc.data().startDate || "",
         endDate: batchDoc.data().endDate || "",
-        created_at: batchDoc.data().created_at
-          ? batchDoc.data().created_at.toDate()
+        createdAt: batchDoc.data().createdAt
+          ? batchDoc.data().createdAt.toDate()
           : new Date(),
-        updated_at: batchDoc.data().updated_at
-          ? batchDoc.data().updated_at.toDate()
+        updatedAt: batchDoc.data().updatedAt
+          ? batchDoc.data().updatedAt.toDate()
           : new Date(),
       }));
 
@@ -72,11 +72,11 @@ export const fetchTracks = async (organizationId: string): Promise<Track[]> => {
         id: doc.id,
         name: doc.data().name || "",
         batches: sortByNumericBatch(batches), // 기수 정렬 (숫자 기반)
-        created_at: doc.data().created_at
-          ? doc.data().created_at.toDate()
+        createdAt: doc.data().createdAt
+          ? doc.data().createdAt.toDate()
           : new Date(),
-        updated_at: doc.data().updated_at
-          ? doc.data().updated_at.toDate()
+        updatedAt: doc.data().updatedAt
+          ? doc.data().updatedAt.toDate()
           : new Date(),
       };
     })
@@ -98,11 +98,11 @@ export const fetchBatches = async (
     name: doc.data().name || "",
     startDate: doc.data().startDate || "",
     endDate: doc.data().endDate || "",
-    created_at: doc.data().created_at
-      ? doc.data().created_at.toDate()
+    createdAt: doc.data().createdAt
+      ? doc.data().createdAt.toDate()
       : new Date(),
-    updated_at: doc.data().updated_at
-      ? doc.data().updated_at.toDate()
+    updatedAt: doc.data().updatedAt
+      ? doc.data().updatedAt.toDate()
       : new Date(),
   }));
   return sortByNumericBatch(batches);
@@ -113,8 +113,8 @@ export const createOrganization = async (newOrganization: string) => {
   if (!newOrganization.trim()) throw new Error("조직명을 입력하세요.");
   await addDoc(collection(db, "organizations"), {
     name: newOrganization,
-    created_at: new Date(),
-    updated_at: new Date(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
   });
 };
 
@@ -124,8 +124,8 @@ export const createTrack = async (organizationId: string, newTrack: string) => {
 
   await addDoc(collection(db, `organizations/${organizationId}/tracks`), {
     name: newTrack,
-    created_at: new Date(),
-    updated_at: new Date(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
   });
 };
 
@@ -147,8 +147,8 @@ export const createBatch = async (
       name: newBatch,
       startDate: newStartDate,
       endDate: newEndDate,
-      created_at: new Date(),
-      updated_at: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }
   );
 };
@@ -196,7 +196,7 @@ export const updateOrganization = async (
   const orgRef = doc(db, "organizations", organizationId);
   await updateDoc(orgRef, {
     name: newName,
-    updated_at: new Date(),
+    updatedAt: new Date(),
   });
 };
 
@@ -211,7 +211,7 @@ export const updateTrack = async (
   const trackRef = doc(db, `organizations/${organizationId}/tracks`, trackId);
   await updateDoc(trackRef, {
     name: newName,
-    updated_at: new Date(),
+    updatedAt: new Date(),
   });
 };
 
@@ -236,7 +236,7 @@ export const updateBatch = async (
     name: newName,
     startDate: newStartDate,
     endDate: newEndDate,
-    updated_at: new Date(),
+    updatedAt: new Date(),
   });
 };
 
@@ -254,11 +254,11 @@ export const fetchTrackById = async (trackId: string) => {
     id: trackDoc.id,
     name: trackDoc.data().name,
     organizationId,
-    created_at: trackDoc.data().created_at
-      ? trackDoc.data().created_at.toDate()
+    createdAt: trackDoc.data().createdAt
+      ? trackDoc.data().createdAt.toDate()
       : new Date(),
-    updated_at: trackDoc.data().updated_at
-      ? trackDoc.data().updated_at.toDate()
+    updatedAt: trackDoc.data().updatedAt
+      ? trackDoc.data().updatedAt.toDate()
       : new Date(),
   };
 };

@@ -170,7 +170,7 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
         ))}
       </ul>
 
-      <Button variant='primary' onClick={handleCreate}>
+      <Button variant='outline' onClick={handleCreate}>
         조직 추가
       </Button>
 

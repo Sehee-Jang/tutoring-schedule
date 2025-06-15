@@ -11,7 +11,7 @@ export const createRole = async (
     organization_id: organizationId,
     name,
     permissions,
-    created_at: new Date(),
+    createdAt: new Date(),
   });
 };
 

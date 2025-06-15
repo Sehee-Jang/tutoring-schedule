@@ -72,8 +72,8 @@ async function initializeDefaultData() {
     name: "내일배움캠프",
     description: "국비 지원 교육 캠프",
     logo_url: "",
-    created_at: serverTimestamp(),
-    updated_at: serverTimestamp(),
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
   });
   const organizationId = orgRef.id;
   console.log(`✅ 조직 생성 완료: 내일배움캠프 (ID: ${organizationId})`);
@@ -83,8 +83,8 @@ async function initializeDefaultData() {
     collection(db, `organizations/${organizationId}/tracks`),
     {
       name: "UXUI",
-      created_at: serverTimestamp(),
-      updated_at: serverTimestamp(),
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     }
   );
   const trackId = trackRef.id;
@@ -107,8 +107,8 @@ async function initializeDefaultData() {
         name: batch.name,
         startDate: batch.startDate,
         endDate: batch.endDate,
-        created_at: serverTimestamp(),
-        updated_at: serverTimestamp(),
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
       }
     );
     console.log(`✅ 기수 생성 완료: ${batch.name}`);
@@ -147,8 +147,8 @@ async function initializeDefaultData() {
     await addDoc(collection(db, "roles"), {
       name: role.name,
       permissions: role.permissions,
-      created_at: serverTimestamp(),
-      updated_at: serverTimestamp(),
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     });
     console.log(`✅ 역할 생성 완료: ${role.name}`);
   }

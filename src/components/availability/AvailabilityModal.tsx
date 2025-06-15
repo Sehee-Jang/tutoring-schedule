@@ -8,7 +8,6 @@ import TimeSlotButton from "../../components/shared/TimeSlotButton";
 import SaveDropdown from "../tutor/time-settings/SaveDropdown";
 import DayTabs from "../tutor/time-settings/DayTabs";
 import { generateTimeSlots } from "../../utils/generateTimeSlots";
-import { format } from "date-fns";
 import { DAYS_OF_WEEK } from "../../constants/days";
 import { isAdminRole } from "../../utils/roleUtils";
 import {

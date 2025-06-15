@@ -3,6 +3,6 @@ export interface Batch {
   name: string;
   startDate: string;
   endDate: string;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

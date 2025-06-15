@@ -119,7 +119,7 @@ const BatchTable: React.FC<BatchTableProps> = ({ organizationId, trackId }) => {
         ))}
       </ul>
 
-      <Button variant='primary' onClick={handleCreate} className='mt-4'>
+      <Button variant='outline' onClick={handleCreate} className='mt-4'>
         기수 추가
       </Button>
 

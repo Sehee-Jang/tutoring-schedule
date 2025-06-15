@@ -3,6 +3,7 @@
 import { createContext, useContext, ReactNode } from "react";
 import { Tutor } from "../types/tutor";
 import { useFetchTutors } from "../hooks/useFetchTutors";
+import { useAuth } from "../context/AuthContext";
 
 interface TutorContextType {
   tutors: Tutor[];
@@ -17,20 +18,15 @@ interface TutorProviderProps {
 }
 
 export const TutorProvider = ({ children }: TutorProviderProps) => {
-  // const [tutors, setTutors] = useState<Tutor[]>([]);
+  const { user } = useAuth();
 
-  // useEffect(() => {
-  //   const unsubscribe = onSnapshot(collection(db, "tutors"), (snapshot) => {
-  //     const liveTutors = snapshot.docs.map((doc) => ({
-  //       id: doc.id,
-  //       ...(doc.data() as Omit<Tutor, "id">),
-  //     }));
-  //     setTutors(liveTutors);
-  //   });
+  const { tutors } = useFetchTutors({
+    role: user?.role ?? "",
+    organizationId: user?.organization ?? undefined,
+    trackId: user?.track ?? undefined,
+    batchId: user?.batch ?? undefined,
+  });
 
-  //   return () => unsubscribe();
-  // }, []);
-  const { tutors } = useFetchTutors();
   return (
     <TutorContext.Provider value={{ tutors }}>{children}</TutorContext.Provider>
   );

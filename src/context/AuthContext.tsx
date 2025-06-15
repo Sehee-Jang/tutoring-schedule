@@ -11,6 +11,8 @@ import { User, UserRole } from "../types/user";
 import { watchAuthState } from "../services/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { isAdminRole } from "../utils/roleUtils";
+import { signOut } from "firebase/auth";
+import { auth } from "../services/firebase";
 
 interface AuthContextType {
   user: User | null;
@@ -54,12 +56,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             email: string;
             name: string;
             role: string;
+            status?: string;
+            organization?: string;
+            track?: string;
+            batch?: string;
           };
+
+          // 비활성 계정이면 즉시 로그아웃
+          if (data.status === "inactive" || data.status === "pending") {
+            console.warn("🚫 접근 불가 상태:", data.status);
+            await signOut(auth);
+            setUser(null);
+            localStorage.removeItem("user");
+            setIsLoading(false);
+            return;
+          }
+          
+
           const newUser: User = {
             id: firebaseUser.uid,
             email: data.email,
             name: data.name,
             role: data.role as UserRole,
+            organization: data.organization ?? null,
+            track: data.track ?? null,
+            batch: data.batch ?? null,
           };
           setUser(newUser);
 

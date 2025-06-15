@@ -11,20 +11,22 @@ import ModalRenderer from "./components/shared/ModalRenderer";
 import Providers from "./Providers";
 import LoginPage from "./components/auth/LoginPage";
 import CreateAdminPage from "./pages/admin/createAdmin";
+import SignUpRoleSelectionPage from "./pages/signup/SignUpRoleSelectionPage";
+import AdminSignUpPage from "./pages/signup/AdminSignUpPage";
+import TutorSignUpPage from "./pages/signup/TutorSignUpPage";
 
 import ManageTutor from "./pages/admin/ManageTutor";
-import ManageOrganizations from "./pages/admin/ManageOrganizations";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ReservationStatusForTutor from "./components/tutor/reservation/ReservationStatusForTutor";
 import TimeSettingsPanel from "./components/tutor/time-settings/TimeSettingsPanel";
 import AdminLayout from "./pages/admin/AdminLayout";
 import TutorLayout from "./pages/tutor/TutorLayout";
-import ManageTracks from "./pages/admin/ManageTracks";
-import ManageBatches from "./pages/admin/ManageBatches";
+import ManageTrackPage from "./pages/admin/ManageTrackPage";
+import ManageBatchePage from "./pages/admin/ManageBatchePage";
 import ManageReservations from "./pages/admin/ManageReservations";
-import OrganizationDashboardPage from "./pages/admin/organization-manage";
-import OrganizationsManagePage from "./pages/admin/organization-manage";
+import ManageOrganizationPage from "./pages/admin/ManageOrganizationPage";
 import AdminSettingsPage from "./pages/admin/settings/AdminSettingsPage";
+import ManageManagersPage from "./pages/admin/ManageManagersPage";
 
 const App: React.FC = () => {
   return (
@@ -34,6 +36,9 @@ const App: React.FC = () => {
           <Route path='/' element={<AppContent />} />
           <Route path='/login' element={<LoginPage />} />
           <Route path='/admin/signup' element={<CreateAdminPage />} />
+          <Route path='/signup' element={<SignUpRoleSelectionPage />} />
+          <Route path='/signup/admin' element={<AdminSignUpPage />} />
+          <Route path='/signup/tutor' element={<TutorSignUpPage />} />
 
           {/* 관리자 라우터 */}
           <Route
@@ -44,11 +49,12 @@ const App: React.FC = () => {
               </AdminRoute>
             }
           >
-            <Route index element={<Navigate to='tutors' replace />} />
+            <Route index element={<Navigate to='managers' replace />} />
+            <Route path='managers' element={<ManageManagersPage />} />
             <Route path='tutors' element={<ManageTutor />} />
-            <Route path='organizations' element={<OrganizationsManagePage />} />
-            <Route path='tracks' element={<ManageTracks />} />
-            <Route path='batches' element={<ManageBatches />} />
+            <Route path='organizations' element={<ManageOrganizationPage />} />
+            <Route path='tracks' element={<ManageTrackPage />} />
+            <Route path='batches' element={<ManageBatchePage />} />
             <Route path='reservations' element={<ManageReservations />} />
             <Route path='/admin/settings' element={<AdminSettingsPage />} />
           </Route>

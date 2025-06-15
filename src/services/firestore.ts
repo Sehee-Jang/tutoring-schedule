@@ -18,8 +18,8 @@ export async function createOrganization(
     name,
     description,
     logo_url: logoUrl,
-    created_at: serverTimestamp(),
-    updated_at: serverTimestamp(),
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
   });
   return orgRef.id;
 }
@@ -33,8 +33,8 @@ export async function createTrack(
     collection(db, `organizations/${organizationId}/tracks`),
     {
       name: trackName,
-      created_at: serverTimestamp(),
-      updated_at: serverTimestamp(),
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     }
   );
   return trackRef.id;
@@ -54,8 +54,8 @@ export async function createBatch(
       name: batchName,
       startDate,
       endDate,
-      created_at: serverTimestamp(),
-      updated_at: serverTimestamp(),
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     }
   );
 }
@@ -69,8 +69,8 @@ export async function createRole(
     organization_id: organizationId,
     name: roleName,
     permissions,
-    created_at: serverTimestamp(),
-    updated_at: serverTimestamp(),
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
   });
 }
 
