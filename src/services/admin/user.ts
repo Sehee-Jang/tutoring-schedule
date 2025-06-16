@@ -12,10 +12,21 @@ export const fetchManagersByRole = async (
   const filters = [where("role", "==", role)];
 
   if (organization) filters.push(where("organization", "==", organization));
-  if (trackId) filters.push(where("trackId", "==", trackId));
-  if (batchId) filters.push(where("batchId", "==", batchId));
+  if (trackId) filters.push(where("track", "==", trackId));
+  if (batchId) filters.push(where("batch", "==", batchId));
 
   const q = query(usersRef, ...filters);
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((doc) => doc.data() as User);
+  console.log(
+    "📦 fetched managers:",
+    snapshot.docs.map((d) => d.data())
+  );
+
+  return snapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      ...data,
+      id: doc.id,
+    };
+  }) as User[];
 };

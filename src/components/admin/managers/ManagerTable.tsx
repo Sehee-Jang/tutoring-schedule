@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { fetchManagersByRole } from "../../../services/admin/user";
 import { useAuth } from "../../../context/AuthContext";
-import { User } from "../../../types/user";
+import { User, UserStatus } from "../../../types/user";
 import Button from "../../../components/shared/Button";
 import ManagerFormModal from "./ManagerFormModal";
 import { db } from "../../../services/firebase";
 import { updateDoc, doc } from "firebase/firestore";
 import { useToast } from "../../../hooks/use-toast";
-import ManagerStatusDropdown, { UserStatus } from "./ManagerStatusDropdown";
+import ManagerStatusDropdown from "./ManagerStatusDropdown";
 
 interface ManagerTableProps {
   roleScope: ("organization" | "track" | "batch")[];
@@ -53,17 +53,41 @@ const ManagerTable: React.FC<ManagerTableProps> = ({ roleScope }) => {
 
   const onChangeStatus = async (manager: User, newStatus: UserStatus) => {
     try {
+      console.log("📌 onChangeStatus 호출됨:", manager);
+
+      if (!manager.id || !manager.role) {
+        throw new Error("관리자 정보가 불완전합니다.");
+      }
+
+      console.log("👤 manager.id", manager.id, typeof manager.id);
+
       const userRef = doc(db, "users", manager.id);
       await updateDoc(userRef, { status: newStatus });
+
       toast({
         title: `상태가 ${
-          newStatus === "active" ? "활성" : "비활성"
-        }으로 변경되었습니다.`,
+          newStatus === "active"
+            ? "활성"
+            : newStatus === "inactive"
+            ? "비활성"
+            : "승인 대기"
+        }로 변경되었습니다.`,
       });
+
       // 변경 후 다시 목록 불러오기
-      if (manager.role === "organization_admin") loadOrgManagers();
-      if (manager.role === "track_admin") loadTrackManagers();
-      if (manager.role === "batch_admin") loadBatchManagers();
+      switch (manager.role) {
+        case "organization_admin":
+          await loadOrgManagers();
+          break;
+        case "track_admin":
+          await loadTrackManagers();
+          break;
+        case "batch_admin":
+          await loadBatchManagers();
+          break;
+        default:
+          console.warn("관리자 역할이 유효하지 않음:", manager.role);
+      }
     } catch (error) {
       console.error("상태 변경 오류:", error);
       toast({ title: "상태 변경 실패", variant: "destructive" });
@@ -97,9 +121,9 @@ const ManagerTable: React.FC<ManagerTableProps> = ({ roleScope }) => {
                   <td className='p-3 border'>
                     <ManagerStatusDropdown
                       currentStatus={orgManager.status ?? "active"}
-                      onChange={(newStatus: UserStatus) =>
-                        onChangeStatus(orgManager, newStatus)
-                      }
+                      onChange={(newStatus) => {
+                        onChangeStatus(orgManager, newStatus);
+                      }}
                     />
                   </td>
                   <td className='p-3 border'></td>

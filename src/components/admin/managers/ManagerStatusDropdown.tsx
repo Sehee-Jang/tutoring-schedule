@@ -1,6 +1,5 @@
+import { UserStatus } from "../../../types/user";
 import React, { useState } from "react";
-
-export type UserStatus = "active" | "inactive" | "pending";
 
 interface ManagerStatusDropdownProps {
   currentStatus: UserStatus;
@@ -13,7 +12,9 @@ const ManagerStatusDropdown: React.FC<ManagerStatusDropdownProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
 
-  const colorMap: Record<UserStatus, string> = {
+  type StatusType = "pending" | "active" | "inactive";
+
+  const colorMap: Record<StatusType, string> = {
     pending: "bg-yellow-100 text-yellow-800",
     active: "bg-green-100 text-green-800",
     inactive: "bg-red-100 text-red-800",
@@ -25,12 +26,11 @@ const ManagerStatusDropdown: React.FC<ManagerStatusDropdownProps> = ({
     inactive: "비활성",
   };
 
-  const availableOptions: UserStatus[] =
-    currentStatus === "pending"
-      ? ["active", "inactive"]
-      : currentStatus === "active"
-      ? ["pending", "inactive"]
-      : ["active", "pending"];
+  const availableOptions: Record<StatusType, UserStatus[]> = {
+    pending: ["active", "inactive"],
+    active: ["pending", "inactive"],
+    inactive: ["active", "pending"],
+  };
 
   return (
     <div className='relative inline-block text-left'>
@@ -43,7 +43,7 @@ const ManagerStatusDropdown: React.FC<ManagerStatusDropdownProps> = ({
 
       {open && (
         <div className='absolute mt-1 w-28 bg-white border rounded shadow z-10'>
-          {availableOptions.map((status) => (
+          {availableOptions[currentStatus as StatusType].map((status) => (
             <button
               key={status}
               className='block w-full px-3 py-1 text-sm text-left hover:bg-gray-100'
