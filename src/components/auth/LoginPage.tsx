@@ -2,18 +2,25 @@
 
 import { useState } from "react";
 import { login } from "../../services/auth";
-import PrimaryButton from "../shared/PrimaryButton";
 import { toast } from "../../hooks/use-toast";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useModal } from "../../context/ModalContext";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Button from "../shared/Button";
+import { loginWithGoogle } from "../../services/auth";
+import LoginRedirectHandler from "./LoginRedirectHandler";
+
+const handleGoogleLogin = async () => {
+  try {
+    await loginWithGoogle();
+  } catch (err) {
+    console.error("Google 로그인 실패:", err);
+  }
+};
 
 const LoginPage = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(false);
-  const { showModal } = useModal();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -80,19 +87,29 @@ const LoginPage = () => {
           />
 
           {/* 로그인 & 회원가입 버튼 */}
-          <PrimaryButton type='submit' disabled={loading}>
+          <Button type='submit' variant='primary' disabled={loading}>
             로그인
-          </PrimaryButton>
-          <Button
-            variant='outline'
-            size='sm'
-            onClick={() => showModal("signup")}
-          >
-            회원가입
           </Button>
+
+          {/* 구글 로그인 버튼 */}
+          <button
+            type='button'
+            onClick={handleGoogleLogin}
+            className='border px-3 py-2 rounded bg-red-500 text-white hover:bg-red-600'
+          >
+            Google로 로그인
+          </button>
+
+          {/* 회원가입 */}
+          <Link to='/signup'>
+            <Button variant='outline' size='sm' className=''>
+              회원가입
+            </Button>
+          </Link>
         </form>
         {error && <p className='text-red-500 text-sm mb-3'>{error}</p>}
       </div>
+      <LoginRedirectHandler />
     </div>
   );
 };

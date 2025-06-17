@@ -6,7 +6,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 
 export const login = async (email, password) => {
   const result = await signInWithEmailAndPassword(auth, email, password);
@@ -27,12 +27,16 @@ export const loginWithGoogle = async () => {
   const user = result.user;
 
   // Firestore에 사용자 정보가 없으면 생성
-  const userDoc = await getDoc(doc(db, "users", user.uid));
+  const userRef = doc(db, "users", user.uid);
+  const userDoc = await getDoc(userRef);
+
   if (!userDoc.exists()) {
-    await setDoc(doc(db, "users", user.uid), {
-      name: user.displayName || "무명",
+    await setDoc(userRef, {
+      name: user.displayName || "이름",
       email: user.email,
-      role: "student", // 기본 역할: 수강생 (튜터라면 수동 변경)
+      role: "student", // 기본은 수강생으로 등록
+      status: "active", // 수강생은 바로 활성화
+      createdAt: serverTimestamp(),
     });
   }
 

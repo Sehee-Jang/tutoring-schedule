@@ -10,11 +10,8 @@ import AdminRoute from "./components/common/AdminRoute";
 import ModalRenderer from "./components/shared/ModalRenderer";
 import Providers from "./Providers";
 import LoginPage from "./components/auth/LoginPage";
-import CreateAdminPage from "./pages/admin/createAdmin";
-import SignUpRoleSelectionPage from "./pages/signup/SignUpRoleSelectionPage";
-import AdminSignUpPage from "./pages/signup/AdminSignUpPage";
-import TutorSignUpPage from "./pages/signup/TutorSignUpPage";
-
+import SignUpPage from "./pages/auth/SignUpPage";
+import CompleteProfilePage from "./pages/auth/CompleteProfilePage";
 import ManageTutor from "./pages/admin/ManageTutor";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ReservationStatusForTutor from "./components/tutor/reservation/ReservationStatusForTutor";
@@ -27,6 +24,7 @@ import ManageReservations from "./pages/admin/ManageReservations";
 import ManageOrganizationPage from "./pages/admin/ManageOrganizationPage";
 import AdminSettingsPage from "./pages/admin/settings/AdminSettingsPage";
 import ManageManagersPage from "./pages/admin/ManageManagersPage";
+import PendingApprovalPage from "./pages/auth/PendingApprovalPage";
 
 const App: React.FC = () => {
   return (
@@ -35,10 +33,9 @@ const App: React.FC = () => {
         <Routes>
           <Route path='/' element={<AppContent />} />
           <Route path='/login' element={<LoginPage />} />
-          <Route path='/admin/signup' element={<CreateAdminPage />} />
-          <Route path='/signup' element={<SignUpRoleSelectionPage />} />
-          <Route path='/signup/admin' element={<AdminSignUpPage />} />
-          <Route path='/signup/tutor' element={<TutorSignUpPage />} />
+          <Route path='/signup' element={<SignUpPage />} />
+          <Route path='/complete-profile' element={<CompleteProfilePage />} />
+          <Route path='/pending-approval' element={<PendingApprovalPage />} />
 
           {/* 관리자 라우터 */}
           <Route

@@ -7,7 +7,7 @@ import {
   ReactNode,
 } from "react";
 import { db } from "../services/firebase";
-import { User, UserRole } from "../types/user";
+import { User, UserRole, UserStatus } from "../types/user";
 import { watchAuthState } from "../services/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { isAdminRole } from "../utils/roleUtils";
@@ -63,15 +63,33 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           };
 
           // 비활성 계정이면 즉시 로그아웃
-          if (data.status === "inactive" || data.status === "pending") {
-            console.warn("🚫 접근 불가 상태:", data.status);
+          if (data.status === "inactive") {
+            console.warn("🚫 접근 불가 상태: inactive");
             await signOut(auth);
             setUser(null);
             localStorage.removeItem("user");
             setIsLoading(false);
             return;
           }
-          
+
+          // 승인 대기 상태 계정인 경우
+          if (data.status === "pending") {
+            console.info("ℹ️ 승인 대기 상태: pending");
+            const pendingUser: User = {
+              id: firebaseUser.uid,
+              email: data.email,
+              name: data.name,
+              role: data.role as UserRole,
+              organization: data.organization ?? null,
+              track: data.track ?? null,
+              batch: data.batch ?? null,
+              status: data.status ?? "pending",
+            };
+            setUser(pendingUser); // user는 유지
+            localStorage.setItem("user", JSON.stringify(pendingUser));
+            setIsLoading(false);
+            return;
+          }
 
           const newUser: User = {
             id: firebaseUser.uid,
@@ -81,6 +99,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             organization: data.organization ?? null,
             track: data.track ?? null,
             batch: data.batch ?? null,
+            status: (data.status as UserStatus) ?? "active",
           };
           setUser(newUser);
 

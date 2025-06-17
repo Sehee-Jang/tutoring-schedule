@@ -193,8 +193,9 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
             className='border border-gray-300 px-3 py-2 rounded text-gray-700'
           >
             <option value='tutor'>튜터</option>
-            {/* <option value='student'>수강생</option> */}
+            <option value='student'>수강생</option>
           </select>
+
           {/* 조직 */}
           <select
             name='organization'
@@ -213,6 +214,7 @@ const SignUpModal = ({ isOpen }: SignUpModalProps) => {
               </option>
             ))}
           </select>
+
           {/* 트랙 */}
           <select
             name='track'
