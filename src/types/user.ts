@@ -14,9 +14,9 @@ export interface User {
   email: string;
   role: UserRole;
   status?: UserStatus;
-  organization?: string | null;
-  track?: string | null;
-  batch?: string | null;
+  organizationId?: string | null;
+  trackId?: string | null;
+  batchId?: string | null;
   createdAt?: string;
 }
 

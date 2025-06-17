@@ -33,7 +33,7 @@ const CompleteProfilePage = () => {
     const init = async () => {
       if (isLoading || !user) return;
 
-      if (user.role === "super_admin" || user.organization) {
+      if (user.role === "super_admin" || user.organizationId) {
         navigate("/"); // 이미 정보가 있으면 홈으로
         return;
       }

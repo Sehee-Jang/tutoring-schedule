@@ -57,9 +57,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             name: string;
             role: string;
             status?: string;
-            organization?: string;
-            track?: string;
-            batch?: string;
+            organizationId?: string;
+            trackId?: string;
+            batchId?: string;
           };
 
           // 비활성 계정이면 즉시 로그아웃
@@ -80,9 +80,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
               email: data.email,
               name: data.name,
               role: data.role as UserRole,
-              organization: data.organization ?? null,
-              track: data.track ?? null,
-              batch: data.batch ?? null,
+              organizationId: data.organizationId ?? null,
+              trackId: data.trackId ?? null,
+              batchId: data.batchId ?? null,
               status: data.status ?? "pending",
             };
             setUser(pendingUser); // user는 유지
@@ -96,9 +96,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             email: data.email,
             name: data.name,
             role: data.role as UserRole,
-            organization: data.organization ?? null,
-            track: data.track ?? null,
-            batch: data.batch ?? null,
+            organizationId: data.organizationId ?? null,
+            trackId: data.trackId ?? null,
+            batchId: data.batchId ?? null,
             status: (data.status as UserStatus) ?? "active",
           };
           setUser(newUser);

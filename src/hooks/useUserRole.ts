@@ -5,8 +5,8 @@ export const useUserRole = () => {
 
   return {
     role: user?.role || null,
-    organizationId: user?.organization || null,
-    trackId: user?.track || null,
-    batchId: user?.batch || null,
+    organizationId: user?.organizationId || null,
+    trackId: user?.trackId || null,
+    batchId: user?.batchId || null,
   };
 };

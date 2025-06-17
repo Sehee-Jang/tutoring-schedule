@@ -12,8 +12,8 @@ const ManageBatchePage = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const superAdminTrackId = urlParams.get("trackId");
 
-  const organizationId = user.organization;
-  const trackId = isSuperAdmin(user.role) ? superAdminTrackId : user.track;
+  const organizationId = user.organizationId;
+  const trackId = isSuperAdmin(user.role) ? superAdminTrackId : user.trackId;
 
   if (!organizationId || !trackId) {
     return <div>트랙 정보 또는 조직 정보가 없습니다.</div>;

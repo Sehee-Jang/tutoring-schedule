@@ -29,7 +29,6 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
   const { tutors } = useTutors();
   const { toast } = useToast();
   const { holidays } = useHolidayContext();
-  // const { availability } = useAvailability();
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
   const [tutorID, setTutorID] = useState<string>("");
   const [showGuide, setShowGuide] = useState(false);
@@ -65,16 +64,7 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
       }
       // 오늘의 요일 계산 (예: "월요일", "화요일")
       const today = new Date();
-      // const daysOfWeek = [
-      //   "일요일",
-      //   "월요일",
-      //   "화요일",
-      //   "수요일",
-      //   "목요일",
-      //   "금요일",
-      //   "토요일",
-      // ];
-      // const todayDayOfWeek = daysOfWeek[today.getDay()];
+
       const todayDayOfWeek = getDayOfWeek(today);
 
       // 선택된 튜터의 가능한 시간 불러오기
@@ -111,11 +101,7 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
 
     try {
       // 로그인된 사용자 정보 가져오기 (유저 ID)
-
       const userId = user?.id || "";
-
-      // 현재 날짜 (예약 날짜)
-      // const todayString = new Date().toISOString().split("T")[0];
 
       // Reservation 객체 생성 (필수 필드 추가)
       const reservationData: Omit<Reservation, "id" | "createdAt"> = {

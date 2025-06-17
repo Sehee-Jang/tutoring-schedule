@@ -22,9 +22,9 @@ const ManageTutor = () => {
 
   const { tutors, loading, error } = useFetchTutors({
     role: user?.role ?? "",
-    organizationId: user?.organization ?? undefined,
-    trackId: user?.track ?? undefined,
-    batchId: user?.batch ?? undefined,
+    organizationId: user?.organizationId ?? undefined,
+    trackId: user?.trackId ?? undefined,
+    batchId: user?.batchId ?? undefined,
   });
   const [filters, setFilters] = useState({
     organization: "",

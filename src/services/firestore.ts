@@ -114,7 +114,7 @@ export const defaultRoles: {
 // Roles 조회 함수
 export async function getRoles(organizationId: string) {
   const rolesRef = collection(db, "roles");
-  const q = query(rolesRef, where("organization_id", "==", organizationId));
+  const q = query(rolesRef, where("organizationId", "==", organizationId));
   const querySnapshot = await getDocs(q);
 
   return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));

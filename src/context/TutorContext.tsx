@@ -22,9 +22,9 @@ export const TutorProvider = ({ children }: TutorProviderProps) => {
 
   const { tutors } = useFetchTutors({
     role: user?.role ?? "",
-    organizationId: user?.organization ?? undefined,
-    trackId: user?.track ?? undefined,
-    batchId: user?.batch ?? undefined,
+    organizationId: user?.organizationId ?? undefined,
+    trackId: user?.trackId ?? undefined,
+    batchId: user?.batchId ?? undefined,
   });
 
   return (

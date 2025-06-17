@@ -8,12 +8,10 @@ const ManageTrackPage = () => {
 
   const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null);
 
-
   const urlParams = new URLSearchParams(window.location.search);
 
-
   const isValidAccess = user && isTrackAdminOrHigher(user.role);
-  const organizationId = user?.organization ?? null;
+  const organizationId = user?.organizationId ?? null;
 
   if (!isValidAccess) {
     return <div>접근 권한이 없습니다.</div>;

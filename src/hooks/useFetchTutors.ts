@@ -26,7 +26,7 @@ export const useFetchTutors = ({
     let q = query(collection(db, "users"), where("role", "==", "tutor"));
 
     if (role === "organization_admin" && organizationId) {
-      q = query(q, where("organization", "==", organizationId));
+      q = query(q, where("organizationId", "==", organizationId));
     } else if (role === "track_admin" && trackId) {
       q = query(q, where("trackId", "==", trackId));
     } else if (role === "batch_admin" && batchId) {
@@ -51,7 +51,7 @@ export const useFetchTutors = ({
     );
 
     return () => unsubscribe();
-  }, []);
+  }, [role, organizationId, trackId, batchId]);
 
   return { tutors, loading, error };
 };

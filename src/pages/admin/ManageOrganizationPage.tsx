@@ -13,8 +13,8 @@ const ManageOrganizationPage = () => {
   const { user } = useAuth();
 
   const role = user?.role;
-  const organizationIdFromUser = user?.organization ?? null;
-  const trackIdFromUser = user?.track ?? null;
+  const organizationIdFromUser = user?.organizationId ?? null;
+  const trackIdFromUser = user?.trackId ?? null;
 
   const [selectedOrgId, setSelectedOrgId] = useState<string | null>(null);
   const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null);

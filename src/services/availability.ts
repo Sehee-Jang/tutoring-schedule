@@ -78,7 +78,6 @@ export const fetchAvailableSlotsByDayOfWeek = async (
     const docSnap = await getDoc(docRef);
 
     if (!docSnap.exists()) {
-      console.log("❌ No availability found for tutor:", tutorId);
       return [];
     }
 

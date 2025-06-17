@@ -3,7 +3,7 @@ import { User } from "../types/user";
 export const getRedirectPathForUser = (user: User | null): string => {
   if (!user) return "/login";
 
-  if (!user.organization) {
+  if (!user.organizationId) {
     if (user.role === "super_admin") return "/admin";
     return "/complete-profile";
   }

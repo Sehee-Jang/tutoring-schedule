@@ -54,7 +54,7 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
       };
       fetchOrganizations();
     } else {
-      setSelectedOrgId(user?.organization || "");
+      setSelectedOrgId(user?.organizationId || "");
     }
   }, [user]);
 

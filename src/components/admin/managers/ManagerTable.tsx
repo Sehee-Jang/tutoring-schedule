@@ -25,12 +25,12 @@ const ManagerTable: React.FC<ManagerTableProps> = ({ roleScope }) => {
     loadTrackManagers();
     loadOrgManagers();
     loadBatchManagers();
-  }, [user?.organization]);
+  }, [user?.organizationId]);
 
   const loadOrgManagers = async () => {
     const orgManagerList = await fetchManagersByRole(
       "organization_admin",
-      user!.organization ?? undefined
+      user!.organizationId ?? undefined
     );
     setOrgManagers(orgManagerList);
   };
@@ -38,7 +38,7 @@ const ManagerTable: React.FC<ManagerTableProps> = ({ roleScope }) => {
   const loadTrackManagers = async () => {
     const trackManagerList = await fetchManagersByRole(
       "track_admin",
-      user!.organization ?? undefined
+      user!.organizationId ?? undefined
     );
     setTrackManagers(trackManagerList);
   };
@@ -46,7 +46,7 @@ const ManagerTable: React.FC<ManagerTableProps> = ({ roleScope }) => {
   const loadBatchManagers = async () => {
     const batchManagerList = await fetchManagersByRole(
       "batch_admin",
-      user!.organization ?? undefined
+      user!.organizationId ?? undefined
     );
     setBatchManagers(batchManagerList);
   };
