@@ -82,7 +82,7 @@ const SignUpPage = () => {
         organization: form.organization,
         track: form.track,
         batch: form.batch,
-        status: "pending",
+        status: form.role === "tutor" ? "pending" : "active",
         createdAt: serverTimestamp(),
       });
 
@@ -104,7 +104,7 @@ const SignUpPage = () => {
         )}
         {success ? (
           <div className='text-center text-green-600'>
-            회원가입 성공! 이메일 인증 후 로그인해주세요.
+            회원가입 성공! 로그인 후 이용이 가능합니다.
             <Button className='mt-4' onClick={() => navigate("/login")}>
               로그인 페이지로 이동
             </Button>
