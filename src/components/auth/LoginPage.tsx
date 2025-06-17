@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { login } from "../../services/auth";
 import { toast } from "../../hooks/use-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../shared/Button";
 import { loginWithGoogle } from "../../services/auth";
 import LoginRedirectHandler from "./LoginRedirectHandler";
@@ -21,6 +21,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,6 +34,7 @@ const LoginPage = () => {
         title: "로그인 성공",
         description: "환영합니다!",
       });
+      // navigate("/");
     } catch (err) {
       console.error(err);
       setError("이메일 또는 비밀번호가 올바르지 않습니다.");

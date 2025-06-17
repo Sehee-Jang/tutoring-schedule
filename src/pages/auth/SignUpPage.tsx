@@ -23,9 +23,9 @@ const SignUpPage = () => {
     email: "",
     password: "",
     role: "student", // 기본값: 수강생
-    organization: "",
-    track: "",
-    batch: "",
+    organizationId: "",
+    trackId: "",
+    batchId: "",
   });
 
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -40,18 +40,18 @@ const SignUpPage = () => {
   }, []);
 
   useEffect(() => {
-    if (!form.organization) {
+    if (!form.organizationId) {
       setTracks([]);
       setBatches([]);
       return;
     }
-    fetchTracks(form.organization).then(setTracks);
-  }, [form.organization]);
+    fetchTracks(form.organizationId).then(setTracks);
+  }, [form.organizationId]);
 
   useEffect(() => {
-    const selected = tracks.find((t) => t.id === form.track);
+    const selected = tracks.find((t) => t.id === form.trackId);
     setBatches(selected ? selected.batches : []);
-  }, [form.track, tracks]);
+  }, [form.trackId, tracks]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -79,9 +79,9 @@ const SignUpPage = () => {
         name: form.name,
         email: form.email,
         role: form.role,
-        organization: form.organization,
-        track: form.track,
-        batch: form.batch,
+        organizationId: form.organizationId,
+        trackId: form.trackId,
+        batchId: form.batchId,
         status: form.role === "tutor" ? "pending" : "active",
         createdAt: serverTimestamp(),
       });
@@ -150,8 +150,8 @@ const SignUpPage = () => {
             </select>
 
             <select
-              name='organization'
-              value={form.organization}
+              name='organizationId'
+              value={form.organizationId}
               onChange={handleChange}
               className='border px-3 py-2 rounded'
               required
@@ -165,8 +165,8 @@ const SignUpPage = () => {
             </select>
 
             <select
-              name='track'
-              value={form.track}
+              name='trackId'
+              value={form.trackId}
               onChange={handleChange}
               className='border px-3 py-2 rounded'
               required
@@ -180,8 +180,8 @@ const SignUpPage = () => {
             </select>
 
             <select
-              name='batch'
-              value={form.batch}
+              name='batchId'
+              value={form.batchId}
               onChange={handleChange}
               className='border px-3 py-2 rounded'
               required
