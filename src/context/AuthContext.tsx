@@ -38,19 +38,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 앱 시작할 때 localStorage에 저장된 user 복구
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setIsLoading(false);
-  }, []);
-
   useEffect(() => {
     const unsubscribe = watchAuthState(async (firebaseUser: any) => {
       if (firebaseUser) {
         const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+
         if (userDoc.exists()) {
           const data = userDoc.data() as {
             email: string;

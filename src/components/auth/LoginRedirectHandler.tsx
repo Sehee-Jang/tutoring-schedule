@@ -10,11 +10,16 @@ const LoginRedirectHandler = () => {
   useEffect(() => {
     if (!user || isLoading) return;
 
-    // pending 상태인 튜터는 승인 대기 페이지로 이동
-    if (user.role === "tutor" && user.status === "pending") {
-      navigate("/pending-approval", { replace: true });
-      return;
-    }
+    // role, email, name 등이 완전히 세팅되었는지 확인
+    const isUserReady =
+      !!user.role &&
+      !!user.name &&
+      !!user.email &&
+      (user.role === "super_admin" ||
+        user.organizationId ||
+        user.role === "tutor");
+
+    if (!isUserReady) return;
 
     const targetPath = getRedirectPathForUser(user);
     navigate(targetPath, { replace: true });

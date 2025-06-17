@@ -48,6 +48,16 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
     setForm,
   } = useReservationForm();
 
+  // 로그인 사용자 이름을 teamName 기본값으로 설정
+  useEffect(() => {
+    if (user?.name) {
+      setForm((prev) => ({
+        ...prev,
+        teamName: prev.teamName || user.name, // 사용자가 이미 수정한 값이 있으면 덮어쓰지 않음
+      }));
+    }
+  }, [user?.name, setForm]);
+
   // 사용자가 튜터를 선택할 때마다 시간대 로드
   useEffect(() => {
     const loadAvailableSlots = async () => {
@@ -224,7 +234,7 @@ const ReservationForm = ({ onSuccess }: ReservationFormProps) => {
             name='teamName'
             value={form.teamName}
             onChange={handleChange}
-            placeholder='예: A1조'
+            placeholder='예: A1조 or 홍길동'
             className='w-full border rounded px-4 py-2 text-sm focus:ring-2 focus:ring-blue-300'
           />
           {errors.teamName && (

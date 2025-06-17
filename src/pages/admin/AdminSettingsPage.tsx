@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "../../../services/firebase";
-import { useToast } from "../../../hooks/use-toast";
+import { db } from "../../services/firebase";
+import { useToast } from "../../hooks/use-toast";
 
-import { Switch } from "../../../components/ui/switch";
-import Button from "../../../components/shared/Button";
-import { DeleteAlertDialog } from "../../../components/shared/DeleteAlertDialog";
-import SettingsCard from "../../../components/admin/settings/SettingsCard";
+import { Switch } from "../../components/ui/switch";
+import Button from "../../components/shared/Button";
+import { DeleteAlertDialog } from "../../components/shared/DeleteAlertDialog";
+import SettingsCard from "../../components/admin/settings/SettingsCard";
 
 import { OctagonAlert } from "lucide-react";
-import { resetDatabase } from "../../../services/admin/resetDatabase";
+import { resetDatabase } from "../../services/admin/resetDatabase";
 
 const EMAIL_SETTINGS_DOC_ID = "production";
 

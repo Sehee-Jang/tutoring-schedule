@@ -16,10 +16,12 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
   }
 
   if (!user) {
+    console.warn("🔒 AdminRoute: user is null");
     return <Navigate to='/login' state={{ from: location }} replace />;
   }
 
   if (!isAdminRole(user?.role)) {
+    console.warn("🚫 AdminRoute: role not allowed, redirecting to /");
     return <Navigate to='/' replace />;
   }
 

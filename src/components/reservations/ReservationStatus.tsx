@@ -14,7 +14,7 @@ import PastReservationTable from "./PastReservationTable";
 import ReservationTabsHeader from "./ReservationTabsHeader";
 
 const ReservationStatus = () => {
-  const { isAdmin, isTutor } = useAuth();
+  const { user, isAdmin, isTutor } = useAuth();
   const { reservations, loading } = useReservations();
   const [activeTab, setActiveTab] = useState<string>("all");
   const [selectedReservation, setSelectedReservation] =
@@ -78,10 +78,13 @@ const ReservationStatus = () => {
 
   // 보기 버튼
   const handleViewClick = (reservation: Reservation) => {
-    if (isAdmin) {
-      setSelectedReservation(reservation); // 관리자는 바로 상세 모달
+    const isOwner = user?.id === reservation.userId;
+    const isTutorOwner = user?.name === reservation.tutor;
+
+    if (isAdmin || isOwner || (isTutor && isTutorOwner)) {
+      setSelectedReservation(reservation); // 관리자, 예약자, 해당 튜터는 바로 상세 모달 오픈
     } else {
-      setPendingReservation(reservation); // 비관리자는 비번 입력
+      setPendingReservation(reservation); //  그 외는 비번 입력
       setPasswordModalOpen(true);
     }
   };

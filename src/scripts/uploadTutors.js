@@ -20,9 +20,8 @@ const uploadTutors = async () => {
   try {
     for (const tutor of tutors) {
       const docRef = doc(tutorsRef); // Firestore 자동 문서 ID 생성
-      await setDoc(docRef, tutor)
+      await setDoc(docRef, tutor);
     }
-    console.log("모든 튜터 정보가 성공적으로 업로드 되었습니다.");
   } catch (error) {
     console.error("튜터 정보 업로드 중 에러 발생:", error);
   }

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { login } from "../../services/auth";
 import { toast } from "../../hooks/use-toast";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Button from "../shared/Button";
 import { loginWithGoogle } from "../../services/auth";
 import LoginRedirectHandler from "./LoginRedirectHandler";
@@ -22,9 +22,6 @@ const LoginPage = () => {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
-  const location = useLocation();
-  const navigate = useNavigate();
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
@@ -36,13 +33,6 @@ const LoginPage = () => {
         title: "로그인 성공",
         description: "환영합니다!",
       });
-
-      // 짧은 대기
-      setTimeout(() => {
-        const from = location.state?.from?.pathname;
-        const target = from && from !== "/login" ? from : "/";
-        navigate(target, { replace: true });
-      }, 300);
     } catch (err) {
       console.error(err);
       setError("이메일 또는 비밀번호가 올바르지 않습니다.");
@@ -67,7 +57,7 @@ const LoginPage = () => {
   return (
     <div className='flex items-center justify-center min-h-screen bg-gray-50'>
       <div className='p-10 text-center space-y-6 bg-white rounded-xl shadow max-w-md w-full'>
-        <h2 className='text-xl font-bold text-gray-800 mb-4'>관리자 로그인</h2>
+        <h2 className='text-xl font-bold text-gray-800 mb-4'>로그인</h2>
 
         <form onSubmit={handleSubmit} className='flex flex-col gap-3'>
           {/* 이메일 & 비밀번호 입력란 */}

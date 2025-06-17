@@ -106,7 +106,6 @@ const ManageOrganizationPage = () => {
 
   // track_admin 전용: 기수 관리 화면만 표시
   if (isTrackAdminOrHigher(role) && organizationIdFromUser && trackIdFromUser) {
-    console.log("🎯 rendering track_admin view");
     return (
       <div className='w-full bg-white rounded-xl shadow p-4'>
         <BatchTable

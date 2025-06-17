@@ -81,7 +81,7 @@ const LoginModal = ({ isOpen }: LoginModalProps) => {
   return (
     <ModalLayout onClose={closeModal}>
       <h2 className='text-xl font-bold text-gray-700 mb-4 text-center'>
-        관리자 로그인
+        로그인
       </h2>
       {error && (
         <p className='text-red-500 text-sm mb-3 text-center'>{error}</p>

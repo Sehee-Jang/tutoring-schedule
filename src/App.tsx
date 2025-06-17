@@ -22,7 +22,7 @@ import ManageTrackPage from "./pages/admin/ManageTrackPage";
 import ManageBatchePage from "./pages/admin/ManageBatchePage";
 import ManageReservations from "./pages/admin/ManageReservations";
 import ManageOrganizationPage from "./pages/admin/ManageOrganizationPage";
-import AdminSettingsPage from "./pages/admin/settings/AdminSettingsPage";
+import AdminSettingsPage from "./pages/admin/AdminSettingsPage";
 import ManageManagersPage from "./pages/admin/ManageManagersPage";
 import PendingApprovalPage from "./pages/auth/PendingApprovalPage";
 
@@ -53,7 +53,7 @@ const App: React.FC = () => {
             <Route path='tracks' element={<ManageTrackPage />} />
             <Route path='batches' element={<ManageBatchePage />} />
             <Route path='reservations' element={<ManageReservations />} />
-            <Route path='/admin/settings' element={<AdminSettingsPage />} />
+            <Route path='settings' element={<AdminSettingsPage />} />
           </Route>
 
           {/* 튜터 라우터 */}

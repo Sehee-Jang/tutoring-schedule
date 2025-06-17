@@ -53,13 +53,9 @@ const ManagerTable: React.FC<ManagerTableProps> = ({ roleScope }) => {
 
   const onChangeStatus = async (manager: User, newStatus: UserStatus) => {
     try {
-      console.log("📌 onChangeStatus 호출됨:", manager);
-
       if (!manager.id || !manager.role) {
         throw new Error("관리자 정보가 불완전합니다.");
       }
-
-      console.log("👤 manager.id", manager.id, typeof manager.id);
 
       const userRef = doc(db, "users", manager.id);
       await updateDoc(userRef, { status: newStatus });
