@@ -17,8 +17,7 @@ const LoginRedirectHandler = () => {
       !!user.name &&
       !!user.email &&
       (user.role === "super_admin" || !!user.organizationId);
-
-    if (!isUserReady) return;
+    // if (!isUserReady) return;
 
     const targetPath = getRedirectPathForUser(user);
 
