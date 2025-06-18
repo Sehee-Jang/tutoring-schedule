@@ -107,16 +107,14 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
       updatedAt: serverTimestamp(),
     };
 
-    if (role !== "organization_admin") {
-      userData.organization = selectedOrgId;
-    }
+    userData.organizationId = selectedOrgId;
 
     if (role === "track_admin" || role === "batch_admin") {
-      userData.track = selectedTrackId;
+      userData.trackId = selectedTrackId;
     }
 
     if (role === "batch_admin") {
-      userData.batch = selectedBatchId;
+      userData.batchId = selectedBatchId;
     }
 
     await setDoc(doc(db, "users", uid), userData);
@@ -171,6 +169,22 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
             {tracks.map((t) => (
               <option key={t.id} value={t.id}>
                 {t.name}
+              </option>
+            ))}
+          </select>
+        )}
+
+        {role === "batch_admin" && (
+          <select
+            className='input'
+            value={selectedBatchId}
+            onChange={(e) => setSelectedBatchId(e.target.value)}
+            disabled={!selectedTrackId}
+          >
+            <option value=''>기수 선택</option>
+            {batches.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name}
               </option>
             ))}
           </select>

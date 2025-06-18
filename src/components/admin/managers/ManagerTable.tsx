@@ -99,7 +99,7 @@ const ManagerTable: React.FC<ManagerTableProps> = ({ roleScope }) => {
       {roleScope.includes("organization") && (
         <div className='overflow-x-auto'>
           <h3 className='text-lg mb-2'>조직 관리자</h3>
-          {/* 조직 관리자 테이블 + 버튼 */}
+          {/* 조직 관리자 테이블*/}
           <table className='min-w-full bg-white border rounded'>
             <thead>
               <tr className='bg-gray-100 text-left text-sm font-semibold'>
@@ -133,7 +133,7 @@ const ManagerTable: React.FC<ManagerTableProps> = ({ roleScope }) => {
         <div>
           <h3 className='text-lg mb-2'>트랙 관리자</h3>
 
-          {/* 트랙 관리자 테이블 + 버튼 */}
+          {/* 트랙 관리자 테이블 */}
           <table className='min-w-full bg-white border rounded'>
             <thead>
               <tr className='bg-gray-100 text-left text-sm font-semibold'>
@@ -162,11 +162,6 @@ const ManagerTable: React.FC<ManagerTableProps> = ({ roleScope }) => {
               ))}
             </tbody>
           </table>
-
-          <ManagerFormModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-          />
         </div>
       )}
       {roleScope.includes("batch") && (
@@ -202,6 +197,10 @@ const ManagerTable: React.FC<ManagerTableProps> = ({ roleScope }) => {
           </table>
         </div>
       )}
+      <ManagerFormModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };

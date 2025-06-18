@@ -2,6 +2,7 @@ import { useAuth } from "../../context/AuthContext";
 import {
   isSuperAdmin,
   isOrganizationAdminOrHigher,
+  isTrackAdminOrHigher,
 } from "../../utils/roleUtils";
 import ManagerTable from "../../components/admin/managers/ManagerTable";
 import EmptyState from "../../components/admin/shared/EmptyState";
@@ -9,7 +10,8 @@ import EmptyState from "../../components/admin/shared/EmptyState";
 const ManageManagersPage = () => {
   const { user } = useAuth();
 
-  if (!user || !isOrganizationAdminOrHigher(user.role)) {
+  //
+  if (!user || !isTrackAdminOrHigher(user.role)) {
     return <EmptyState className='h-screen' message='접근 권한이 없습니다.' />;
   }
 
@@ -18,7 +20,9 @@ const ManageManagersPage = () => {
     user.role
   )
     ? ["organization", "track", "batch"]
-    : ["track", "batch"];
+    : isOrganizationAdminOrHigher(user.role)
+    ? ["track", "batch"]
+    : ["batch"];
 
   return (
     <div className='space-y-4'>
