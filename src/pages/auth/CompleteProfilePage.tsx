@@ -148,7 +148,7 @@ const CompleteProfilePage = () => {
           <div>
             <label className='text-sm text-gray-600'>조직</label>
             <select
-              name='organization'
+              name='organizationId'
               value={form.organizationId}
               onChange={handleChange}
               className='w-full border px-3 py-2 rounded'
@@ -166,7 +166,7 @@ const CompleteProfilePage = () => {
           <div>
             <label className='text-sm text-gray-600'>트랙</label>
             <select
-              name='track'
+              name='trackId'
               value={form.trackId}
               onChange={handleChange}
               className='w-full border px-3 py-2 rounded'
@@ -184,7 +184,7 @@ const CompleteProfilePage = () => {
           <div>
             <label className='text-sm text-gray-600'>기수</label>
             <select
-              name='batch'
+              name='batchId'
               value={form.batchId}
               onChange={handleChange}
               className='w-full border px-3 py-2 rounded'

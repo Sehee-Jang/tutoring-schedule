@@ -10,7 +10,7 @@ import { useToast } from "../../../hooks/use-toast";
 import ManagerStatusDropdown from "./ManagerStatusDropdown";
 
 interface ManagerTableProps {
-  roleScope: ("" | "track" | "batch")[];
+  roleScope: ("organization" | "track" | "batch")[];
 }
 
 const ManagerTable: React.FC<ManagerTableProps> = ({ roleScope }) => {

@@ -17,7 +17,7 @@ const LoginRedirectHandler = () => {
       !!user.name &&
       !!user.email &&
       (user.role === "super_admin" || !!user.organizationId);
-    // if (!isUserReady) return;
+    if (!isUserReady) return;
 
     const targetPath = getRedirectPathForUser(user);
 
@@ -25,7 +25,7 @@ const LoginRedirectHandler = () => {
     if (location.pathname !== targetPath) {
       navigate(targetPath, { replace: true });
     }
-  }, [user, isLoading, navigate]);
+  }, [user, isLoading, navigate, location]);
 
   return null;
 };
