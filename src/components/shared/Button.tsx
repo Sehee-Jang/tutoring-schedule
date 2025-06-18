@@ -2,7 +2,13 @@
 
 import React from "react";
 
-type ButtonVariant = "primary" | "secondary" | "outline" | "warning" | "icon";
+type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "outline"
+  | "warning"
+  | "icon"
+  | "round";
 type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -28,6 +34,7 @@ const Button = ({
       "border border-gray-300 bg-white text-gray-600 hover:text-black hover:border-gray-600",
     warning: "bg-red-600 hover:bg-red-700 text-white",
     icon: "text-gray-700 hover:text-black",
+    round: "bg-blue-600 px-4 py-2 rounded-full border text-sm transition",
   };
 
   const sizeStyle = {

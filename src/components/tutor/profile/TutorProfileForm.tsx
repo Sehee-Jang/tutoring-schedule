@@ -91,69 +91,81 @@ const TutorProfileForm = ({ onSuccess }: Props) => {
   };
 
   return (
-    <div className='space-y-6'>
-      <h2 className='text-2xl font-bold text-gray-800'>프로필 수정</h2>
+    <div className='space-y-8 max-w-xl mx-auto'>
+      <h2 className='text-xl font-semibold text-gray-900'>프로필 수정</h2>
 
       {/* 이름 */}
-      <div>
-        <label className='block text-sm font-medium text-gray-700 mb-1'>
-          이름
-        </label>
+      <div className='space-y-1'>
+        <label className='text-sm text-gray-500'>이름</label>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200'
+          className='w-full px-0 py-2 border-b border-gray-300 focus:outline-none focus:border-black transition'
           placeholder='이름을 입력하세요'
         />
       </div>
 
       {/* 소개 */}
-      <div>
-        <label className='block text-sm font-medium text-gray-700 mb-1'>
-          소개
-        </label>
+      {/* <div className='space-y-1'>
+        <label className='text-sm text-gray-500'>소개</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className='w-full border border-gray-300 rounded px-3 py-2 h-28 resize-none focus:outline-none focus:ring focus:ring-blue-200'
+          className='w-full px-0 py-2 border-b border-gray-300 h-28 resize-none focus:outline-none focus:border-black transition'
           placeholder='간단한 소개를 입력하세요'
         />
-      </div>
+      </div> */}
 
-      {/* 담당 조직 및 트랙 */}
-      <div className='bg-gray-50 p-4 rounded-lg border mb-4'>
-        <p className='text-sm text-gray-600'>
-          <strong>소속 조직:</strong> {organizationName || "불러오는 중..."}
-          <br />
-          <strong>트랙:</strong> {trackName || "불러오는 중..."}
-        </p>
-      </div>
+      {/* 소속 정보 */}
+      <div className='space-y-4'>
+        <div>
+          <span className='text-sm text-gray-500'>소속 조직</span>
+          <p className='text-base text-gray-900 font-medium'>
+            {organizationName || (
+              <span className='text-gray-400'>불러오는 중...</span>
+            )}
+          </p>
+        </div>
 
-      {/* 담당 기수 */}
-      <div>
-        <label className='block text-sm font-medium text-gray-700 mb-2'>
-          담당 기수
-        </label>
-        <div className='flex flex-wrap gap-3'>
-          {batches.map((batch) => (
-            <label
-              key={batch.id}
-              className='flex items-center space-x-2 bg-gray-100 px-3 py-2 rounded-md hover:bg-gray-200 transition'
-            >
-              <input
-                type='checkbox'
-                checked={selectedBatchIds.includes(batch.id)}
-                onChange={() => handleToggleBatch(batch.id)}
-              />
-              <span>{batch.name}</span>
-            </label>
-          ))}
+        <div>
+          <span className='text-sm text-gray-500'>트랙</span>
+          <p className='text-base text-gray-900 font-medium'>
+            {trackName || <span className='text-gray-400'>불러오는 중...</span>}
+          </p>
+        </div>
+
+        <div>
+          <span className='text-sm text-gray-500'>담당 기수</span>
+          <div className='flex flex-wrap gap-2 mt-1'>
+            {batches.map((batch) => {
+              const isSelected = selectedBatchIds.includes(batch.id);
+              return (
+                <Button
+                  variant='round'
+                  key={batch.id}
+                  size='sm'
+                  onClick={() => handleToggleBatch(batch.id)}
+                  className={`
+              ${
+                isSelected
+                  ? "bg-black text-white border-blue"
+                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+              }`}
+                >
+                  {batch.name}
+                </Button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      {/* 저장 버튼 */}
-      <div className='pt-4'>
-        <Button onClick={handleSubmit} className='w-full'>
+      {/* 저장 */}
+      <div className='pt-6'>
+        <Button
+          onClick={handleSubmit}
+          className='w-full rounded-lg text-sm font-mediu'
+        >
           저장하기
         </Button>
       </div>
