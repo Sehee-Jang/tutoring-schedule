@@ -13,6 +13,11 @@ import { useAuth } from "../../../context/AuthContext";
 import Button from "../../shared/Button";
 import { useTracks } from "../../../hooks/useTracks";
 import { Batch } from "../../../types/batch";
+import {
+  isOrganizationAdminOrHigher,
+  isSuperAdmin,
+  isTrackAdminOrHigher,
+} from "../../../utils/roleUtils";
 
 interface ManagerFormModalProps {
   isOpen: boolean;
@@ -24,7 +29,8 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
   onClose,
 }) => {
   const { user } = useAuth();
-  const isSuperAdmin = user?.role === "super_admin";
+  // const isSuperAdmin = user?.role === "super_admin";
+  const isTrackAdmin = user?.role === "track_admin";
 
   const [role, setRole] = useState("");
   const [organizations, setOrganizations] = useState<
@@ -33,17 +39,16 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
   const [selectedOrgId, setSelectedOrgId] = useState("");
   const [selectedTrackId, setSelectedTrackId] = useState("");
   const [selectedBatchId, setSelectedBatchId] = useState("");
-
-  const [batches, setBatches] = useState<Batch[]>([]);
   const { tracks } = useTracks(selectedOrgId);
+  const [batches, setBatches] = useState<Batch[]>([]);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  console.log("batches", batches);
   // 조직 목록 불러오기 (슈퍼관리자만)
   useEffect(() => {
-    if (isSuperAdmin) {
+    if (isSuperAdmin(user?.role)) {
       const fetchOrganizations = async () => {
         const snapshot = await getDocs(collection(db, "organizations"));
         const list = snapshot.docs.map((doc) => ({
@@ -126,7 +131,7 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
   return (
     <ModalLayout onClose={onClose}>
       <div className='space-y-4'>
-        <select
+        {/* <select
           className='input'
           value={role}
           onChange={(e) => {
@@ -139,10 +144,61 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
           <option value='organization_admin'>조직 관리자</option>
           <option value='track_admin'>트랙 관리자</option>
           <option value='batch_admin'>기수 관리자</option>
-        </select>
+        </select> */}
+
+        {/* 관리자 유형 선택 (슈퍼관리자만) */}
+        {isSuperAdmin(user?.role) && (
+          <select
+            className='input'
+            value={role}
+            onChange={(e) => {
+              setRole(e.target.value);
+              setSelectedTrackId("");
+              setSelectedBatchId("");
+            }}
+          >
+            <option value=''>관리자 역할 선택</option>
+            <option value='organization_admin'>조직 관리자</option>
+            <option value='track_admin'>트랙 관리자</option>
+            <option value='batch_admin'>기수 관리자</option>
+          </select>
+        )}
+
+        {/* 관리자 유형 선택 (조직관리자 이상) */}
+        {isOrganizationAdminOrHigher(user?.role) && (
+          <select
+            className='input'
+            value={role}
+            onChange={(e) => {
+              setRole(e.target.value);
+              setSelectedTrackId("");
+              setSelectedBatchId("");
+            }}
+          >
+            <option value=''>관리자 역할 선택</option>
+            <option value='track_admin'>트랙 관리자</option>
+            <option value='batch_admin'>기수 관리자</option>
+          </select>
+        )}
+
+        {/* 관리자 유형 선택 (트랙관리자 이상) */}
+        {isSuperAdmin(user?.role) && (
+          <select
+            className='input'
+            value={role}
+            onChange={(e) => {
+              setRole(e.target.value);
+              setSelectedTrackId("");
+              setSelectedBatchId("");
+            }}
+          >
+            <option value=''>관리자 역할 선택</option>
+            <option value='batch_admin'>기수 관리자</option>
+          </select>
+        )}
 
         {/* 조직 선택 (슈퍼관리자만) */}
-        {isSuperAdmin && (
+        {isSuperAdmin(user?.role) && (
           <select
             className='input'
             value={selectedOrgId}
@@ -157,24 +213,26 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
           </select>
         )}
 
-        {/* 트랙 선택 (트랙/기수 관리자만) */}
-        {(role === "track_admin" || role === "batch_admin") && (
-          <select
-            className='input'
-            value={selectedTrackId}
-            onChange={(e) => setSelectedTrackId(e.target.value)}
-            disabled={!selectedOrgId}
-          >
-            <option value=''>트랙 선택</option>
-            {tracks.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
-              </option>
-            ))}
-          </select>
-        )}
+        {/* 트랙 선택 (슈퍼, 조직 관리자만) */}
+        {(role === "track_admin" || role === "batch_admin") &&
+          isOrganizationAdminOrHigher(user?.role) && (
+            <select
+              className='input'
+              value={selectedTrackId}
+              onChange={(e) => setSelectedTrackId(e.target.value)}
+              disabled={!selectedOrgId}
+            >
+              <option value=''>트랙 선택</option>
+              {tracks.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+          )}
 
-        {role === "batch_admin" && (
+        {/* 기수 선택 (슈퍼, 조직, 트랙 관리자) */}
+        {role === "batch_admin" && isTrackAdminOrHigher(user?.role) && (
           <select
             className='input'
             value={selectedBatchId}
