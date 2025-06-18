@@ -6,12 +6,12 @@ import { Switch } from "../../components/ui/switch";
 import Button from "../../components/shared/Button";
 import { DeleteAlertDialog } from "../../components/shared/DeleteAlertDialog";
 import SettingsCard from "../../components/admin/settings/SettingsCard";
-
-import { OctagonAlert } from "lucide-react";
+import { OctagonAlert, RefreshCcw } from "lucide-react";
 import { resetDatabase } from "../../services/admin/resetDatabase";
 import { useAuth } from "../../context/AuthContext";
 import { isSuperAdmin } from "../../utils/roleUtils";
 import EmptyState from "../../components/admin/shared/EmptyState";
+import { migrateBatchIdToBatchIds } from "../../services/admin/migrate";
 
 const EMAIL_SETTINGS_DOC_ID = "production";
 
@@ -25,6 +25,9 @@ const AdminSettingsPage = () => {
 
   // DB 리셋 로딩 상태
   const [isResetting, setIsResetting] = useState(false);
+
+  // DB 마이그레이션 상태
+  const [isMigrating, setIsMigrating] = useState(false);
 
   // 이메일 설정 불러오기
   useEffect(() => {
@@ -40,6 +43,7 @@ const AdminSettingsPage = () => {
     fetchEmailSetting();
   }, []);
 
+  // 이메일 초기화 실행 함수
   const handleEmailToggle = async (checked: boolean) => {
     setIsEmailEnabled(checked);
     try {
@@ -63,6 +67,7 @@ const AdminSettingsPage = () => {
     }
   };
 
+  // 데이터베이스 리셋 실행 함수
   const handleResetDatabase = async () => {
     setIsResetting(true);
     try {
@@ -77,6 +82,27 @@ const AdminSettingsPage = () => {
       });
     } finally {
       setIsResetting(false);
+    }
+  };
+
+  // 마이그레이션 실행 함수
+  const handleMigrate = async () => {
+    setIsMigrating(true);
+    try {
+      const updatedCount = await migrateBatchIdToBatchIds();
+      toast({
+        title: "마이그레이션 완료",
+        description: `${updatedCount}명의 튜터 데이터가 변환되었습니다.`,
+      });
+    } catch (error) {
+      console.error("마이그레이션 실패:", error);
+      toast({
+        title: "마이그레이션 실패",
+        description: "예기치 않은 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsMigrating(false);
     }
   };
 
@@ -112,16 +138,38 @@ const AdminSettingsPage = () => {
         <DeleteAlertDialog
           onConfirm={handleResetDatabase}
           triggerLabel={
-            <Button
-              variant='warning'
-              size='sm'
-              disabled={isResetting}
-              className='flex items-center gap-2'
-            >
+            <>
               <OctagonAlert className='w-4 h-4' />
               {isResetting ? "초기화 중..." : "초기화"}
-            </Button>
+            </>
           }
+          triggerClassName='flex items-center gap-2'
+          triggerSize='sm'
+        />
+      </SettingsCard>
+      {/* 5NHpX8lr7oHNiiMvYlI7
+
+F23nxRgyb2qWKtvklvBZ
+
+IpDO0ua7EQN9bL0e2JH5
+ */}
+
+      {/* 배치 마이그레이션 카드 */}
+      <SettingsCard
+        title='기존 튜터 데이터 마이그레이션'
+        description='기존에 단일 batchId로 저장된 튜터 데이터를 batchIds 배열로 변환합니다. 한 번만 실행하면 됩니다.'
+        icon={<RefreshCcw className='text-blue-600 w-5 h-5' />}
+      >
+        <DeleteAlertDialog
+          onConfirm={handleMigrate}
+          triggerLabel={
+            <>
+              <RefreshCcw className='w-4 h-4' />
+              {isMigrating ? "변환 중..." : "마이그레이션 실행"}
+            </>
+          }
+          triggerClassName='flex items-center gap-2'
+          triggerSize='sm'
         />
       </SettingsCard>
     </div>

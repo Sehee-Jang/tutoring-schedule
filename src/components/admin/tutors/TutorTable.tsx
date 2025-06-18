@@ -36,7 +36,7 @@ const TutorTable: React.FC<TutorTableProps> = ({
               <td className='p-3 border'>{tutor.email}</td>
               <td className='p-3 border'>{tutor.organizationName || "-"}</td>
               <td className='p-3 border'>{tutor.trackName || "-"}</td>
-              <td className='p-3 border'>{tutor.batchName || "-"}</td>
+              <td className='p-3 border'>{tutor.batchNames || "-"}</td>
               <td className='p-3 border'>
                 <StatusDropdown
                   currentStatus={tutor.status}

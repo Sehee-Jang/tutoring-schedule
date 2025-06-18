@@ -8,14 +8,14 @@ interface UseFetchTutorsOptions {
   role: string;
   organizationId?: string;
   trackId?: string;
-  batchId?: string;
+  batchIds?: string[];
 }
 
 export const useFetchTutors = ({
   role,
   organizationId,
   trackId,
-  batchId,
+  batchIds,
 }: UseFetchTutorsOptions) => {
   const [tutors, setTutors] = useState<ExtendedTutor[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,14 +30,19 @@ export const useFetchTutors = ({
       q = query(q, where("organizationId", "==", organizationId));
     } else if (role === "track_admin" && trackId) {
       q = query(q, where("trackId", "==", trackId));
-    } else if (role === "batch_admin" && batchId) {
-      q = query(q, where("batchId", "==", batchId));
-    } else if (role === "student" && organizationId && trackId && batchId) {
+    } else if (role === "batch_admin" && batchIds) {
+      q = query(q, where("batchId", "==", batchIds));
+    } else if (
+      role === "student" &&
+      organizationId &&
+      trackId &&
+      batchIds?.length
+    ) {
       q = query(
         q,
         where("organizationId", "==", organizationId),
         where("trackId", "==", trackId),
-        where("batchId", "==", batchId)
+        where("batchIds", "array-contains-any", batchIds)
       );
     }
 
@@ -61,9 +66,13 @@ export const useFetchTutors = ({
               `organizations/${tutor.organizationId}/tracks`,
               tutor.trackId
             ),
-            batchName: await getNameById(
-              `organizations/${tutor.organizationId}/tracks/${tutor.trackId}/batches`,
-              tutor.batchId
+            batchNames: await Promise.all(
+              tutor.batchIds?.map((id) =>
+                getNameById(
+                  `organizations/${tutor.organizationId}/tracks/${tutor.trackId}/batches`,
+                  id
+                )
+              ) || []
             ),
           }))
         );
@@ -79,7 +88,7 @@ export const useFetchTutors = ({
     );
 
     return () => unsubscribe();
-  }, [role, organizationId, trackId, batchId]);
+  }, [role, organizationId, trackId, batchIds]);
 
   return { tutors, loading, error };
 };

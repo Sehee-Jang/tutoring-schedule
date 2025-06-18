@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
               role: data.role as UserRole,
               organizationId: data.organizationId ?? null,
               trackId: data.trackId ?? null,
-              batchId: data.batchId ?? null,
+              batchIds: data.batchId ? [data.batchId] : [],
               status: data.status ?? "pending",
             };
             setUser(pendingUser); // user는 유지
@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             role: data.role as UserRole,
             organizationId: data.organizationId ?? null,
             trackId: data.trackId ?? null,
-            batchId: data.batchId ?? null,
+            batchIds: data.batchId ? [data.batchId] : [],
             status: (data.status as UserStatus) ?? "active",
           };
           setUser(newUser);

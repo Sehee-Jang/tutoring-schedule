@@ -24,7 +24,7 @@ export const TutorProvider = ({ children }: TutorProviderProps) => {
     role: user?.role ?? "",
     organizationId: user?.organizationId ?? undefined,
     trackId: user?.trackId ?? undefined,
-    batchId: user?.batchId ?? undefined,
+    batchIds: user?.batchIds ?? undefined,
   });
 
   return (

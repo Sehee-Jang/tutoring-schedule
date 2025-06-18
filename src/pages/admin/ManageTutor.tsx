@@ -24,7 +24,7 @@ const ManageTutor = () => {
     role: user?.role ?? "",
     organizationId: user?.organizationId ?? undefined,
     trackId: user?.trackId ?? undefined,
-    batchId: user?.batchId ?? undefined,
+    batchIds: user?.batchIds ?? undefined,
   });
   const [filters, setFilters] = useState({
     organizationId: "",
@@ -104,7 +104,9 @@ const ManageTutor = () => {
       !filters.organizationId ||
       tutor.organizationId === filters.organizationId;
     const matchTrack = !filters.trackId || tutor.trackId === filters.trackId;
-    const matchBatch = !filters.batchId || tutor.batchId === filters.batchId; // 여기 batch.id 비교
+    const matchBatch =
+      !filters.batchId || tutor.batchIds?.includes(filters.batchId);
+
     const matchSearch =
       !filters.searchText ||
       tutor.name.includes(filters.searchText) ||

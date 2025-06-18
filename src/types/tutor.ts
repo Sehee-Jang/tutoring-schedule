@@ -7,13 +7,13 @@ export interface Tutor {
   status: TutorStatus;
   organizationId?: string; // 조직 ID
   trackId?: string; // 트랙 ID
-  batchId?: string; // 기수 ID
+  batchIds?: string[]; // 기수 ID
 }
 
 export interface ExtendedTutor extends Tutor {
   organizationName?: string;
   trackName?: string;
-  batchName?: string;
+  batchNames?: string[];
 }
 
 // Tutor의 개별 튜터링 가능 시간 (ex: 하루치)

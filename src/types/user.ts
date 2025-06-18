@@ -16,7 +16,7 @@ export interface User {
   status?: UserStatus;
   organizationId?: string | null;
   trackId?: string | null;
-  batchId?: string | null;
+  batchIds?: string[];
   createdAt?: string;
 }
 
