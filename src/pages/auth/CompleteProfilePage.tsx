@@ -22,9 +22,9 @@ const CompleteProfilePage = () => {
   const [batches, setBatches] = useState<Batch[]>([]);
   const [form, setForm] = useState({
     role: "",
-    organization: "",
-    track: "",
-    batch: "",
+    organizationId: "",
+    trackId: "",
+    batchId: "",
   });
 
   const [loading, setLoading] = useState(true);
@@ -50,18 +50,18 @@ const CompleteProfilePage = () => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
 
-    if (name === "organization") {
+    if (name === "organizationId") {
       fetchTracks(value).then((trackList) => {
         setTracks(trackList);
-        setForm((prev) => ({ ...prev, track: "", batch: "" }));
+        setForm((prev) => ({ ...prev, trackId: "", batchId: "" }));
         setBatches([]);
       });
     }
 
-    if (name === "track") {
+    if (name === "trackId") {
       const selectedTrack = tracks.find((t) => t.id === value);
       setBatches(selectedTrack?.batches || []);
-      setForm((prev) => ({ ...prev, batch: "" }));
+      setForm((prev) => ({ ...prev, batchId: "" }));
     }
   };
 
@@ -80,8 +80,8 @@ const CompleteProfilePage = () => {
     e.preventDefault();
     if (!user) return;
 
-    const { role, organization, track, batch } = form;
-    if (!role || !organization || !track || !batch) {
+    const { role, organizationId, trackId, batchId } = form;
+    if (!role || !organizationId || !trackId || !batchId) {
       toast({ title: "❌ 모든 항목을 선택해주세요.", variant: "destructive" });
       return;
     }
@@ -89,9 +89,9 @@ const CompleteProfilePage = () => {
     try {
       const updatePayload: any = {
         role,
-        organization,
-        track,
-        batch,
+        organizationId,
+        trackId,
+        batchId,
         status: role === "tutor" ? "pending" : "active",
         updatedAt: serverTimestamp(),
       };
@@ -149,7 +149,7 @@ const CompleteProfilePage = () => {
             <label className='text-sm text-gray-600'>조직</label>
             <select
               name='organization'
-              value={form.organization}
+              value={form.organizationId}
               onChange={handleChange}
               className='w-full border px-3 py-2 rounded'
             >
@@ -167,7 +167,7 @@ const CompleteProfilePage = () => {
             <label className='text-sm text-gray-600'>트랙</label>
             <select
               name='track'
-              value={form.track}
+              value={form.trackId}
               onChange={handleChange}
               className='w-full border px-3 py-2 rounded'
             >
@@ -185,7 +185,7 @@ const CompleteProfilePage = () => {
             <label className='text-sm text-gray-600'>기수</label>
             <select
               name='batch'
-              value={form.batch}
+              value={form.batchId}
               onChange={handleChange}
               className='w-full border px-3 py-2 rounded'
             >
