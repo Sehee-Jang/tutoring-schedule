@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../services/firebase";
 import { useToast } from "../../hooks/use-toast";
-
 import { Switch } from "../../components/ui/switch";
 import Button from "../../components/shared/Button";
 import { DeleteAlertDialog } from "../../components/shared/DeleteAlertDialog";
@@ -10,10 +9,14 @@ import SettingsCard from "../../components/admin/settings/SettingsCard";
 
 import { OctagonAlert } from "lucide-react";
 import { resetDatabase } from "../../services/admin/resetDatabase";
+import { useAuth } from "../../context/AuthContext";
+import { isSuperAdmin } from "../../utils/roleUtils";
+import EmptyState from "../../components/admin/shared/EmptyState";
 
 const EMAIL_SETTINGS_DOC_ID = "production";
 
 const AdminSettingsPage = () => {
+  const { user } = useAuth();
   const { toast } = useToast();
 
   // 이메일 설정 상태
@@ -76,6 +79,10 @@ const AdminSettingsPage = () => {
       setIsResetting(false);
     }
   };
+
+  if (!user || !isSuperAdmin(user.role)) {
+    return <EmptyState className='h-screen' message='접근 권한이 없습니다.' />;
+  }
 
   return (
     <div className='space-y-10'>

@@ -27,9 +27,9 @@ const ManageTutor = () => {
     batchId: user?.batchId ?? undefined,
   });
   const [filters, setFilters] = useState({
-    organization: "",
-    track: "",
-    batch: "",
+    organizationId: "",
+    trackId: "",
+    batchId: "",
     searchText: "",
   });
 
@@ -101,9 +101,10 @@ const ManageTutor = () => {
   // 튜터 필터 핸들러
   const filteredTutors = tutors.filter((tutor) => {
     const matchOrg =
-      !filters.organization || tutor.organization === filters.organization;
-    const matchTrack = !filters.track || tutor.track === filters.track;
-    const matchBatch = !filters.batch || tutor.batch === filters.batch; // 여기 batch.id 비교
+      !filters.organizationId ||
+      tutor.organizationId === filters.organizationId;
+    const matchTrack = !filters.trackId || tutor.trackId === filters.trackId;
+    const matchBatch = !filters.batchId || tutor.batchId === filters.batchId; // 여기 batch.id 비교
     const matchSearch =
       !filters.searchText ||
       tutor.name.includes(filters.searchText) ||
@@ -132,8 +133,8 @@ const ManageTutor = () => {
           batches={batches}
           onFilterChange={(filters) => {
             setFilters(filters);
-            setSelectedOrgId(filters.organization);
-            setSelectedTrackId(filters.track);
+            setSelectedOrgId(filters.organizationId);
+            setSelectedTrackId(filters.trackId);
           }}
         />
       )}

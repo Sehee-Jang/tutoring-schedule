@@ -21,7 +21,6 @@ const LoginRedirectHandler = () => {
     if (!isUserReady) return;
 
     const targetPath = getRedirectPathForUser(user);
-    console.log("🎯 리디렉션 대상 경로:", targetPath);
 
     // 중복 리디렉션 방지
     if (location.pathname !== targetPath) {

@@ -4,12 +4,13 @@ import {
   isOrganizationAdminOrHigher,
 } from "../../utils/roleUtils";
 import ManagerTable from "../../components/admin/managers/ManagerTable";
+import EmptyState from "../../components/admin/shared/EmptyState";
 
 const ManageManagersPage = () => {
   const { user } = useAuth();
 
   if (!user || !isOrganizationAdminOrHigher(user.role)) {
-    return <div>접근 권한이 없습니다.</div>;
+    return <EmptyState className='h-screen' message='접근 권한이 없습니다.' />;
   }
 
   // super_admin은 전체, 조직 관리자는 track/batch만
@@ -19,10 +20,11 @@ const ManageManagersPage = () => {
     ? ["organization", "track", "batch"]
     : ["track", "batch"];
 
-    
   return (
     <div className='space-y-4'>
-      <h2 className='text-gray-700 text-xl font-semibold mb-4'>관리자 계정 관리</h2>
+      <h2 className='text-gray-700 text-xl font-semibold mb-4'>
+        관리자 계정 관리
+      </h2>
       <ManagerTable roleScope={roleScope} />
     </div>
   );

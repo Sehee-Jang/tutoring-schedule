@@ -5,9 +5,15 @@ export interface Tutor {
   name: string;
   email: string;
   status: TutorStatus;
-  organization?: string; // 조직 ID
-  track?: string; // 트랙 이름
-  batch?: string; // 기수
+  organizationId?: string; // 조직 ID
+  trackId?: string; // 트랙 ID
+  batchId?: string; // 기수 ID
+}
+
+export interface ExtendedTutor extends Tutor {
+  organizationName?: string;
+  trackName?: string;
+  batchName?: string;
 }
 
 // Tutor의 개별 튜터링 가능 시간 (ex: 하루치)

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { db } from "../services/firebase";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
-import { Tutor } from "../types/tutor";
+import { ExtendedTutor, Tutor } from "../types/tutor";
+import { getNameById } from "../utils/getOrgNameById";
 
 interface UseFetchTutorsOptions {
   role: string;
@@ -16,7 +17,7 @@ export const useFetchTutors = ({
   trackId,
   batchId,
 }: UseFetchTutorsOptions) => {
-  const [tutors, setTutors] = useState<Tutor[]>([]);
+  const [tutors, setTutors] = useState<ExtendedTutor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,16 +32,43 @@ export const useFetchTutors = ({
       q = query(q, where("trackId", "==", trackId));
     } else if (role === "batch_admin" && batchId) {
       q = query(q, where("batchId", "==", batchId));
+    } else if (role === "student" && organizationId && trackId && batchId) {
+      q = query(
+        q,
+        where("organizationId", "==", organizationId),
+        where("trackId", "==", trackId),
+        where("batchId", "==", batchId)
+      );
     }
 
     const unsubscribe = onSnapshot(
       q,
-      (snapshot) => {
-        const data = snapshot.docs.map((doc) => ({
+      async (snapshot) => {
+        const rawTutors = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...(doc.data() as Omit<Tutor, "id">),
         }));
-        setTutors(data);
+
+        // 이름 매핑
+        const enrichedTutors = await Promise.all(
+          rawTutors.map(async (tutor) => ({
+            ...tutor,
+            organizationName: await getNameById(
+              "organizations",
+              tutor.organizationId
+            ),
+            trackName: await getNameById(
+              `organizations/${tutor.organizationId}/tracks`,
+              tutor.trackId
+            ),
+            batchName: await getNameById(
+              `organizations/${tutor.organizationId}/tracks/${tutor.trackId}/batches`,
+              tutor.batchId
+            ),
+          }))
+        );
+
+        setTutors(enrichedTutors);
         setLoading(false);
       },
       (err) => {
