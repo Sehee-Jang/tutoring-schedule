@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { CalendarCheck, Clock } from "lucide-react";
+import { CalendarCheck, Clock, UserRoundPen } from "lucide-react";
 import { useReservations } from "../../../context/ReservationContext";
 import { useAuth } from "../../../context/AuthContext";
 import NotificationBox from "./NotificationBox";
@@ -28,6 +28,11 @@ const TutorSidebar = () => {
       label: "튜터링 시간 설정",
       path: "/tutor/time-settings",
       icon: <Clock className='w-4 h-4' />,
+    },
+    {
+      label: "개인 프로필 설정",
+      path: "/tutor/profile-settings",
+      icon: <UserRoundPen className='w-4 h-4' />,
     },
   ];
 

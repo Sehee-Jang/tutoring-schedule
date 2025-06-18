@@ -25,6 +25,7 @@ import ManageOrganizationPage from "./pages/admin/ManageOrganizationPage";
 import AdminSettingsPage from "./pages/admin/AdminSettingsPage";
 import ManageManagersPage from "./pages/admin/ManageManagersPage";
 import PendingApprovalPage from "./pages/auth/PendingApprovalPage";
+import TutorProfilePage from "./pages/tutor/TutorProfilePage";
 
 const App: React.FC = () => {
   return (
@@ -71,6 +72,7 @@ const App: React.FC = () => {
               element={<ReservationStatusForTutor />}
             />
             <Route path='time-settings' element={<TimeSettingsPanel />} />
+            <Route path='profile-settings' element={<TutorProfilePage />} />
           </Route>
         </Routes>
         <ModalRenderer />

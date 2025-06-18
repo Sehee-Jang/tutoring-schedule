@@ -16,6 +16,7 @@ import { auth } from "../services/firebase";
 
 interface AuthContextType {
   user: User | null;
+  setUser: (user: User | null) => void;
   isLoading: boolean;
   isAdmin: boolean;
   isTutor: boolean;
@@ -23,6 +24,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  setUser: () => {},
   isLoading: true,
   isAdmin: false,
   isTutor: false,
@@ -52,6 +54,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             organizationId?: string;
             trackId?: string;
             batchId?: string;
+            batchIds?: string[];
           };
 
           // 비활성 계정이면 즉시 로그아웃
@@ -90,7 +93,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             role: data.role as UserRole,
             organizationId: data.organizationId ?? null,
             trackId: data.trackId ?? null,
-            batchIds: data.batchId ? [data.batchId] : [],
+            batchIds: Array.isArray(data.batchIds)
+              ? data.batchIds
+              : data.batchId
+              ? [data.batchId]
+              : [],
+
             status: (data.status as UserStatus) ?? "active",
           };
           setUser(newUser);
@@ -115,7 +123,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const isTutor = user?.role === "tutor";
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, isAdmin, isTutor }}>
+    <AuthContext.Provider
+      value={{ user, setUser, isLoading, isAdmin, isTutor }}
+    >
       {children}
     </AuthContext.Provider>
   );
