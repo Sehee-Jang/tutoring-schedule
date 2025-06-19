@@ -16,8 +16,13 @@ import { Batch } from "../../../types/batch";
 import {
   isOrganizationAdminOrHigher,
   isSuperAdmin,
-  isTrackAdminOrHigher,
 } from "../../../utils/roleUtils";
+import {
+  getVisibleFieldsForRole,
+  ROLE_LABEL,
+} from "../../../utils/getVisibleFieldsForRole";
+import { getAllowedRolesByUserRole } from "../../../utils/getAllowedRolesByUserRole";
+import { UserRole } from "../../../types/user";
 
 interface ManagerFormModalProps {
   isOpen: boolean;
@@ -29,10 +34,7 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
   onClose,
 }) => {
   const { user } = useAuth();
-  // const isSuperAdmin = user?.role === "super_admin";
-  const isTrackAdmin = user?.role === "track_admin";
-
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState<UserRole | "">("");
   const [organizations, setOrganizations] = useState<
     { id: string; name: string }[]
   >([]);
@@ -41,12 +43,21 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
   const [selectedBatchId, setSelectedBatchId] = useState("");
   const { tracks } = useTracks(selectedOrgId);
   const [batches, setBatches] = useState<Batch[]>([]);
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  console.log("batches", batches);
-  // 조직 목록 불러오기 (슈퍼관리자만)
+
+  const availableRoles = getAllowedRolesByUserRole(user?.role);
+  const {
+    showOrgSelect,
+    showTrackSelect,
+    showBatchSelect,
+    showRoleSelect,
+    allowedRoles,
+  } = getVisibleFieldsForRole(user?.role, role as UserRole);
+  
+
+
   useEffect(() => {
     if (isSuperAdmin(user?.role)) {
       const fetchOrganizations = async () => {
@@ -63,39 +74,77 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
     }
   }, [user]);
 
-  // 트랙 선택 시 해당 트랙의 기수 불러오기 (배치)
   useEffect(() => {
-    const fetchBatches = async () => {
-      if (!selectedOrgId || !selectedTrackId || role !== "batch_admin") {
-        setBatches([]);
-        return;
+    if (user?.role === "track_admin") {
+      setRole("batch_admin");
+      setSelectedOrgId(user.organizationId || "");
+      setSelectedTrackId(user.trackId || "");
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!role) return;
+
+    if (role === "organization_admin") {
+      isSuperAdmin(user?.role) && setSelectedOrgId("");
+      setSelectedTrackId("");
+      setSelectedBatchId("");
+    }
+
+    if (role === "track_admin") {
+      if (!selectedOrgId && user?.organizationId) {
+        setSelectedOrgId(user.organizationId);
       }
+      setSelectedTrackId("");
+      setSelectedBatchId("");
+    }
 
-      const snapshot = await getDocs(
-        collection(
-          db,
-          "organizations",
-          selectedOrgId,
-          "tracks",
-          selectedTrackId,
-          "batches"
-        )
-      );
+    if (role === "batch_admin") {
+      if (!selectedOrgId && user?.organizationId) {
+        setSelectedOrgId(user.organizationId);
+      }
+      if (!selectedTrackId && user?.trackId) {
+        setSelectedTrackId(user.trackId);
+      }
+      setSelectedBatchId("");
+    }
+  }, [role]);
 
-      const batchList: Batch[] = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        name: doc.data().name || "",
-        startDate: doc.data().startDate || "",
-        endDate: doc.data().endDate || "",
-        createdAt: doc.data().created_at?.toDate?.() ?? new Date(),
-        updatedAt: doc.data().updated_at?.toDate?.() ?? new Date(),
-      }));
+  useEffect(() => {
+    if (
+      selectedOrgId &&
+      selectedTrackId &&
+      (role === "batch_admin" || user?.role === "track_admin")
+    ) {
+      const fetchBatches = async () => {
+        const snapshot = await getDocs(
+          collection(
+            db,
+            "organizations",
+            selectedOrgId,
+            "tracks",
+            selectedTrackId,
+            "batches"
+          )
+        );
 
-      setBatches(batchList);
-    };
+        const batchList: Batch[] = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          name: doc.data().name || "",
+          startDate: doc.data().startDate || "",
+          endDate: doc.data().endDate || "",
+          createdAt: doc.data().created_at?.toDate?.() ?? new Date(),
+          updatedAt: doc.data().updated_at?.toDate?.() ?? new Date(),
+        }));
 
-    fetchBatches();
-  }, [selectedTrackId, selectedOrgId, role]);
+        setBatches(batchList);
+      };
+
+      fetchBatches();
+    } else {
+      setBatches([]);
+    }
+  }, [selectedTrackId, selectedOrgId, role, user?.role]);
 
   const handleCreate = async () => {
     if (!name || !email || !password || !role) return;
@@ -113,11 +162,9 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
     };
 
     userData.organizationId = selectedOrgId;
-
     if (role === "track_admin" || role === "batch_admin") {
       userData.trackId = selectedTrackId;
     }
-
     if (role === "batch_admin") {
       userData.batchId = selectedBatchId;
     }
@@ -130,147 +177,141 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
 
   return (
     <ModalLayout onClose={onClose}>
-      <div className='space-y-4'>
-        {/* <select
-          className='input'
-          value={role}
-          onChange={(e) => {
-            setRole(e.target.value);
-            setSelectedTrackId("");
-            setSelectedBatchId("");
-          }}
-        >
-          <option value=''>관리자 역할 선택</option>
-          <option value='organization_admin'>조직 관리자</option>
-          <option value='track_admin'>트랙 관리자</option>
-          <option value='batch_admin'>기수 관리자</option>
-        </select> */}
+      <div className='space-y-6 p-6'>
+        <h2 className='text-xl font-semibold'>관리자 등록</h2>
 
-        {/* 관리자 유형 선택 (슈퍼관리자만) */}
-        {isSuperAdmin(user?.role) && (
-          <select
-            className='input'
-            value={role}
-            onChange={(e) => {
-              setRole(e.target.value);
-              setSelectedTrackId("");
-              setSelectedBatchId("");
-            }}
-          >
-            <option value=''>관리자 역할 선택</option>
-            <option value='organization_admin'>조직 관리자</option>
-            <option value='track_admin'>트랙 관리자</option>
-            <option value='batch_admin'>기수 관리자</option>
-          </select>
-        )}
-
-        {/* 관리자 유형 선택 (조직관리자 이상) */}
-        {isOrganizationAdminOrHigher(user?.role) && (
-          <select
-            className='input'
-            value={role}
-            onChange={(e) => {
-              setRole(e.target.value);
-              setSelectedTrackId("");
-              setSelectedBatchId("");
-            }}
-          >
-            <option value=''>관리자 역할 선택</option>
-            <option value='track_admin'>트랙 관리자</option>
-            <option value='batch_admin'>기수 관리자</option>
-          </select>
-        )}
-
-        {/* 관리자 유형 선택 (트랙관리자 이상) */}
-        {isSuperAdmin(user?.role) && (
-          <select
-            className='input'
-            value={role}
-            onChange={(e) => {
-              setRole(e.target.value);
-              setSelectedTrackId("");
-              setSelectedBatchId("");
-            }}
-          >
-            <option value=''>관리자 역할 선택</option>
-            <option value='batch_admin'>기수 관리자</option>
-          </select>
-        )}
-
-        {/* 조직 선택 (슈퍼관리자만) */}
-        {isSuperAdmin(user?.role) && (
-          <select
-            className='input'
-            value={selectedOrgId}
-            onChange={(e) => setSelectedOrgId(e.target.value)}
-          >
-            <option value=''>조직 선택</option>
-            {organizations.map((org) => (
-              <option key={org.id} value={org.id}>
-                {org.name}
-              </option>
-            ))}
-          </select>
-        )}
-
-        {/* 트랙 선택 (슈퍼, 조직 관리자만) */}
-        {(role === "track_admin" || role === "batch_admin") &&
-          isOrganizationAdminOrHigher(user?.role) && (
+        {/* 역할 선택 */}
+        {user?.role !== "track_admin" && (
+          <div className='space-y-1'>
+            <label className='text-sm font-medium'>관리자 역할</label>
             <select
-              className='input'
-              value={selectedTrackId}
-              onChange={(e) => setSelectedTrackId(e.target.value)}
-              disabled={!selectedOrgId}
+              value={role}
+              onChange={(e) => {
+                setRole(e.target.value as UserRole);
+                setSelectedTrackId("");
+                setSelectedBatchId("");
+              }}
+              className='w-full border rounded px-3 py-2 text-sm'
             >
-              <option value=''>트랙 선택</option>
-              {tracks.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name}
+              <option value=''>선택</option>
+              {availableRoles.map((r) => (
+                <option key={r} value={r}>
+                  {ROLE_LABEL[r]}
                 </option>
               ))}
             </select>
-          )}
-
-        {/* 기수 선택 (슈퍼, 조직, 트랙 관리자) */}
-        {role === "batch_admin" && isTrackAdminOrHigher(user?.role) && (
-          <select
-            className='input'
-            value={selectedBatchId}
-            onChange={(e) => setSelectedBatchId(e.target.value)}
-            disabled={!selectedTrackId}
-          >
-            <option value=''>기수 선택</option>
-            {batches.map((b) => (
-              <option key={b.id} value={b.id}>
-                {b.name}
-              </option>
-            ))}
-          </select>
+          </div>
         )}
 
-        <input
-          className='input'
-          placeholder='이름'
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <input
-          className='input'
-          placeholder='이메일'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          className='input'
-          placeholder='비밀번호'
-          type='password'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        {user?.role === "track_admin" && (
+          <div>
+            <label className='text-sm font-medium'>관리자 역할</label>
+            <p className='text-sm px-3 py-2 border rounded bg-gray-100 text-gray-600'>
+              {ROLE_LABEL["batch_admin"]}
+            </p>
+          </div>
+        )}
 
-        <Button variant='primary' onClick={handleCreate} disabled={!role}>
-          관리자 등록
-        </Button>
+        {/* 조직 선택 */}
+        {showOrgSelect && (
+          <div className='space-y-1'>
+            <label className='text-sm font-medium'>소속 조직</label>
+            <select
+              value={selectedOrgId}
+              onChange={(e) => setSelectedOrgId(e.target.value)}
+              className='w-full border rounded px-3 py-2 text-sm'
+              disabled={user?.role !== "super_admin"}
+            >
+              <option value=''>선택</option>
+              {organizations.map((org) => (
+                <option key={org.id} value={org.id}>
+                  {org.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* 트랙 선택 */}
+        {showTrackSelect && (
+          <div className='space-y-1'>
+            <label className='text-sm font-medium'>소속 트랙</label>
+            <select
+              value={selectedTrackId}
+              onChange={(e) => setSelectedTrackId(e.target.value)}
+              className='w-full border rounded px-3 py-2 text-sm'
+              disabled={!selectedOrgId}
+            >
+              <option value=''>선택</option>
+              {tracks.map((track) => (
+                <option key={track.id} value={track.id}>
+                  {track.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* 기수 선택 */}
+        {showBatchSelect && (
+          <div className='space-y-1'>
+            <label className='text-sm font-medium'>담당 기수</label>
+            <select
+              value={selectedBatchId}
+              onChange={(e) => setSelectedBatchId(e.target.value)}
+              className='w-full border rounded px-3 py-2 text-sm'
+              disabled={!selectedTrackId}
+            >
+              <option value=''>선택</option>
+              {batches.map((batch) => (
+                <option key={batch.id} value={batch.id}>
+                  {batch.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* 기본 정보 입력 */}
+        <div className='space-y-1'>
+          <label className='text-sm font-medium'>이름</label>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className='w-full border rounded px-3 py-2 text-sm'
+            placeholder='이름을 입력하세요'
+          />
+        </div>
+        <div className='space-y-1'>
+          <label className='text-sm font-medium'>이메일</label>
+          <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className='w-full border rounded px-3 py-2 text-sm'
+            placeholder='이메일을 입력하세요'
+          />
+        </div>
+        <div className='space-y-1'>
+          <label className='text-sm font-medium'>비밀번호</label>
+          <input
+            type='password'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className='w-full border rounded px-3 py-2 text-sm'
+            placeholder='비밀번호를 입력하세요'
+          />
+        </div>
+
+        <div className='pt-2'>
+          <Button
+            variant='primary'
+            onClick={handleCreate}
+            disabled={!role || !name || !email || !password}
+            className='w-full'
+          >
+            관리자 등록
+          </Button>
+        </div>
       </div>
     </ModalLayout>
   );
