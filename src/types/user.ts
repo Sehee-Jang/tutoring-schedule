@@ -1,3 +1,5 @@
+export type UserStatus = "active" | "inactive" | "pending";
+
 // UserRole 타입
 export type UserRole =
   | "super_admin" // 최상위 관리자 (운영진)
@@ -20,4 +22,8 @@ export interface User {
   createdAt?: string;
 }
 
-export type UserStatus = "active" | "inactive" | "pending";
+export interface EnrichedUser extends User {
+  organizationName?: string;
+  trackName?: string;
+  batchName?: string[];
+}

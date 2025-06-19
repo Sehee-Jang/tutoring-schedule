@@ -13,10 +13,7 @@ import { useAuth } from "../../../context/AuthContext";
 import Button from "../../shared/Button";
 import { useTracks } from "../../../hooks/useTracks";
 import { Batch } from "../../../types/batch";
-import {
-  isOrganizationAdminOrHigher,
-  isSuperAdmin,
-} from "../../../utils/roleUtils";
+import { isSuperAdmin } from "../../../utils/roleUtils";
 import {
   getVisibleFieldsForRole,
   ROLE_LABEL,
@@ -55,8 +52,6 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
     showRoleSelect,
     allowedRoles,
   } = getVisibleFieldsForRole(user?.role, role as UserRole);
-  
-
 
   useEffect(() => {
     if (isSuperAdmin(user?.role)) {
@@ -180,36 +175,41 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
       <div className='space-y-6 p-6'>
         <h2 className='text-xl font-semibold'>관리자 등록</h2>
 
+
         {/* 역할 선택 */}
-        {user?.role !== "track_admin" && (
+        {showRoleSelect ? (
           <div className='space-y-1'>
-            <label className='text-sm font-medium'>관리자 역할</label>
+            <label className='text-sm font-medium text-gray-700'>
+              관리자 역할
+            </label>
             <select
+              className='w-full border rounded-md px-3 py-2 text-sm'
               value={role}
               onChange={(e) => {
                 setRole(e.target.value as UserRole);
                 setSelectedTrackId("");
                 setSelectedBatchId("");
               }}
-              className='w-full border rounded px-3 py-2 text-sm'
             >
               <option value=''>선택</option>
-              {availableRoles.map((r) => (
+              {allowedRoles.map((r) => (
                 <option key={r} value={r}>
                   {ROLE_LABEL[r]}
                 </option>
               ))}
             </select>
           </div>
-        )}
-
-        {user?.role === "track_admin" && (
-          <div>
-            <label className='text-sm font-medium'>관리자 역할</label>
-            <p className='text-sm px-3 py-2 border rounded bg-gray-100 text-gray-600'>
-              {ROLE_LABEL["batch_admin"]}
-            </p>
-          </div>
+        ) : (
+          user?.role === "track_admin" && (
+            <div className='space-y-1'>
+              <label className='text-sm font-medium text-gray-700'>
+                관리자 역할
+              </label>
+              <p className='text-sm px-3 py-2 border rounded-md bg-gray-100 text-gray-600'>
+                {ROLE_LABEL["batch_admin"]}
+              </p>
+            </div>
+          )
         )}
 
         {/* 조직 선택 */}
