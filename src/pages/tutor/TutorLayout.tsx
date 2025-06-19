@@ -11,14 +11,23 @@ import {
 const TutorLayout = () => {
   const [date, setDate] = useState(new Date());
   const selectedDate = format(date, "yyyy-MM-dd");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
   return (
     <TutorReservationProvider selectedDate={selectedDate}>
       <div className='flex flex-col h-screen bg-gray-50 px-8 py-6 gap-10'>
-        <TutorHeader />
+        {/* <TutorHeader /> */}
         <div className='flex flex-1 bg-gray-50 gap-5'>
           <ReservationProvider>
-            <aside className='w-[190px] border border-gray-200 bg-white rounded-xl'>
-              <Sidebar />
+            <aside
+              className={`${
+                isSidebarOpen ? "w-[190px]" : "w-[56px]"
+              } transition-all duration-300 border border-gray-200 bg-white rounded-xl`}
+            >
+              <Sidebar
+                isOpen={isSidebarOpen}
+                toggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
+              />
             </aside>
           </ReservationProvider>
           <main className='flex-1 overflow-y-auto p-6 border border-gray-200 bg-white rounded-xl'>
