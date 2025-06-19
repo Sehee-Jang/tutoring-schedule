@@ -24,7 +24,7 @@ const CompleteProfilePage = () => {
     role: "",
     organizationId: "",
     trackId: "",
-    batchId: "",
+    batchIds: [] as string[],
   });
 
   const [loading, setLoading] = useState(true);
@@ -53,7 +53,7 @@ const CompleteProfilePage = () => {
     if (name === "organizationId") {
       fetchTracks(value).then((trackList) => {
         setTracks(trackList);
-        setForm((prev) => ({ ...prev, trackId: "", batchId: "" }));
+        setForm((prev) => ({ ...prev, trackId: "", batchIds: [] }));
         setBatches([]);
       });
     }
@@ -61,7 +61,7 @@ const CompleteProfilePage = () => {
     if (name === "trackId") {
       const selectedTrack = tracks.find((t) => t.id === value);
       setBatches(selectedTrack?.batches || []);
-      setForm((prev) => ({ ...prev, batchId: "" }));
+      setForm((prev) => ({ ...prev, batchIds: [] }));
     }
   };
 
@@ -80,8 +80,8 @@ const CompleteProfilePage = () => {
     e.preventDefault();
     if (!user) return;
 
-    const { role, organizationId, trackId, batchId } = form;
-    if (!role || !organizationId || !trackId || !batchId) {
+    const { role, organizationId, trackId, batchIds } = form;
+    if (!role || !organizationId || !trackId || !batchIds.length) {
       toast({ title: "❌ 모든 항목을 선택해주세요.", variant: "destructive" });
       return;
     }
@@ -91,7 +91,7 @@ const CompleteProfilePage = () => {
         role,
         organizationId,
         trackId,
-        batchId,
+        batchIds: form.batchIds,
         status: role === "tutor" ? "pending" : "active",
         updatedAt: serverTimestamp(),
       };
@@ -184,9 +184,11 @@ const CompleteProfilePage = () => {
           <div>
             <label className='text-sm text-gray-600'>기수</label>
             <select
-              name='batchId'
-              value={form.batchId}
-              onChange={handleChange}
+              name='batchIds'
+              value={form.batchIds[0] || ""}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, batchIds: [e.target.value] }))
+              }
               className='w-full border px-3 py-2 rounded'
             >
               <option value=''>기수 선택</option>

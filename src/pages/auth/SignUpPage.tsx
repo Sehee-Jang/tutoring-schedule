@@ -25,7 +25,7 @@ const SignUpPage = () => {
     role: "student", // 기본값: 수강생
     organizationId: "",
     trackId: "",
-    batchId: "",
+    batchIds: [] as string[],
   });
 
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -81,7 +81,7 @@ const SignUpPage = () => {
         role: form.role,
         organizationId: form.organizationId,
         trackId: form.trackId,
-        batchId: form.batchId,
+        batchIds: form.batchIds,
         status: form.role === "tutor" ? "pending" : "active",
         createdAt: serverTimestamp(),
       });
@@ -180,9 +180,12 @@ const SignUpPage = () => {
             </select>
 
             <select
-              name='batchId'
-              value={form.batchId}
-              onChange={handleChange}
+              name='batchIds'
+              multiple
+              value={form.batchIds[0] || ""}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, batchIds: [e.target.value] }))
+              }
               className='border px-3 py-2 rounded'
               required
             >

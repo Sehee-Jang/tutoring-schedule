@@ -22,7 +22,25 @@ export const useFetchTutors = ({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!role) return;
+    const isValidStudent =
+      role === "student" &&
+      !!organizationId &&
+      !!trackId &&
+      Array.isArray(batchIds) &&
+      batchIds.length > 0;
+
+      if (!role) {
+        setTutors([]);
+        setLoading(false);
+        return;
+      }
+
+    // // role이 없거나 조건이 만족되지 않으면 tutors 초기화
+    // if (!isValidStudent) {
+    //   setTutors([]);
+    //   setLoading(false);
+    //   return;
+    // }
 
     let q = query(collection(db, "users"), where("role", "==", "tutor"));
 
@@ -31,7 +49,7 @@ export const useFetchTutors = ({
     } else if (role === "track_admin" && trackId) {
       q = query(q, where("trackId", "==", trackId));
     } else if (role === "batch_admin" && batchIds) {
-      q = query(q, where("batchId", "==", batchIds));
+      q = query(q, where("batchIds", "array-contains", batchIds[0]));
     } else if (
       role === "student" &&
       organizationId &&

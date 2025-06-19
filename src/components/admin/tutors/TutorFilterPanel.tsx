@@ -9,7 +9,7 @@ interface OptionItem {
 export interface FilterValues {
   organizationId: string;
   trackId: string;
-  batchId: string;
+  batchIds: string[];
   searchText: string;
 }
 
@@ -37,7 +37,7 @@ const TutorFilterPanel: React.FC<TutorFilterPanelProps> = ({
     onFilterChange({
       organizationId: selectedOrg || "",
       trackId: selectedTrack || "",
-      batchId: selectedBatch || "",
+      batchIds: selectedBatch ? [selectedBatch] : [],
       searchText,
     });
   }, [searchText, selectedOrg, selectedTrack, selectedBatch]);

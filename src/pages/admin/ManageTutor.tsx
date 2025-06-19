@@ -29,7 +29,7 @@ const ManageTutor = () => {
   const [filters, setFilters] = useState({
     organizationId: "",
     trackId: "",
-    batchId: "",
+    batchIds: [] as string[],
     searchText: "",
   });
 
@@ -105,7 +105,8 @@ const ManageTutor = () => {
       tutor.organizationId === filters.organizationId;
     const matchTrack = !filters.trackId || tutor.trackId === filters.trackId;
     const matchBatch =
-      !filters.batchId || tutor.batchIds?.includes(filters.batchId);
+      !filters.batchIds.length ||
+      filters.batchIds.some((id) => tutor.batchIds?.includes(id));
 
     const matchSearch =
       !filters.searchText ||
