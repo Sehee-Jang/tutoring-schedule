@@ -29,129 +29,6 @@ const ManagerTable: React.FC<ManagerTableProps> = ({ roleScope }) => {
   const effectiveOrgId =
     user?.role === "super_admin" ? selectedOrgId : user?.organizationId;
 
-  // useEffect(() => {
-  //   loadManagers();
-  // }, [user?.organizationId]);
-
-  // const loadManagers = async () => {
-  //   if (!user?.organizationId) return;
-
-  //   const loadAndEnrich = async (
-  //     role: "organization_admin" | "track_admin" | "batch_admin"
-  //   ) => {
-  //     const list = await fetchManagersByRole(role, user.organizationId!);
-  //     const enriched = await Promise.all(
-  //       list.map(async (u) => ({
-  //         ...u,
-  //         organizationName: await getNameById(
-  //           "organizations",
-  //           u.organizationId ?? undefined
-  //         ),
-  //         trackName: u.trackId
-  //           ? await getNameById(
-  //               `organizations/${u.organizationId}/tracks`,
-  //               u.trackId
-  //             )
-  //           : "-",
-  //         batchName: Array.isArray(u.batchIds)
-  //           ? await Promise.all(
-  //               u.batchIds.map((id) =>
-  //                 getNameById(
-  //                   `organizations/${u.organizationId}/tracks/${u.trackId}/batches`,
-  //                   id
-  //                 )
-  //               )
-  //             )
-  //           : [],
-  //       }))
-  //     );
-
-  //     return enriched;
-  //   };
-
-  //   if (roleScope.includes("organization")) {
-  //     const data = await loadAndEnrich("organization_admin");
-  //     setOrgManagers(data);
-  //   }
-  //   if (roleScope.includes("track")) {
-  //     const data = await loadAndEnrich("track_admin");
-  //     setTrackManagers(data);
-  //   }
-  //   if (roleScope.includes("batch")) {
-  //     const data = await loadAndEnrich("batch_admin");
-  //     setBatchManagers(data);
-  //   }
-  // };
-
-  // const onChangeStatus = async (
-  //   manager: EnrichedUser,
-  //   newStatus: UserStatus
-  // ) => {
-  //   try {
-  //     if (!manager.id || !manager.role) {
-  //       throw new Error("관리자 정보가 불완전합니다.");
-  //     }
-
-  //     const userRef = doc(db, "users", manager.id);
-  //     await updateDoc(userRef, { status: newStatus });
-
-  //     toast({
-  //       title: `상태가 ${
-  //         newStatus === "active"
-  //           ? "활성"
-  //           : newStatus === "inactive"
-  //           ? "비활성"
-  //           : "승인 대기"
-  //       }로 변경되었습니다.`,
-  //     });
-
-  //     // 목록 갱신
-  //     await loadManagers();
-  //   } catch (error) {
-  //     console.error("상태 변경 오류:", error);
-  //     toast({ title: "상태 변경 실패", variant: "destructive" });
-  //   }
-  // };
-
-  // const renderTable = (title: string, managers: EnrichedUser[]) => (
-  //   <div className='overflow-x-auto'>
-  //     <h3 className='text-lg font-semibold text-gray-900 mb-2'>{title}</h3>
-  //     <table className='min-w-full bg-white border rounded'>
-  //       <thead>
-  //         <tr className='bg-gray-50 text-left text-sm text-gray-500'>
-  //           <th className='px-4 py-2'>이름</th>
-  //           <th className='px-4 py-2'>이메일</th>
-  //           <th className='px-4 py-2'>조직</th>
-  //           <th className='px-4 py-2'>트랙</th>
-  //           <th className='px-4 py-2'>기수</th>
-  //           <th className='px-4 py-2'>상태</th>
-  //         </tr>
-  //       </thead>
-  //       <tbody>
-  //         {managers.map((m) => (
-  //           <tr key={m.id} className='text-sm hover:bg-gray-50 border-t'>
-  //             <td className='px-4 py-2'>{m.name}</td>
-  //             <td className='px-4 py-2'>{m.email}</td>
-  //             <td className='px-4 py-2'>{m.organizationName ?? "-"}</td>
-  //             <td className='px-4 py-2'>{m.trackName ?? "-"}</td>
-  //             <td className='px-4 py-2'>
-  //               {Array.isArray(m.batchName) && m.batchName.length > 0
-  //                 ? m.batchName.join(", ")
-  //                 : "-"}
-  //             </td>
-  //             <td className='px-4 py-2'>
-  //               <ManagerStatusDropdown
-  //                 currentStatus={m.status ?? "active"}
-  //                 onChange={(newStatus) => onChangeStatus(m, newStatus)}
-  //               />
-  //             </td>
-  //           </tr>
-  //         ))}
-  //       </tbody>
-  //     </table>
-  //   </div>
-  // );
-
   useEffect(() => {
     if (effectiveOrgId) {
       loadManagers(effectiveOrgId);
@@ -235,7 +112,7 @@ const ManagerTable: React.FC<ManagerTableProps> = ({ roleScope }) => {
   const renderTable = (title: string, managers: EnrichedUser[]) => (
     <div className='overflow-x-auto'>
       <h3 className='text-lg font-semibold text-gray-900 mb-2'>{title}</h3>
-      <table className='min-w-full bg-white border rounded'>
+      <table className='w-full table-fixed bg-white border rounded'>
         <thead>
           <tr className='bg-gray-50 text-left text-sm text-gray-500'>
             <th className='px-4 py-2'>이름</th>
