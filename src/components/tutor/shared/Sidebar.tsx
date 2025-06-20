@@ -62,7 +62,7 @@ const TutorSidebar: React.FC<TutorSidebarProps> = ({
       {/* 상단: 토글 + 유저 정보 + 메뉴 + 오늘의 예약 */}
       <div className='space-y-6'>
         {/* 토글 버튼 */}
-        <div className='flex justify-end'>
+        <div className={`flex ${isOpen ? "justify-end" : "justify-center"}`}>
           <button
             onClick={toggleSidebar}
             className='p-2 rounded hover:bg-gray-100 transition'

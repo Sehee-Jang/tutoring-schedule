@@ -49,7 +49,10 @@ const menuItems: AdminSidebarItem[] = [
   },
 ];
 
-const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, toggleSidebar }) => {
+const AdminSidebar: React.FC<AdminSidebarProps> = ({
+  isOpen,
+  toggleSidebar,
+}) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -61,7 +64,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, toggleSidebar }) =>
     <div className='flex flex-col justify-between h-full py-4 px-2'>
       {/* 상단: 토글 버튼 + 유저 인사말 */}
       <div className='space-y-6'>
-        <div className='flex justify-end'>
+        <div className={`flex ${isOpen ? "justify-end" : "justify-center"}`}>
           <button
             onClick={toggleSidebar}
             className='p-2 rounded hover:bg-gray-100 transition'
