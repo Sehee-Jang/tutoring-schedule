@@ -16,6 +16,10 @@ export const isSuperAdmin = (role: UserRole | null | undefined): boolean => {
   return role === "super_admin";
 };
 
+export const isTrackAdmin = (role: UserRole | null | undefined): boolean => {
+  return role === "track_admin";
+};
+
 export const isOrganizationAdminOrHigher = (
   role: UserRole | null | undefined
 ): boolean => {

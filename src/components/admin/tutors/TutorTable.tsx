@@ -7,6 +7,8 @@ import { SortOption } from "../../../types/sort";
 import OrganizationDropdown from "./OrganizationDropdown";
 import TrackDropdown from "./TrackDropdown";
 import BatchDropdown from "./BatchDropdown";
+import { useAuth } from "../../../context/AuthContext";
+import { isSuperAdmin, isTrackAdmin } from "../../../utils/roleUtils";
 
 interface TutorTableProps {
   tutors: ExtendedTutor[];
@@ -21,6 +23,7 @@ const TutorTable: React.FC<TutorTableProps> = ({
   onChangeStatus,
   onShowAvailability,
 }) => {
+  const { user } = useAuth();
   const [sortOption, setSortOption] = useState<SortOption>({
     key: "name",
     direction: "asc",
@@ -74,14 +77,16 @@ const TutorTable: React.FC<TutorTableProps> = ({
                 onSortChange={handleSortChange}
               />
             </th>
-            <th className='p-3 border w-[160px]'>
-              <SortableHeader
-                label='조직'
-                sortKey='organizationName'
-                currentSort={sortOption}
-                onSortChange={handleSortChange}
-              />
-            </th>
+            {isSuperAdmin(user?.role) && (
+              <th className='p-3 border w-[160px]'>
+                <SortableHeader
+                  label='조직'
+                  sortKey='organizationName'
+                  currentSort={sortOption}
+                  onSortChange={handleSortChange}
+                />
+              </th>
+            )}
             <th className='p-3 border w-[160px]'>
               <SortableHeader
                 label='트랙'
@@ -114,41 +119,55 @@ const TutorTable: React.FC<TutorTableProps> = ({
             <tr key={tutor.id} className='text-sm hover:bg-gray-50'>
               <td className='p-3 border'>{tutor.name}</td>
               <td className='p-3 border'>{tutor.email}</td>
+              {isSuperAdmin(user?.role) && (
+                <td className='p-3 border'>
+                  <OrganizationDropdown
+                    tutorId={tutor.id}
+                    currentOrgId={tutor.organizationId}
+                  />
+                </td>
+              )}
               <td className='p-3 border'>
-                <OrganizationDropdown
-                  tutorId={tutor.id}
-                  currentOrgId={tutor.organizationId}
-                />
+                {isSuperAdmin(user?.role) ||
+                user?.role === "organization_admin" ? (
+                  <TrackDropdown
+                    tutorId={tutor.id}
+                    organizationId={tutor.organizationId}
+                    currentTrackId={tutor.trackId}
+                  />
+                ) : (
+                  <span className='text-sm text-gray-800'>
+                    {tutor.trackName || "-"}
+                  </span>
+                )}
               </td>
               <td className='p-3 border'>
-                <TrackDropdown
-                  tutorId={tutor.id}
-                  organizationId={tutor.organizationId}
-                  currentTrackId={tutor.trackId}
-                />
-              </td>
-              <td className='p-3 border'>
-                {/* <div className='flex flex-wrap gap-1'>
-                  {Array.isArray(tutor.batchNames) &&
-                  tutor.batchNames.length > 0 ? (
-                    tutor.batchNames.map((name: string, i: number) => (
-                      <span
-                        key={i}
-                        className='px-2 py-0.5 text-xs font-medium rounded-full bg-[#F1F5FF] text-[#1E40AF] border border-[#93C5FD]'
-                      >
-                        {name}
-                      </span>
-                    ))
-                  ) : (
-                    <span className='text-gray-400 text-sm'>-</span>
-                  )}
-                </div> */}
-                <BatchDropdown
-                  tutorId={tutor.id}
-                  currentBatchIds={tutor.batchIds ?? []}
-                  organizationId={tutor.organizationId}
-                  trackId={tutor.trackId}
-                />
+                {["super_admin", "organization_admin", "track_admin"].includes(
+                  user?.role ?? ""
+                ) ? (
+                  <BatchDropdown
+                    tutorId={tutor.id}
+                    currentBatchIds={tutor.batchIds ?? []}
+                    organizationId={tutor.organizationId}
+                    trackId={tutor.trackId}
+                  />
+                ) : (
+                  <div className='flex flex-wrap gap-1'>
+                    {Array.isArray(tutor.batchNames) &&
+                    tutor.batchNames.length > 0 ? (
+                      tutor.batchNames.map((name, i) => (
+                        <span
+                          key={i}
+                          className='px-2 py-0.5 text-xs font-medium rounded-full bg-[#F1F5FF] text-[#1E40AF] border border-[#93C5FD]'
+                        >
+                          {name}
+                        </span>
+                      ))
+                    ) : (
+                      <span className='text-gray-400 text-sm'>-</span>
+                    )}
+                  </div>
+                )}
               </td>
 
               <td className='p-3 border'>
