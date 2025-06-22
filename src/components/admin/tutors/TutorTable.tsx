@@ -75,16 +75,6 @@ const TutorTable: React.FC<TutorTableProps> = ({
     }
   }, [filters.batchIds]);
 
-  useEffect(() => {
-    console.log("🔥 orgOptions:", organizationOptions);
-    console.log("🔥 trackOptions:", trackOptions);
-    console.log("🔥 batchOptions:", batchOptions);
-  }, [organizationOptions, trackOptions, batchOptions]);
-
-  useEffect(() => {
-    console.log("👀 Table 내부에서 받은 batchOptions:", batchOptions);
-  }, [batchOptions]);
-
   const handleSortChange = (key: string, direction: "asc" | "desc") => {
     setSortOption({ key, direction });
   };

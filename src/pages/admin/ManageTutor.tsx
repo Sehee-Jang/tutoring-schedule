@@ -154,10 +154,6 @@ const ManageTutor = () => {
     }
   }, [user]);
 
-  useEffect(() => {
-    console.log("✅ 최종 batchOptions 전달됨:", batches);
-  }, [batches]);
-
   return (
     <div className='space-y-4 sm:px-6 lg:px-8'>
       <div className='flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2'>

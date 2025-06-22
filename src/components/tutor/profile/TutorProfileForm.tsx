@@ -44,7 +44,6 @@ const TutorProfileForm = ({ onSuccess }: Props) => {
   }, [user?.organizationId, user?.trackId]);
 
   useEffect(() => {
-    console.log("🔍 user.batchIds from AuthContext:", user?.batchIds);
     if (user && user.batchIds) {
       setSelectedBatchIds(user.batchIds);
     }
