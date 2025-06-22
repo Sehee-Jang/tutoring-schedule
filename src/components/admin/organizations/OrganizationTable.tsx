@@ -130,49 +130,46 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
 
   return (
     <div>
-      <h2 className='text-lg font-semibold mb-4'>조직 목록</h2>
+      <div className='flex items-center justify-between mb-4'>
+        <h2 className='text-[16px] font-semibold'>조직 목록</h2>
+        <Button size='sm' onClick={handleCreate}>
+          + 조직 추가
+        </Button>
+      </div>
 
       <ul className='space-y-2'>
         {organizations.map((org) => (
           <li
             key={org.id}
-            className={`cursor-pointer p-2 rounded ${
-              selectedOrgId === org.id
-                ? "bg-blue-100 text-blue-700"
-                : "hover:bg-gray-100"
-            }`}
             onClick={() => onSelectOrg(org.id)}
+            className={`cursor-pointer rounded-xl p-3 border ${
+              selectedOrgId === org.id
+                ? "border-blue-500 bg-blue-50 text-blue-700"
+                : "hover:bg-gray-50"
+            }`}
           >
             <div className='flex justify-between items-center'>
-              <span>{org.name}</span>
-
-              {/* 수정 삭제 버튼 */}
-              <div className='space-x-2'>
+              <span className='truncate'>{org.name}</span>
+              <div className='flex gap-2'>
                 <Button
-                  size='sm'
-                  variant='outline'
+                  size='xs'
+                  variant='ghost'
                   onClick={(e) => {
-                    e.stopPropagation(); // 부모 클릭 방지
+                    e.stopPropagation();
                     handleEdit(org);
                   }}
                 >
                   수정
                 </Button>
                 <DeleteAlertDialog
-                  onConfirm={async () => {
-                    await handleDelete(org.id);
-                  }}
                   triggerLabel='삭제'
+                  onConfirm={() => handleDelete(org.id)}
                 />
               </div>
             </div>
           </li>
         ))}
       </ul>
-
-      <Button variant='outline' onClick={handleCreate}>
-        조직 추가
-      </Button>
 
       <OrganizationFormModal
         isOpen={isModalOpen}

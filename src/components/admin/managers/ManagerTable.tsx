@@ -110,48 +110,89 @@ const ManagerTable: React.FC<ManagerTableProps> = ({ roleScope }) => {
   };
 
   const renderTable = (title: string, managers: EnrichedUser[]) => (
-    <div className='overflow-x-auto'>
-      <h3 className='text-lg font-semibold text-gray-900 mb-2'>{title}</h3>
-      <table className='w-full table-fixed bg-white border rounded'>
-        <thead>
-          <tr className='bg-gray-50 text-left text-sm text-gray-500'>
-            <th className='px-4 py-2'>이름</th>
-            <th className='px-4 py-2'>이메일</th>
-            <th className='px-4 py-2'>조직</th>
-            <th className='px-4 py-2'>트랙</th>
-            <th className='px-4 py-2'>기수</th>
-            <th className='px-4 py-2'>상태</th>
-          </tr>
-        </thead>
-        <tbody>
-          {managers.map((m) => (
-            <tr key={m.id} className='text-sm hover:bg-gray-50 border-t'>
-              <td className='px-4 py-2'>{m.name}</td>
-              <td className='px-4 py-2'>{m.email}</td>
-              <td className='px-4 py-2'>{m.organizationName ?? "-"}</td>
-              <td className='px-4 py-2'>{m.trackName ?? "-"}</td>
-              <td className='px-4 py-2'>
-                {Array.isArray(m.batchName) && m.batchName.length > 0
-                  ? m.batchName.join(", ")
-                  : "-"}
-              </td>
-              <td className='px-4 py-2'>
-                <ManagerStatusDropdown
-                  currentStatus={m.status ?? "active"}
-                  onChange={(newStatus) => onChangeStatus(m, newStatus)}
-                />
-              </td>
+    <>
+      <div className='hidden md:block overflow-x-auto'>
+        <h3 className='text-lg font-semibold text-gray-900 mb-2'>{title}</h3>
+        <table className='w-full table-fixed bg-white border rounded'>
+          <thead>
+            <tr className='bg-gray-50 text-left text-sm text-gray-500'>
+              <th className='px-4 py-2'>이름</th>
+              <th className='px-4 py-2'>이메일</th>
+              <th className='px-4 py-2'>조직</th>
+              <th className='px-4 py-2'>트랙</th>
+              <th className='px-4 py-2'>기수</th>
+              <th className='px-4 py-2'>상태</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {managers.map((m) => (
+              <tr key={m.id} className='text-sm hover:bg-gray-50 border-t'>
+                <td className='px-4 py-2'>{m.name}</td>
+                <td className='px-4 py-2'>{m.email}</td>
+                <td className='px-4 py-2'>{m.organizationName ?? "-"}</td>
+                <td className='px-4 py-2'>{m.trackName ?? "-"}</td>
+                <td className='px-4 py-2'>
+                  {Array.isArray(m.batchName) && m.batchName.length > 0
+                    ? m.batchName.join(", ")
+                    : "-"}
+                </td>
+                <td className='px-4 py-2'>
+                  <ManagerStatusDropdown
+                    currentStatus={m.status ?? "active"}
+                    onChange={(newStatus) => onChangeStatus(m, newStatus)}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* ✅ 모바일 카드형 */}
+      <div className='block md:hidden space-y-4'>
+        <h3 className='text-base font-semibold text-gray-900'>{title}</h3>
+        {managers.map((m) => (
+          <div
+            key={m.id}
+            className='border rounded-lg p-4 bg-white shadow-sm space-y-2 text-sm'
+          >
+            <div>
+              <span className='font-semibold'>이름:</span> {m.name}
+            </div>
+            <div>
+              <span className='font-semibold'>이메일:</span> {m.email}
+            </div>
+            <div>
+              <span className='font-semibold'>조직:</span>{" "}
+              {m.organizationName ?? "-"}
+            </div>
+            <div>
+              <span className='font-semibold'>트랙:</span> {m.trackName ?? "-"}
+            </div>
+            <div>
+              <span className='font-semibold'>기수:</span>{" "}
+              {Array.isArray(m.batchName) && m.batchName.length > 0
+                ? m.batchName.join(", ")
+                : "-"}
+            </div>
+            <div className='flex items-center gap-2'>
+              <span className='font-semibold'>상태:</span>
+              <ManagerStatusDropdown
+                currentStatus={m.status ?? "active"}
+                onChange={(newStatus) => onChangeStatus(m, newStatus)}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 
   return (
     <div className='space-y-8'>
+      {/* 조직 선택 */}
       {user?.role === "super_admin" && (
-        <div className='flex items-center gap-2'>
+        <div className='flex flex-col sm:flex-row items-start sm:items-center gap-2'>
           <label className='text-sm text-gray-700'>조직 선택</label>
           <select
             value={selectedOrgId ?? ""}
@@ -168,6 +209,7 @@ const ManagerTable: React.FC<ManagerTableProps> = ({ roleScope }) => {
         </div>
       )}
 
+      {/* 관리자 추가 버튼 */}
       <div className='flex justify-end'>
         <Button
           variant='primary'
@@ -178,6 +220,7 @@ const ManagerTable: React.FC<ManagerTableProps> = ({ roleScope }) => {
         </Button>
       </div>
 
+      {/* 테이블/카드 렌더링 */}
       {roleScope.includes("organization") &&
         renderTable("조직 관리자", orgManagers)}
       {roleScope.includes("track") && renderTable("트랙 관리자", trackManagers)}

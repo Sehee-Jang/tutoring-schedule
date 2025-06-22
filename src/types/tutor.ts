@@ -16,6 +16,16 @@ export interface ExtendedTutor extends Tutor {
   batchNames?: string[];
 }
 
+export interface FilterValues {
+  organizationId: string;
+  trackId: string;
+  batchIds: string[];
+  searchText: string;
+  name?: string;
+  email?: string;
+  status?: string;
+}
+
 // Tutor의 개별 튜터링 가능 시간 (ex: 하루치)
 export interface DailyAvailability {
   date: string; // '2025-05-02'

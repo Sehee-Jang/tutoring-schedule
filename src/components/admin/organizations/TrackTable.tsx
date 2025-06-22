@@ -93,48 +93,46 @@ const TrackTable: React.FC<TrackTableProps> = ({
 
   return (
     <div>
-      <h2 className='text-lg font-semibold mb-4'>트랙 목록</h2>
+      <div className='flex items-center justify-between mb-4'>
+        <h2 className='text-[16px] font-semibold'>트랙 목록</h2>
+        <Button size='sm' onClick={handleCreate}>
+          + 트랙 추가
+        </Button>
+      </div>
 
       <ul className='space-y-2'>
         {tracks.map((track) => (
           <li
             key={track.id}
-            className={`cursor-pointer p-2 rounded hover:bg-gray-100 ${
-              selectedTrackId === track.id
-                ? "bg-blue-100 text-blue-700"
-                : "hover:bg-gray-100"
-            }`}
             onClick={() => onSelectTrack(track.id)}
+            className={`cursor-pointer rounded-xl p-3 border ${
+              selectedTrackId === track.id
+                ? "border-blue-500 bg-blue-50 text-blue-700"
+                : "hover:bg-gray-50"
+            }`}
           >
-            {/* 수정 삭제 버튼 */}
             <div className='flex justify-between items-center'>
-              <span>{track.name}</span>
-              <div className='space-x-2'>
+              <span className='truncate'>{track.name}</span>
+              <div className='flex gap-2'>
                 <Button
-                  size='sm'
-                  variant='outline'
+                  size='xs'
+                  variant='ghost'
                   onClick={(e) => {
-                    e.stopPropagation(); // 부모 클릭 방지
+                    e.stopPropagation();
                     handleEdit(track);
                   }}
                 >
                   수정
                 </Button>
                 <DeleteAlertDialog
-                  onConfirm={async () => {
-                    handleDelete(track.id);
-                  }}
                   triggerLabel='삭제'
+                  onConfirm={() => handleDelete(track.id)}
                 />
               </div>
             </div>
           </li>
         ))}
       </ul>
-
-      <Button variant='outline' onClick={handleCreate} className='mt-4'>
-        트랙 추가
-      </Button>
 
       <TrackFormModal
         isOpen={isModalOpen}

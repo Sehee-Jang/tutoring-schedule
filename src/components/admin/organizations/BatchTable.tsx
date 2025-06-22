@@ -85,17 +85,22 @@ const BatchTable: React.FC<BatchTableProps> = ({ organizationId, trackId }) => {
 
   return (
     <div>
-      <h2 className='text-lg font-semibold mb-4'>기수 목록</h2>
+      <div className='flex items-center justify-between mb-4'>
+        <h2 className='text-[16px] font-semibold'>기수 목록</h2>
+        <Button size='sm' onClick={handleCreate}>
+          + 기수 추가
+        </Button>
+      </div>
 
       <ul className='space-y-2'>
         {batches.map((batch) => (
-          <li key={batch.id} className='p-2 rounded hover:bg-gray-100'>
+          <li key={batch.id} className='rounded-xl p-3 border hover:bg-gray-50'>
             <div className='flex justify-between items-center'>
-              <span>{batch.name}</span>
-              <div className='space-x-2'>
+              <span className='truncate'>{batch.name}</span>
+              <div className='flex gap-2'>
                 <Button
-                  size='sm'
-                  variant='outline'
+                  size='xs'
+                  variant='ghost'
                   onClick={(e) => {
                     e.stopPropagation();
                     handleEdit(batch);
@@ -104,8 +109,8 @@ const BatchTable: React.FC<BatchTableProps> = ({ organizationId, trackId }) => {
                   수정
                 </Button>
                 <Button
-                  size='sm'
-                  variant='warning'
+                  size='xs'
+                  variant='destructive'
                   onClick={(e) => {
                     e.stopPropagation();
                     handleDelete(batch.id);
@@ -118,10 +123,6 @@ const BatchTable: React.FC<BatchTableProps> = ({ organizationId, trackId }) => {
           </li>
         ))}
       </ul>
-
-      <Button variant='outline' onClick={handleCreate} className='mt-4'>
-        기수 추가
-      </Button>
 
       <BatchFormModal
         isOpen={isModalOpen}

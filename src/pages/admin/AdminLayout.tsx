@@ -8,7 +8,7 @@ const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
-    <div className='flex flex-col h-screen bg-gray-50 px-8 py-6 gap-10'>
+    <div className='flex flex-col h-screen bg-gray-50 px-4 sm:px-6 lg:px-8 py-6 gap-10'>
       {/* <AdminHeader  /> */}
       <div className='flex flex-1 bg-gray-50 gap-5'>
         <aside

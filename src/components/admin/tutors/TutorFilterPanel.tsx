@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { UserRole } from "../../../types/user";
+import { FilterValues } from "../../../types/tutor";
 
 interface OptionItem {
   id: string;
   name: string;
-}
-
-export interface FilterValues {
-  organizationId: string;
-  trackId: string;
-  batchIds: string[];
-  searchText: string;
 }
 
 interface TutorFilterPanelProps {
@@ -18,7 +12,7 @@ interface TutorFilterPanelProps {
   organizations: OptionItem[];
   tracks: OptionItem[];
   batches: OptionItem[];
-  onFilterChange: (filters: FilterValues) => void;
+  onFilterChange: (filters: Partial<FilterValues>) => void;
 }
 
 const TutorFilterPanel: React.FC<TutorFilterPanelProps> = ({
@@ -35,8 +29,8 @@ const TutorFilterPanel: React.FC<TutorFilterPanelProps> = ({
 
   useEffect(() => {
     onFilterChange({
-      organizationId: selectedOrg || "",
-      trackId: selectedTrack || "",
+      organizationId: selectedOrg,
+      trackId: selectedTrack,
       batchIds: selectedBatch ? [selectedBatch] : [],
       searchText,
     });
