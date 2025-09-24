@@ -190,6 +190,10 @@ const ManageTutor = () => {
 
       {loading || batchesLoading ? (
         <div className='text-center py-10'>Loading...</div>
+      ) : error ? (
+        <div className='text-center py-6 text-red-600'>
+          튜터 데이터를 불러오는 데 실패했습니다.
+        </div>
       ) : (
         <TutorTable
           tutors={filteredTutors}
@@ -202,11 +206,15 @@ const ManageTutor = () => {
           batchOptions={batches}
           onEdit={handleEdit}
           onChangeStatus={handleStatusChange}
-          onShowAvailability={(id) =>
-            showModal("availability", { selectedTutorId: id })
-          }
+          onShowAvailability={(id) => {
+            setAvailabilityModalTutor(id);
+            setIsAvailabilityModalOpen(true);
+          }}
           setSelectedOrgId={setSelectedOrgId}
-          setSelectedTrackId={setSelectedTrackId}
+          // 별도 track 상태를 쓰지 않고 filters.trackId만 유지
+          setSelectedTrackId={(id: string) =>
+            setFilters((prev) => ({ ...prev, trackId: id }))
+          }
         />
       )}
 

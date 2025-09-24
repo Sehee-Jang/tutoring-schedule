@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ModalLayout from "../../shared/ModalLayout";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../../services/firebase";
@@ -18,7 +18,6 @@ import {
   getVisibleFieldsForRole,
   ROLE_LABEL,
 } from "../../../utils/getVisibleFieldsForRole";
-import { getAllowedRolesByUserRole } from "../../../utils/getAllowedRolesByUserRole";
 import { UserRole } from "../../../types/user";
 
 interface ManagerFormModalProps {
@@ -31,6 +30,18 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
   onClose,
 }) => {
   const { user } = useAuth();
+
+  // isSuperAdmin 시그니처(UserRole | null | undefined)에 맞추기 위해 null 사용
+  const userRole = useMemo<import("../../../types/user").UserRole | null>(
+    () => user?.role ?? null,
+    [user?.role]
+  );
+  const userOrgId = useMemo(
+    () => user?.organizationId ?? "",
+    [user?.organizationId]
+  );
+  const userTrackId = useMemo(() => user?.trackId ?? "", [user?.trackId]);
+
   const [role, setRole] = useState<UserRole | "">("");
   const [organizations, setOrganizations] = useState<
     { id: string; name: string }[]
@@ -44,7 +55,6 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const availableRoles = getAllowedRolesByUserRole(user?.role);
   const {
     showOrgSelect,
     showTrackSelect,
@@ -54,7 +64,7 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
   } = getVisibleFieldsForRole(user?.role, role as UserRole);
 
   useEffect(() => {
-    if (isSuperAdmin(user?.role)) {
+    if (isSuperAdmin(userRole)) {
       const fetchOrganizations = async () => {
         const snapshot = await getDocs(collection(db, "organizations"));
         const list = snapshot.docs.map((doc) => ({
@@ -65,51 +75,55 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
       };
       fetchOrganizations();
     } else {
-      setSelectedOrgId(user?.organizationId || "");
+      if (selectedOrgId !== userOrgId) {
+        setSelectedOrgId(userOrgId);
+      }
     }
-  }, [user]);
+  }, [userRole, userOrgId, selectedOrgId]);
 
   useEffect(() => {
-    if (user?.role === "track_admin") {
-      setRole("batch_admin");
-      setSelectedOrgId(user.organizationId || "");
-      setSelectedTrackId(user.trackId || "");
+    if (userRole === "track_admin") {
+      if (role !== "batch_admin") setRole("batch_admin");
+      if (selectedOrgId !== userOrgId) setSelectedOrgId(userOrgId);
+      if (selectedTrackId !== userTrackId) setSelectedTrackId(userTrackId);
     }
-  }, [user]);
+  }, [userRole, userOrgId, userTrackId, role, selectedOrgId, selectedTrackId]);
 
   useEffect(() => {
     if (!role) return;
 
     if (role === "organization_admin") {
-      isSuperAdmin(user?.role) && setSelectedOrgId("");
-      setSelectedTrackId("");
-      setSelectedBatchId("");
+      if (isSuperAdmin(userRole) && selectedOrgId !== "") setSelectedOrgId("");
+      if (selectedTrackId !== "") setSelectedTrackId("");
+      if (selectedBatchId !== "") setSelectedBatchId("");
     }
 
     if (role === "track_admin") {
-      if (!selectedOrgId && user?.organizationId) {
-        setSelectedOrgId(user.organizationId);
-      }
-      setSelectedTrackId("");
-      setSelectedBatchId("");
+      if (!selectedOrgId && userOrgId) setSelectedOrgId(userOrgId);
+      if (selectedTrackId !== "") setSelectedTrackId("");
+      if (selectedBatchId !== "") setSelectedBatchId("");
     }
 
     if (role === "batch_admin") {
-      if (!selectedOrgId && user?.organizationId) {
-        setSelectedOrgId(user.organizationId);
-      }
-      if (!selectedTrackId && user?.trackId) {
-        setSelectedTrackId(user.trackId);
-      }
-      setSelectedBatchId("");
+      if (!selectedOrgId && userOrgId) setSelectedOrgId(userOrgId);
+      if (!selectedTrackId && userTrackId) setSelectedTrackId(userTrackId);
+      if (selectedBatchId !== "") setSelectedBatchId("");
     }
-  }, [role]);
+  }, [
+    role,
+    userRole,
+    userOrgId,
+    userTrackId,
+    selectedOrgId,
+    selectedTrackId,
+    selectedBatchId,
+  ]);
 
   useEffect(() => {
     if (
       selectedOrgId &&
       selectedTrackId &&
-      (role === "batch_admin" || user?.role === "track_admin")
+      (role === "batch_admin" || userRole === "track_admin")
     ) {
       const fetchBatches = async () => {
         const snapshot = await getDocs(
@@ -139,7 +153,7 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
     } else {
       setBatches([]);
     }
-  }, [selectedTrackId, selectedOrgId, role, user?.role]);
+  }, [selectedTrackId, selectedOrgId, role, userRole]);
 
   const handleCreate = async () => {
     if (!name || !email || !password || !role) return;
@@ -147,16 +161,29 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     const uid = cred.user.uid;
 
-    const userData: any = {
+    type TimestampLike = ReturnType<typeof serverTimestamp>;
+    interface NewUserData {
+      name: string;
+      email: string;
+      role: UserRole;
+      status: "active";
+      createdAt: TimestampLike;
+      updatedAt: TimestampLike;
+      organizationId?: string;
+      trackId?: string;
+      batchId?: string;
+    }
+
+    const userData: NewUserData = {
       name,
       email,
-      role,
+      role: role as UserRole,
       status: "active",
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     };
 
-    userData.organizationId = selectedOrgId;
+    if (selectedOrgId) userData.organizationId = selectedOrgId;
     if (role === "track_admin" || role === "batch_admin") {
       userData.trackId = selectedTrackId;
     }
@@ -174,7 +201,6 @@ const ManagerFormModal: React.FC<ManagerFormModalProps> = ({
     <ModalLayout onClose={onClose}>
       <div className='space-y-6 p-6'>
         <h2 className='text-xl font-semibold'>관리자 등록</h2>
-
 
         {/* 역할 선택 */}
         {showRoleSelect ? (

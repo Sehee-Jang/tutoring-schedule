@@ -45,9 +45,6 @@ const BatchDropdown: React.FC<BatchDropdownProps> = ({
     }
   };
 
-  const getBatchName = (id: string) =>
-    batches.find((b) => b.id === id)?.name || "-";
-
   return (
     <div className='relative inline-block text-left'>
       <button className='flex flex-wrap gap-1' onClick={() => setOpen(!open)}>

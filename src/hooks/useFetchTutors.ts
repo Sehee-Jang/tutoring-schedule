@@ -22,18 +22,11 @@ export const useFetchTutors = ({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const isValidStudent =
-      role === "student" &&
-      !!organizationId &&
-      !!trackId &&
-      Array.isArray(batchIds) &&
-      batchIds.length > 0;
-
-      if (!role) {
-        setTutors([]);
-        setLoading(false);
-        return;
-      }
+    if (!role) {
+      setTutors([]);
+      setLoading(false);
+      return;
+    }
 
     // // role이 없거나 조건이 만족되지 않으면 tutors 초기화
     // if (!isValidStudent) {

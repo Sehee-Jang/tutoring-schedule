@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Tutor, TutorStatus, ExtendedTutor } from "../../../types/tutor";
 import Button from "../../shared/Button";
 import StatusDropdown from "./StatusDropdown";
-import SortableHeader from "../../shared/SortableHeader";
 import { SortOption } from "../../../types/sort";
 import OrganizationDropdown from "./OrganizationDropdown";
 import TrackDropdown from "./TrackDropdown";

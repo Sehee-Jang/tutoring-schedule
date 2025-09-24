@@ -3,7 +3,6 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../services/firebase";
 import { useToast } from "../../hooks/use-toast";
 import { Switch } from "../../components/ui/switch";
-import Button from "../../components/shared/Button";
 import { DeleteAlertDialog } from "../../components/shared/DeleteAlertDialog";
 import SettingsCard from "../../components/admin/settings/SettingsCard";
 import { OctagonAlert, RefreshCcw } from "lucide-react";

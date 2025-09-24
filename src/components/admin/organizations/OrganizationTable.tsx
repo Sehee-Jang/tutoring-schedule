@@ -4,15 +4,9 @@ import {
   createOrganization,
   updateOrganization,
   deleteOrganization,
-  fetchTracks,
-  fetchBatches,
-  createTrack,
-  createBatch,
 } from "../../../services/admin/organization";
 import { useToast } from "../../../hooks/use-toast";
 import { Organization } from "../../../types/organization";
-import { Track } from "../../../types/track";
-import { Batch } from "../../../types/batch";
 import Button from "../../../components/shared/Button";
 import OrganizationFormModal from "./OrganizationFormModal";
 import { DeleteAlertDialog } from "../../../components/shared/DeleteAlertDialog";
@@ -35,14 +29,6 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
 
   const [organizations, setOrganizations] = useState<Organization[]>([]);
 
-  const [tracks, setTracks] = useState<Track[]>([]);
-  const [batches, setBatches] = useState<Batch[]>([]);
-  const [selectedOrg, setSelectedOrg] = useState<string | null>(null);
-  const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
-
-  const [newTrack, setNewTrack] = useState("");
-  const [newBatch, setNewBatch] = useState("");
-
   useEffect(() => {
     loadOrganizations();
   }, []);
@@ -50,42 +36,6 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
   const loadOrganizations = async () => {
     const orgList = await fetchOrganizations();
     setOrganizations(orgList);
-  };
-
-  const loadTracks = async (organizationId: string) => {
-    const trackList = await fetchTracks(organizationId);
-    setTracks(trackList);
-    setSelectedOrg(organizationId);
-    setBatches([]); // 기수 초기화
-    setSelectedTrack(null);
-  };
-
-  const loadBatches = async (organizationId: string, trackId: string) => {
-    const batchList = await fetchBatches(organizationId, trackId);
-    setBatches(batchList);
-    setSelectedTrack(trackId);
-  };
-
-  const handleCreateTrack = async () => {
-    if (!newTrack.trim() || !selectedOrg) return;
-    await createTrack(selectedOrg, newTrack);
-    toast({ title: "트랙 생성 완료" });
-    setNewTrack("");
-    loadTracks(selectedOrg);
-  };
-
-  const handleCreateBatch = async () => {
-    if (!newBatch.trim() || !selectedOrg || !selectedTrack) return;
-    await createBatch(
-      selectedOrg,
-      selectedTrack,
-      newBatch,
-      "2025-01-01",
-      "2025-12-31"
-    );
-    toast({ title: "기수 생성 완료" });
-    setNewBatch("");
-    loadBatches(selectedOrg, selectedTrack);
   };
 
   const handleCreate = () => {

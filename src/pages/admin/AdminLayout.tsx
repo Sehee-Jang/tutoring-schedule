@@ -1,8 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
 import AdminSidebar from "../../components/admin/shared/AdminSidebar";
-import AdminHeader from "../../components/admin/shared/AdminHeader";
-import { Menu, ChevronLeft } from "lucide-react";
 
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
