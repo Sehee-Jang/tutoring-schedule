@@ -1,80 +1,123 @@
-import React from "react";
+// src/App.tsx
+import React, { lazy, Suspense } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from "react-router-dom";
+
 import AppContent from "./components/layout/AppContent";
-import AdminRoute from "./components/common/AdminRoute";
 import ModalRenderer from "./components/shared/ModalRenderer";
 import Providers from "./Providers";
-import LoginPage from "./components/auth/LoginPage";
-import SignUpPage from "./pages/auth/SignUpPage";
-import CompleteProfilePage from "./pages/auth/CompleteProfilePage";
-import ManageTutor from "./pages/admin/ManageTutor";
-import ProtectedRoute from "./components/ProtectedRoute";
-import ReservationStatusForTutor from "./components/tutor/reservation/ReservationStatusForTutor";
-import TimeSettingsPanel from "./components/tutor/time-settings/TimeSettingsPanel";
-import AdminLayout from "./pages/admin/AdminLayout";
-import TutorLayout from "./pages/tutor/TutorLayout";
-import ManageTrackPage from "./pages/admin/ManageTrackPage";
-import ManageBatchePage from "./pages/admin/ManageBatchePage";
-import ManageReservations from "./pages/admin/ManageReservations";
-import ManageOrganizationPage from "./pages/admin/ManageOrganizationPage";
-import AdminSettingsPage from "./pages/admin/AdminSettingsPage";
-import ManageManagersPage from "./pages/admin/ManageManagersPage";
-import PendingApprovalPage from "./pages/auth/PendingApprovalPage";
-import TutorProfilePage from "./pages/tutor/TutorProfilePage";
+
+/** ===== lazy routes (필요할 때만 네트워크 로드) ===== */
+const LoginPage = lazy(() => import("./components/auth/LoginPage"));
+const SignUpPage = lazy(() => import("./pages/auth/SignUpPage"));
+const CompleteProfilePage = lazy(
+  () => import("./pages/auth/CompleteProfilePage")
+);
+const PendingApprovalPage = lazy(
+  () => import("./pages/auth/PendingApprovalPage")
+);
+
+const ReservationPage = lazy(() => import("./pages/reservation/page"));
+const ReservationStatusPage = lazy(() => import("./pages/status/page"));
+const MyPage = lazy(() => import("./pages/mypage/page"));
+
+const AdminRoute = lazy(() => import("./components/common/AdminRoute"));
+const ProtectedRoute = lazy(() => import("./components/ProtectedRoute"));
+
+const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
+const ManageManagersPage = lazy(
+  () => import("./pages/admin/ManageManagersPage")
+);
+const ManageTutor = lazy(() => import("./pages/admin/ManageTutor"));
+const ManageOrganizationPage = lazy(
+  () => import("./pages/admin/ManageOrganizationPage")
+);
+const ManageTrackPage = lazy(() => import("./pages/admin/ManageTrackPage"));
+const ManageBatchePage = lazy(() => import("./pages/admin/ManageBatchePage"));
+const ManageReservations = lazy(
+  () => import("./pages/admin/ManageReservations")
+);
+const AdminSettingsPage = lazy(() => import("./pages/admin/AdminSettingsPage"));
+
+const TutorLayout = lazy(() => import("./pages/tutor/TutorLayout"));
+const ReservationStatusForTutor = lazy(
+  () => import("./components/tutor/reservation/ReservationStatusForTutor")
+);
+const TimeSettingsPanel = lazy(
+  () => import("./components/tutor/time-settings/TimeSettingsPanel")
+);
+const TutorProfilePage = lazy(() => import("./pages/tutor/TutorProfilePage"));
+
+// 심플한 로더 (원하면 스켈레톤/스피너 컴포넌트로 교체 가능)
+const Fallback = () => <div style={{ padding: 16 }}>Loading…</div>;
 
 const App: React.FC = () => {
   return (
     <Providers>
       <Router>
-        <Routes>
-          <Route path='/' element={<AppContent />} />
-          <Route path='/login' element={<LoginPage />} />
-          <Route path='/signup' element={<SignUpPage />} />
-          <Route path='/complete-profile' element={<CompleteProfilePage />} />
-          <Route path='/pending-approval' element={<PendingApprovalPage />} />
+        <Suspense fallback={<Fallback />}>
+          <Routes>
+            {/* ====== Public Layout (공통 헤더/푸터) ====== */}
+            <Route path='/' element={<AppContent />}>
+              {/* / → /reservation 으로 리다이렉트 */}
+              <Route index element={<Navigate to='reservation' replace />} />
+              <Route path='reservation' element={<ReservationPage />} />
+              <Route path='status' element={<ReservationStatusPage />} />
+              <Route path='mypage' element={<MyPage />} />
+            </Route>
 
-          {/* 관리자 라우터 */}
-          <Route
-            path='/admin'
-            element={
-              <AdminRoute>
-                <AdminLayout />
-              </AdminRoute>
-            }
-          >
-            <Route index element={<Navigate to='managers' replace />} />
-            <Route path='managers' element={<ManageManagersPage />} />
-            <Route path='tutors' element={<ManageTutor />} />
-            <Route path='organizations' element={<ManageOrganizationPage />} />
-            <Route path='tracks' element={<ManageTrackPage />} />
-            <Route path='batches' element={<ManageBatchePage />} />
-            <Route path='reservations' element={<ManageReservations />} />
-            <Route path='settings' element={<AdminSettingsPage />} />
-          </Route>
+            {/* ====== Auth Pages (레이아웃 밖) ====== */}
+            <Route path='/login' element={<LoginPage />} />
+            <Route path='/signup' element={<SignUpPage />} />
+            <Route path='/complete-profile' element={<CompleteProfilePage />} />
+            <Route path='/pending-approval' element={<PendingApprovalPage />} />
 
-          {/* 튜터 라우터 */}
-          <Route
-            path='/tutor/*'
-            element={
-              <ProtectedRoute allowedRoles={["tutor"]}>
-                <TutorLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Navigate to='reservations' replace />} />
+            {/* ====== Admin Layout ====== */}
             <Route
-              path='reservations'
-              element={<ReservationStatusForTutor />}
-            />
-            <Route path='time-settings' element={<TimeSettingsPanel />} />
-            <Route path='profile-settings' element={<TutorProfilePage />} />
-          </Route>
-        </Routes>
+              path='/admin'
+              element={
+                <AdminRoute>
+                  <AdminLayout />
+                </AdminRoute>
+              }
+            >
+              <Route index element={<Navigate to='managers' replace />} />
+              <Route path='managers' element={<ManageManagersPage />} />
+              <Route path='tutors' element={<ManageTutor />} />
+              <Route
+                path='organizations'
+                element={<ManageOrganizationPage />}
+              />
+              <Route path='tracks' element={<ManageTrackPage />} />
+              <Route path='batches' element={<ManageBatchePage />} />
+              <Route path='reservations' element={<ManageReservations />} />
+              <Route path='settings' element={<AdminSettingsPage />} />
+            </Route>
+
+            {/* ====== Tutor Layout ====== */}
+            <Route
+              path='/tutor/*'
+              element={
+                <ProtectedRoute allowedRoles={["tutor"]}>
+                  <TutorLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Navigate to='reservations' replace />} />
+              <Route
+                path='reservations'
+                element={<ReservationStatusForTutor />}
+              />
+              <Route path='time-settings' element={<TimeSettingsPanel />} />
+              <Route path='profile-settings' element={<TutorProfilePage />} />
+            </Route>
+          </Routes>
+        </Suspense>
+
         <ModalRenderer />
       </Router>
     </Providers>
