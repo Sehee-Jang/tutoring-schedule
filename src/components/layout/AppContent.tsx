@@ -1,4 +1,5 @@
 "use client";
+import { Outlet } from "react-router-dom";
 import ModalRenderer from "../shared/ModalRenderer";
 import ReservationTabs from "../reservations/ReservationTabs";
 import Header from "./Header";
@@ -6,9 +7,13 @@ import Footer from "./Footer";
 
 const AppContent = () => {
   return (
-    <div className='relative max-w-5xl mx-auto px-4 py-6 font-sans bg-gray-50 min-h-screen'>
+    <div className='relative min-h-screen font-sans'>
       <Header />
-      <ReservationTabs />
+
+      <main className='pt-6'>
+        <Outlet />
+      </main>
+
       <Footer />
       <ModalRenderer />
     </div>
