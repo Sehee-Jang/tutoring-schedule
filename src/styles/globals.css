@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Design Tokens (Toss-ish) ===== */
+@layer base {
+  :root {
+    --brand: 0 0% 100%; /* not used */
+    --brand-hex: #0064ff;
+    --bg: 247 47% 98%;
+    --card: 0 0% 100%;
+    --text-1: 222 47% 11%;
+    --text-2: 215 16% 47%;
+    --border: 214 32% 91%;
+  }
+
+  html,
+  body {
+    @apply h-full;
+  }
+
+  body {
+    @apply text-[15px] text-neutral-900 bg-[hsl(var(--bg))] antialiased;
+    /* subtle dot grid background */
+    background-image: radial-gradient(hsl(0 0% 100% / 0.9) 1px, transparent 1px),
+      radial-gradient(hsl(0 0% 100% / 0.9) 1px, transparent 1px),
+      linear-gradient(to bottom, transparent, transparent);
+    background-size: 24px 24px, 24px 24px, auto;
+    background-position: 0 0, 12px 12px, 0 0;
+  }
+}
+
+/* ===== Components ===== */
+@layer components {
+  /* sticky glassy header */
+  .app-header {
+    @apply sticky top-0 z-50 backdrop-blur bg-white/80 border-b border-[hsl(var(--border))];
+  }
+
+  .brand-chip {
+    @apply inline-flex items-center justify-center rounded-xl px-2.5 py-1.5 font-semibold text-white;
+    background-color: var(--brand-hex);
+  }
+
+  .nav-link {
+    @apply relative px-3 py-2 rounded-md text-sm font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100/60;
+  }
+  .nav-link-active {
+    @apply text-neutral-900;
+  }
+  .nav-link-active::after {
+    content: "";
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: -9px;
+    height: 2px;
+    background: var(--brand-hex);
+    border-radius: 2px;
+  }
+
+  .primary-btn {
+    @apply inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-white shadow-sm;
+    background-color: var(--brand-hex);
+  }
+  .ghost-btn {
+    @apply inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100/60;
+  }
+
+  .page-wrap {
+    @apply max-w-6xl mx-auto w-full px-4;
+  }
+}
