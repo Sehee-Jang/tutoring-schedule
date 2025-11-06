@@ -3,12 +3,14 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
-  GraduationCap,
+  CalendarClock,
   ShieldCheck,
   UserCheck,
   LogIn,
   LogOut,
   Bell,
+  Menu,
+  X,
 } from "lucide-react";
 import { isAdminRole } from "../../utils/roleUtils";
 import { useToast } from "../../hooks/use-toast";
@@ -16,6 +18,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../services/firebase";
 import { ConfirmAlertDialog } from "../shared/ConfirmAlertDialog";
 import { useState } from "react";
+import MobileMenuSheet from "../layout/MobileMenuSheet";
 
 const Header = () => {
   const { user } = useAuth();
@@ -32,6 +35,8 @@ const Header = () => {
     day: "numeric",
     weekday: "long",
   });
+
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleLogout = async () => {
     setIsLoading(true);
@@ -54,6 +59,8 @@ const Header = () => {
     }
   };
 
+  const closeMobile = () => setMobileOpen(false);
+
   return (
     <>
       <header className='app-header'>
@@ -61,14 +68,14 @@ const Header = () => {
           {/* Left: Brand */}
           <Link to='/' className='flex items-center gap-2'>
             <span className='brand-chip h-8 w-8 rounded-2xl grid place-items-center'>
-              <GraduationCap className='h-4 w-4' />
+              <CalendarClock className='h-5 w-5' />
             </span>
-            <span className='text-[15px] font-semibold text-neutral-900'>
-              실시간 튜터링
+            <span className='text-[16px] font-semibold text-neutral-900'>
+              BOOKABLE
             </span>
           </Link>
 
-          {/* Center: Nav Tabs */}
+          {/* Center: Nav Tabs (데스크톱 전용) */}
           <nav className='hidden md:flex items-center gap-1'>
             <NavLink
               to='/reservation'
@@ -99,6 +106,7 @@ const Header = () => {
 
           {/* Right: Actions */}
           <div className='flex items-center gap-3'>
+            {/* 알림 버튼 */}
             <button
               type='button'
               className='ghost-btn p-2 rounded-full'
@@ -107,14 +115,13 @@ const Header = () => {
               <Bell className='h-5 w-5' />
             </button>
 
-            {!user && (
-              <Link to='/login' className='primary-btn'>
+            {/* 로그인/아웃 & 역할 단추 */}
+            {!user ? (
+              <Link to='/login' className='primary-btn hidden sm:inline-flex'>
                 <LogIn className='h-4 w-4' />
                 <span>로그인</span>
               </Link>
-            )}
-
-            {user && (
+            ) : (
               <>
                 {(isAdmin || isTutor) && (
                   <Link
@@ -133,16 +140,35 @@ const Header = () => {
                 )}
                 <button
                   onClick={() => setOpenConfirm(true)}
-                  className='ghost-btn'
+                  className='ghost-btn hidden sm:inline-flex'
                   title='로그아웃'
                 >
                   <LogOut className='h-5 w-5' />
-                  <span className='hidden sm:inline'>로그아웃</span>
                 </button>
               </>
             )}
+
+            {/* 모바일 햄버거: md 미만에서 보임 */}
+            <button
+              type='button'
+              className='ghost-btn p-2 rounded-full md:hidden'
+              aria-label='메뉴 열기'
+              aria-expanded={mobileOpen}
+              onClick={() => setMobileOpen(true)}
+            >
+              <Menu className='h-6 w-6' />
+            </button>
           </div>
         </div>
+
+        {/* 모바일 메뉴 패널 */}
+        <MobileMenuSheet
+          open={mobileOpen}
+          onClose={() => setMobileOpen(false)}
+          user={user}
+          isAdmin={isAdmin}
+          isTutor={isTutor}
+        />
       </header>
     </>
     // <>
